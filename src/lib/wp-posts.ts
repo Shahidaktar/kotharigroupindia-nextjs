@@ -24,14 +24,34 @@ export interface WpBlogList {
 }
 
 // Fetch with a timeout so a slow WP backend never hangs navigation.
-async function fetchWithTimeout(url: string, init?: RequestInit, ms = 9000): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ms);
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timer);
+// Retries once on abort/timeout so a transient slow response never crashes the server.
+async function fetchWithTimeout(
+  url: string,
+  init?: RequestInit,
+  ms = 20000,
+  attempts = 2
+): Promise<Response> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const controller = new AbortController();
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled) controller.abort();
+    }, ms);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      settled = true;
+      return res;
+    } catch (error) {
+      settled = true;
+      lastError = error;
+      if (attempt === attempts) break;
+      await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  throw lastError;
 }
 
 // Strip HTML and normalize whitespace to plain text.
@@ -92,19 +112,25 @@ function mapPost(raw: any): WpBlogPost {
 
 // Fetch a page of blog posts from WordPress with pagination headers.
 // Optional categoryId filters to a single category (e.g. blogs vs success stories).
+// Returns an empty result on failure instead of throwing — keeps the server alive.
 export const fetchWpBlogPosts = cache(async (page = 1, perPage = 9, categoryId?: number): Promise<WpBlogList> => {
   const categoryQuery = categoryId ? `&categories=${categoryId}` : '';
   const url = `${WP_API}/wp/v2/posts?page=${page}&per_page=${perPage}&_embed${categoryQuery}`;
-  const res = await fetchWithTimeout(url, {
-    next: { revalidate: 600 },
-    headers: { 'User-Agent': 'Mozilla/5.0' },
-  });
-  if (!res.ok) throw new Error(`WP posts request failed: ${res.status}`);
-  const total = Number(res.headers.get('x-wp-total') || '0');
-  const totalPages = Number(res.headers.get('x-wp-totalpages') || res.headers.get('x-wp-total-pages') || '1');
-  const data = await res.json();
-  const posts = (Array.isArray(data) ? data : []).map(mapPost);
-  return { posts, total, totalPages };
+  try {
+    const res = await fetchWithTimeout(url, {
+      next: { revalidate: 600 },
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
+    if (!res.ok) return { posts: [], total: 0, totalPages: 0 };
+    const total = Number(res.headers.get('x-wp-total') || '0');
+    const totalPages = Number(res.headers.get('x-wp-totalpages') || res.headers.get('x-wp-total-pages') || '1');
+    const data = await res.json();
+    const posts = (Array.isArray(data) ? data : []).map(mapPost);
+    return { posts, total, totalPages };
+  } catch {
+    console.error('[wp-posts] Failed to fetch blog posts:', url);
+    return { posts: [], total: 0, totalPages: 0 };
+  }
 });
 
 // WordPress category IDs used for the news/blog/content mix.
@@ -114,14 +140,20 @@ export const WP_CATEGORIES = {
 } as const;
 
 // Fetch a single post by slug (full content included).
+// Returns null on failure instead of throwing.
 export const fetchWpBlogPostBySlug = cache(async (slug: string): Promise<WpBlogPost | null> => {
   const url = `${WP_API}/wp/v2/posts?slug=${encodeURIComponent(slug)}&_embed`;
-  const res = await fetchWithTimeout(url, {
-    next: { revalidate: 600 },
-    headers: { 'User-Agent': 'Mozilla/5.0' },
-  });
-  if (!res.ok) return null;
-  const data = await res.json();
-  const post = Array.isArray(data) && data.length ? data[0] : null;
-  return post ? mapPost(post) : null;
+  try {
+    const res = await fetchWithTimeout(url, {
+      next: { revalidate: 600 },
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const post = Array.isArray(data) && data.length ? data[0] : null;
+    return post ? mapPost(post) : null;
+  } catch {
+    console.error('[wp-posts] Failed to fetch post by slug:', slug);
+    return null;
+  }
 });

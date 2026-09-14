@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Menu, X, ChevronDown, ChevronRight, Phone, Mail, MapPin, Send, ArrowRight, Factory, Sprout, Users, Award, Building2 } from 'lucide-react';
 import Link from 'next/link';
+import { pipeSolutionsMegaMenu, irrigationSolutionsMegaMenu } from '@/data/products';
 
 // Mega Menu Data Configurations
 const aboutMegaMenu = {
@@ -210,61 +211,61 @@ const resourcesMegaMenu = {
   ],
 };
 
-export const pipeSolutionsMegaMenu = {
-  category: "SOLUTIONS & SEGMENTS",
-  headline: "Piping Solutions for Every Need",
-  description: "Engineered piping systems for buildings, cities, farms and industry — built for flow, strength and longevity.",
-  items: [
-    {
-      title: "Residential & Commercial Plumbing Solutions",
-      url: "/solutions/residential-commercial-plumbing",
-      image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      title: "Urban Drainage & Sewerage Networks",
-      url: "/solutions/urban-drainage-sewerage",
-      image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      title: "Groundwater Access Solutions",
-      url: "/solutions/groundwater-access",
-      image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      title: "Farm Infrastructure Piping Solutions",
-      url: "/solutions/farm-infrastructure-piping",
-      image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80",
-    },
-  ],
-};
+// export const pipeSolutionsMegaMenu = {
+//   category: "SOLUTIONS & SEGMENTS",
+//   headline: "Piping Solutions for Every Need",
+//   description: "Engineered piping systems for buildings, cities, farms and industry — built for flow, strength and longevity.",
+//   items: [
+//     {
+//       title: "Residential & Commercial Plumbing Solutions",
+//       url: "/solutions/residential-commercial-plumbing",
+//       image: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80",
+//     },
+//     {
+//       title: "Urban Drainage & Sewerage Networks",
+//       url: "/solutions/urban-drainage-sewerage",
+//       image: "https://images.unsplash.com/photo-1504307651254-35680f356dfd?auto=format&fit=crop&w=600&q=80",
+//     },
+//     {
+//       title: "Groundwater Access Solutions",
+//       url: "/solutions/groundwater-access",
+//       image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80",
+//     },
+//     {
+//       title: "Farm Infrastructure Piping Solutions",
+//       url: "/solutions/farm-infrastructure-piping",
+//       image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=600&q=80",
+//     },
+//   ],
+// };
 
-export const irrigationSolutionsMegaMenu = {
-  category: "SOLUTIONS & SEGMENTS",
-  headline: "Irrigation Solutions for Every Field",
-  description: "Precision water management from greenhouse to open field — saving water, boosting yield.",
-  items: [
-    {
-      title: "Precision Irrigation",
-      url: "/solutions/precision-irrigation",
-      image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      title: "Polyhouse (Greenhouse) Irrigation",
-      url: "/solutions/polyhouse-greenhouse-irrigation",
-      image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      title: "Agricultural Field Irrigation",
-      url: "/solutions/agricultural-field-irrigation",
-      image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80",
-    },
-    {
-      title: "Water Management",
-      url: "/solutions/water-management",
-      image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80",
-    },
-  ],
-};
+// export const irrigationSolutionsMegaMenu = {
+//   category: "SOLUTIONS & SEGMENTS",
+//   headline: "Irrigation Solutions for Every Field",
+//   description: "Precision water management from greenhouse to open field — saving water, boosting yield.",
+//   items: [
+//     {
+//       title: "Precision Irrigation",
+//       url: "/solutions/precision-irrigation",
+//       image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=600&q=80",
+//     },
+//     {
+//       title: "Polyhouse (Greenhouse) Irrigation",
+//       url: "/solutions/polyhouse-greenhouse-irrigation",
+//       image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?auto=format&fit=crop&w=600&q=80",
+//     },
+//     {
+//       title: "Agricultural Field Irrigation",
+//       url: "/solutions/agricultural-field-irrigation",
+//       image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=600&q=80",
+//     },
+//     {
+//       title: "Water Management",
+//       url: "/solutions/water-management",
+//       image: "https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80",
+//     },
+//   ],
+// };
 
 const solutionsMegaMenu = pipeSolutionsMegaMenu;
 

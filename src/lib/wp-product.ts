@@ -6,15 +6,34 @@ const WOO_ADMIN = `${WP_API}/wc/v3/products`;
 const WP_MEDIA = `${WP_API}/wp/v2/media`;
 
 // Fetch with a timeout so a slow WP backend never hangs navigation.
-// Next dedupes + caches the result (see cached fetch below).
-async function fetchWithTimeout(url: string, init?: RequestInit, ms = 9000): Promise<Response> {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), ms);
-  try {
-    return await fetch(url, { ...init, signal: controller.signal });
-  } finally {
-    clearTimeout(timer);
+// Retries once on abort/timeout so a transient slow response never crashes the server.
+async function fetchWithTimeout(
+  url: string,
+  init?: RequestInit,
+  ms = 20000,
+  attempts = 2
+): Promise<Response> {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    const controller = new AbortController();
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled) controller.abort();
+    }, ms);
+    try {
+      const res = await fetch(url, { ...init, signal: controller.signal });
+      settled = true;
+      return res;
+    } catch (error) {
+      settled = true;
+      lastError = error;
+      if (attempt === attempts) break;
+      await new Promise((resolve) => setTimeout(resolve, 400 * attempt));
+    } finally {
+      clearTimeout(timer);
+    }
   }
+  throw lastError;
 }
 
 // Auth for Admin API (server-side only)

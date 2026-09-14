@@ -1,15 +1,15 @@
 import { notFound } from 'next/navigation';
 import AppShell from '@/components/AppShell';
-import { HeaderDivison, pipeSolutionsMegaMenu, irrigationSolutionsMegaMenu } from '@/components/HeaderDivision';
+import { HeaderDivison } from '@/components/HeaderDivision';
 import { Footer } from '@/components/Footer';
 import { SolutionPageTemplate } from '@/components/solutions/SolutionPageTemplate';
 import { solutionsData, getSolutionBySlug } from '@/data/solutions';
 import {
   PipefooterData,
   IrrigationfooterData,
-  PipeproductsMegaMenu,
-  IrrigationproductsMegaMenu,
+
 } from '@/components/ProductPageLayout';
+import { IrrigationproductsMegaMenu, irrigationSolutionsMegaMenu, PipeproductsMegaMenu, pipeSolutionsMegaMenu } from '@/data/products';
 
 type Params = { slug: string };
 

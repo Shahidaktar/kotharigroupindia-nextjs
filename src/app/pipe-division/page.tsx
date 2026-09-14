@@ -3,7 +3,7 @@
 import AppShell from '@/components/AppShell';
 import { KnowledgeCentre } from '@/components/KnowledgeCentre';
 import { HeroDivision } from '@/components/HeroDivision';
-import { HeaderDivison, pipeSolutionsMegaMenu } from '@/components/HeaderDivision';
+import { HeaderDivison } from '@/components/HeaderDivision';
 import { Category } from '@/components/Category';
 import { WhyKothariGroup } from '@/components/main/WhyKothariGroup';
 import { Impact } from '@/components/main/Impact';
@@ -12,6 +12,7 @@ import { NewsDivision } from '@/components/NewsDivision';
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FeaturedProducts } from '@/components/FeaturedProducts';
+import { PipeproductsMegaMenu, pipeSolutionsMegaMenu } from '@/data/products';
 
 
 function PipeDivisionContent() {
@@ -356,7 +357,7 @@ const FEATURE_PRODUCTS = [
 ];
   return (
     <>
-      <HeaderDivison productsMegaMenu={productsMegaMenu} solutionsMegaMenu={pipeSolutionsMegaMenu}/>
+      <HeaderDivison productsMegaMenu={PipeproductsMegaMenu} solutionsMegaMenu={pipeSolutionsMegaMenu}/>
       <HeroDivision heroData={heroData} />
       <Category tab="pipes"/>
       <FeaturedProducts products={FEATURE_PRODUCTS}/>

@@ -171,7 +171,7 @@ export const ProductDetailPage: React.FC<{
             <nav className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest uppercase text-slate-500 overflow-x-auto whitespace-nowrap py-4">
               <Link href="/" className="hover:text-[#1575B3] transition-colors">Home</Link>
               <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
-              <Link href={`/${wp?.divisionSlug || 'pipe-division'}`} className="hover:text-[#1575B3] transition-colors">
+              <Link href={`/products?division=${wp?.divisionSlug || 'pipe-division'}`} className="hover:text-[#1575B3] transition-colors">
                 {wp?.divisionName || 'Division'}
               </Link>
               <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
