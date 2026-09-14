@@ -174,7 +174,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
   return (
     <div className="space-y-8">
       {/* Toolbar: result count + filter button */}
-      <div className="flex items-center justify-between gap-4">
+      {/* <div className="flex items-center justify-between gap-4">
         <p className="text-xs text-slate-500 font-mono tracking-widest uppercase">
           {filtered.length > 0
             ? `Showing ${startIdx}–${endIdx} of ${filtered.length} ${
@@ -210,7 +210,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
             )}
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* Product grid */}
       {pageProducts.length > 0 ? (
