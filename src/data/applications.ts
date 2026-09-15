@@ -37,8 +37,8 @@ export const irrigationApplications: DivisionApplications = {
   metaTitle: 'Irrigation Applications | Crop, Water Management & Landscaping Solutions',
   metaDescription:
     'Explore Kothari irrigation solutions by application — crop-wise irrigation, drip & sprinkler systems, fertigation, and horticulture & landscaping needs.',
-  heroEyebrow: 'Applications',
-  h1: 'Irrigation Division',
+  heroEyebrow: 'Kothari Group',
+  h1: 'Irrigation Applications',
   intro:
     'From individual crops to full-scale water management, our irrigation systems are engineered for the specific demands of Indian farming. Explore our full range of solutions below, organized by the application that matters most to you.',
   heroImage: '/heronew.jpg',
@@ -234,8 +234,8 @@ export const pipeApplications: DivisionApplications = {
   metaTitle: 'Pipe Applications | Plumbing, Industrial & Infrastructure Solutions',
   metaDescription:
     'Explore Kothari pipe solutions by application — residential plumbing, industrial water supply, municipal infrastructure, borewell, and drainage systems.',
-  heroEyebrow: 'Applications',
-  h1: 'Pipe Division',
+  heroEyebrow: 'Kothari Group',
+  h1: 'Pipe Applications',
   intro:
     'From residential plumbing to large-scale municipal infrastructure, our pipes and fittings are built for the specific demands of every application. Explore our full range of solutions below, organized by use case.',
   heroImage: '/heronew.jpg',
