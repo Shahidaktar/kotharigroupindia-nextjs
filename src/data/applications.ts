@@ -67,8 +67,8 @@ export const irrigationApplications: DivisionApplications = {
           image: 'https://picsum.photos/seed/kothari-sprinkler-irrigation/800/600',
           products: [
             { name: 'Metal Sprinkler', url: '/metal-sprinkler/metal-sprinkler' },
-            { name: 'Mini Sprinkler', url: '/mini-sprinklers-and-assemblies/mini-sprinkler' },
-            { name: 'K-Eco Sprinkler', url: '/products' },
+            { name: 'Mini Sprinkler', url: '/mini-sprinklers-and-assemblies/mini-sprinkler-rotating-mini-sprinkler-system-for-field-crops-kothari' },
+            { name: 'K-Eco Sprinkler', url: '/k-eco-rain-pipes-and-k-flex-submain-pipes/k-eco-sprinkler' },
             { name: 'HDPE Pipe Sprinkler Set', url: '/sprinkler-connectors-and-accessories/hdpe-pipe-sprinkler-set' },
           ],
         },
@@ -215,8 +215,8 @@ export const irrigationApplications: DivisionApplications = {
             'Pop-up sprinklers, rotors, and turf irrigation systems for parks, gardens, and public landscaped areas.',
           image: 'https://picsum.photos/seed/kothari-landscaping/800/600',
           products: [
-            { name: 'Pop-up Spray Heads and Rotors', url: '/garden-and-landscape-sprinklers/pop-up-spray-heads-and-rotors' },
-            { name: 'Swing Joint', url: '/garden-and-landscape-sprinklers/swing-joint' },
+            { name: 'Pop-up Spray Heads and Rotors', url: '/garden-and-landscape-sprinklers/pop-up-spray-heads-rotors-landscape-turf-sprinklers-kothari-group' },
+            { name: 'Swing Joint', url: '/garden-and-landscape-sprinklers/swing-joint-flexible-connector-for-pop-up-sprinklers-kothari-group' },
           ],
         },
       ],
@@ -282,7 +282,7 @@ export const pipeApplications: DivisionApplications = {
           image: 'https://picsum.photos/seed/kothari-municipal/800/600',
           products: [
             { name: 'HDPE Piping', url: '/pe-pipes-and-fittings/hdpe-piping' },
-            { name: 'UPVC ASTM Pipe Piping System', url: '/upvc/upvc-astm-plumbing-piping-system' },
+            { name: 'UPVC Pipes & Fittings', url: '/upvc/upvc-astm-plumbing-piping-system' },
           ],
         },
         {
@@ -303,7 +303,7 @@ export const pipeApplications: DivisionApplications = {
           products: [
             { name: 'HDPE Coils', url: '/pe-pipes-and-fittings/hdpe-coils' },
             { name: 'HDPE Fittings', url: '/pe-pipes-and-fittings/hdpe-fittings' },
-            { name: 'UPVC ASTM Pipe Piping System', url: '/upvc/upvc-astm-plumbing-piping-system' },
+            { name: 'UPVC Pipes & Fittings', url: '/upvc/upvc-astm-plumbing-piping-system' },
           ],
         },
         {
@@ -329,8 +329,8 @@ export const pipeApplications: DivisionApplications = {
             'CPVC and UPVC plumbing systems for homes, apartments, and housing societies.',
           image: 'https://picsum.photos/seed/kothari-residential/800/600',
           products: [
-            { name: 'CPVC Hot & Cold Water Piping System', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
-            { name: 'UPVC ASTM Pipe Piping System', url: '/upvc/upvc-astm-plumbing-piping-system' },
+            { name: 'CPVC Pipes & Fittings', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
+            { name: 'UPVC Pipes & Fittings', url: '/upvc/upvc-astm-plumbing-piping-system' },
           ],
         },
         {
@@ -339,8 +339,8 @@ export const pipeApplications: DivisionApplications = {
             'Durable plumbing and drainage systems for offices, schools, and commercial complexes.',
           image: 'https://picsum.photos/seed/kothari-commercial/800/600',
           products: [
-            { name: 'UPVC ASTM Pipe Piping System', url: '/upvc/upvc-astm-plumbing-piping-system' },
-            { name: 'CPVC Hot & Cold Water Piping System', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
+            { name: 'UPVC Pipes & Fittings', url: '/upvc/upvc-astm-plumbing-piping-system' },
+            { name: 'CPVC Pipes & Fittings', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
           ],
         },
         {
@@ -349,7 +349,7 @@ export const pipeApplications: DivisionApplications = {
             'Pressure-rated piping systems engineered for multi-storey plumbing risers and shafts.',
           image: 'https://picsum.photos/seed/kothari-high-rise/800/600',
           products: [
-            { name: 'CPVC Hot & Cold Water Piping System', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
+            { name: 'CPVC Pipes & Fittings', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
             { name: 'CPVC Solvent Cement', url: '/cpvc/cpvc-solvent-cement' },
           ],
         },
@@ -359,8 +359,8 @@ export const pipeApplications: DivisionApplications = {
             'Reliable, low-maintenance plumbing systems for round-the-clock institutional use.',
           image: 'https://picsum.photos/seed/kothari-institutional/800/600',
           products: [
-            { name: 'CPVC Hot & Cold Water Piping System', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
-            { name: 'UPVC ASTM Pipe Piping System', url: '/upvc/upvc-astm-plumbing-piping-system' },
+            { name: 'CPVC Pipes & Fittings', url: '/cpvc/cpvc-hot-and-cold-water-piping-system' },
+            { name: 'UPVC Pipes & Fittings', url: '/upvc/upvc-astm-plumbing-piping-system' },
           ],
         },
       ],
@@ -377,7 +377,7 @@ export const pipeApplications: DivisionApplications = {
           image: 'https://picsum.photos/seed/kothari-industrial-water/800/600',
           products: [
             { name: 'HDPE Piping', url: '/pe-pipes-and-fittings/hdpe-piping' },
-            { name: 'UPVC ASTM Pipe Piping System', url: '/upvc/upvc-astm-plumbing-piping-system' },
+            { name: 'UPVC Pipes & Fittings', url: '/upvc/upvc-astm-plumbing-piping-system' },
           ],
         },
         {
