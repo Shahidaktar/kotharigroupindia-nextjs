@@ -23,7 +23,7 @@ const aboutMegaMenu = {
     },
     {
       title: 'Capabilities & More',
-      url: '/about/capabilities',
+      url: '/capabilities-infrastructure',
       image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=600&q=80',
     },
     // {
@@ -367,6 +367,7 @@ const [openSegment, setOpenSegment] = useState<number | null>(null);
 const [hoveredDivision, setHoveredDivision] = useState<string | null>(null);
 const [aboutOpen, setAboutOpen] = useState(false);
 const [divOpen, setDivOpen] = useState(false);
+const division = solutionsMegaMenu.headline.includes('Irrigation') ? 'irrigation-division' : 'pipe-division';
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -721,7 +722,7 @@ const handleSegmentClick = (segIdx: number) => {
   )}
 </div>
 
-  <Link href="/applications" className={navItemStyle}>
+  <Link href={`/applications?division=${division}`} className={navItemStyle}>
                 Applications
               </Link>
     
@@ -930,7 +931,7 @@ const handleSegmentClick = (segIdx: number) => {
 
             
 
-              <Link href="/contact" className={navItemStyle}>
+              <Link href="/contact-us" className={navItemStyle}>
                 Contact Us
               </Link>
 
@@ -1264,7 +1265,7 @@ const handleSegmentClick = (segIdx: number) => {
 
 
                <Link
-                href="/applications"
+                href={`/applications?division=${division}`}
                 onClick={handleNavClick}
                 className="block w-full px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] hover:text-[#1575B3] transition"
               >

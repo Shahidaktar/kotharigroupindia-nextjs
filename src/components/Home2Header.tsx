@@ -44,7 +44,7 @@ const aboutUsItems = [
     desc: 'Infrastructure & operational reach.',
     icon: Award,
     accent: 'text-[#1575B3] bg-[#F5FAFF]',
-    url: '/capabilities'
+    url: '/capabilities-infrastructure'
   }
 ];
 
