@@ -3,6 +3,7 @@
 import AppShell from '@/components/AppShell';
 import { KnowledgeCentre } from '@/components/KnowledgeCentre';
 import { HeroDivision } from '@/components/HeroDivision';
+import { DivisionOverview } from '@/components/DivisionOverview';
 import { HeaderDivison } from '@/components/HeaderDivision';
 import { Category } from '@/components/Category';
 import { WhyKothariGroup } from '@/components/main/WhyKothariGroup';
@@ -437,12 +438,22 @@ const FEATURE_PRODUCTS = [
     <>
       <HeaderDivison productsMegaMenu={IrrigationproductsMegaMenu} solutionsMegaMenu={irrigationSolutionsMegaMenu}/>
       <HeroDivision heroData={heroData} />
-      <Category tab="agriculture"/>
-      <FeaturedProducts products={FEATURE_PRODUCTS}/>
+      <DivisionOverview
+        heading="Irrigation Division: Complete Farm Water Solutions"
+        accent="green"
+        paragraphs={[
+          "Flood irrigation has long been the default across Indian farms, but it comes at a real cost: excess water use, uneven crop growth, and higher vulnerability to drought years. Drip irrigation solves this by delivering water directly to the root zone, cutting water usage while improving yield consistency across crops from sugarcane and cotton to vegetables and orchards. For larger, more open fields where drip isn't practical, our sprinkler irrigation systems provide uniform overhead coverage, engineered to IS standards for reliable, full-circle water distribution.",
+          "Not every crop needs the same approach, though. Nurseries, orchards, and high-value horticulture crops often demand gentler, more targeted watering than a standard sprinkler can offer — which is where our micro sprinkler range comes in, delivering fine, uniform coverage without damaging delicate plants or seedlings. Whatever the system, water quality determines how long it lasts: sediment and organic debris quickly clog drippers and nozzles if left unfiltered, so our filters range from sand and screen filters to fully automatic self-cleaning units that protect every irrigation system we manufacture.",
+          'Water alone only gets a crop halfway there. Our fertigation systems combine precise nutrient delivery with irrigation itself, using dosing pumps, Venturi injectors, and IoT-enabled machines to apply fertilizer exactly when and where a crop needs it, reducing waste compared to manual application. And for growers managing larger operations, our controllers bring smart, automated scheduling to irrigation and fertigation alike, cutting down on manual labour while improving consistency across every irrigation cycle.',
+          'With IS 13488-certified irrigation systems built to withstand real field conditions, we bring the same engineering discipline to a single drip line as we do to a multi-acre automated irrigation project — helping farmers get more from every drop of water.',
+        ]}
+      />
+      {/* <Category tab="agriculture"/> */}
+      <FeaturedProducts products={FEATURE_PRODUCTS} theme="green"/>
       {/* <WhyKothariGroup /> */}
       {/* <Impact /> */}
-      <KnowledgeCentre itemData={items}/>
-      <NewsDivision />
+      <KnowledgeCentre itemData={items} theme="green"/>
+      <NewsDivision theme="green" />
       <Footer footerData={footerData}/>
     </>
   );

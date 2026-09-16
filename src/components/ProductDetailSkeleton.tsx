@@ -34,7 +34,7 @@ export const ProductDetailSkeleton: React.FC = () => {
             <div className="relative border border-slate-200 bg-[#F5F6F8] min-h-[320px] flex items-center justify-center overflow-hidden">
               <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-slate-100 via-slate-200 to-slate-100" />
               <div className="relative z-10 flex flex-col items-center gap-3">
-                <div className="w-10 h-10 rounded-full border-2 border-slate-300 border-t-[#1575B3] animate-spin" />
+                <div className="w-10 h-10 rounded-full border-2 border-slate-300 border-t-slate-500 animate-spin" />
                 <span className="text-[11px] font-mono tracking-widest uppercase text-slate-500">
                   Loading product…
                 </span>
@@ -61,12 +61,12 @@ export const ProductDetailSkeleton: React.FC = () => {
       </div>
 
       {/* Tabs header skeleton */}
-      <div className="relative w-full border-b border-white/20 overflow-hidden bg-[#0E588A]">
+      <div className="relative w-full border-b border-slate-200 overflow-hidden bg-slate-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-8">
           <div className="flex gap-0 -mx-4 sm:mx-0 px-4 sm:px-0 animate-pulse">
             {['Features', 'Specifications', 'Standards', 'Dimensions', 'Fittings'].map((t) => (
               <div key={t} className="flex-1 px-2 sm:px-4 py-3.5">
-                <div className="h-4 w-20 mx-auto bg-white/20" />
+                <div className="h-4 w-20 mx-auto bg-white/70" />
               </div>
             ))}
           </div>

@@ -26,8 +26,11 @@ const defaultItems = [
   }
 ];
 
-export const KnowledgeCentre: React.FC<{ itemData?: any[] }> = ({ itemData = defaultItems }: any) => {
+export const KnowledgeCentre: React.FC<{ itemData?: any[]; theme?: 'blue' | 'green' }> = ({ itemData = defaultItems, theme = 'blue' }: any) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const isGreen = theme === 'green';
+  const accentBg = isGreen ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]';
+  const accentText = isGreen ? 'text-[#1E8E3E]' : 'text-[#1575B3]';
 
   return (
     <section id="knowledge-centre" className="w-full bg-white py-16 sm:py-24 border-b border-slate-300/70 scroll-mt-20">
@@ -62,13 +65,13 @@ export const KnowledgeCentre: React.FC<{ itemData?: any[] }> = ({ itemData = def
                   {/* Subtle Left Active Indicator Line */}
                   <div 
                     className={`absolute left-0 top-0 bottom-0 w-0.5 transition-all duration-300 ${
-                      isActive ? 'bg-[#1575B3]' : 'bg-slate-200 group-hover:bg-slate-400'
+                      isActive ? accentBg : 'bg-slate-200 group-hover:bg-slate-400'
                     }`} 
                   />
 
                   <div className="space-y-2">
                     <h3 className={`text-2xl sm:text-3xl font-serif font-normal transition-colors duration-300 ${
-                      isActive ? 'text-[#1575B3]' : 'text-slate-900 group-hover:text-slate-700'
+                      isActive ? accentText : 'text-slate-900 group-hover:text-slate-700'
                     }`}>
                       {item.title}
                     </h3>
@@ -82,7 +85,7 @@ export const KnowledgeCentre: React.FC<{ itemData?: any[] }> = ({ itemData = def
                       href={item.link}
                       className={`inline-flex items-center gap-2 text-xs font-mono tracking-widest uppercase font-semibold transition-all duration-300 ${
                         isActive 
-                          ? 'text-[#1575B3] translate-x-1' 
+                          ? `${accentText} translate-x-1` 
                           : 'text-slate-500 group-hover:text-slate-900'
                       }`}
                     >

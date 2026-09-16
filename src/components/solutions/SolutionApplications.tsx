@@ -19,13 +19,14 @@ const APP_TAGLINES = [
   'Designed for easy installation at any scale.',
 ];
 
-export const SolutionApplications: React.FC<{ applications: string[] }> = ({ applications }) => {
+export const SolutionApplications: React.FC<{ applications: string[]; theme?: 'blue' | 'green' }> = ({ applications, theme = 'blue' }) => {
+  const isGreen = theme === 'green';
   if (!applications.length) return null;
   return (
-    <section className="bg-[#015CAA] py-24 relative overflow-hidden">
+    <section className={`${isGreen ? 'bg-[#145E2A]' : 'bg-[#015CAA]'} py-24 relative overflow-hidden`}>
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cyan-400/10 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-blue-900/40 to-transparent blur-3xl pointer-events-none" />
+      <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br ${isGreen ? 'from-emerald-300/10' : 'from-cyan-400/10'} to-transparent blur-3xl pointer-events-none`} />
+      <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr ${isGreen ? 'from-green-950/40' : 'from-blue-900/40'} to-transparent blur-3xl pointer-events-none`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-14 relative z-10">
 
@@ -37,7 +38,7 @@ export const SolutionApplications: React.FC<{ applications: string[] }> = ({ app
             </h2>
           </div>
 
-          <p className="text-xs sm:text-sm text-blue-100/80 max-w-md font-light leading-relaxed">
+          <p className={`text-xs sm:text-sm ${isGreen ? 'text-green-100/80' : 'text-blue-100/80'} max-w-md font-light leading-relaxed`}>
             Where this solution delivers measurable efficiency and lifecycle value.
           </p>
         </div>
@@ -47,10 +48,10 @@ export const SolutionApplications: React.FC<{ applications: string[] }> = ({ app
           {applications.map((app, idx) => (
             <div
               key={app}
-              className="group relative bg-[#014d8f]/40 backdrop-blur-md border border-white/15 hover:border-white/40 transition-all duration-500 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden"
+              className={`group relative ${isGreen ? 'bg-[#0E4A20]/40' : 'bg-[#014d8f]/40'} backdrop-blur-md border border-white/15 hover:border-white/40 transition-all duration-500 flex flex-col justify-between shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-2 overflow-hidden`}
             >
               {/* Top Accent Light Bar */}
-              <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent ${isGreen ? 'via-emerald-300' : 'via-cyan-400'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
               <div>
                 {/* Image Frame */}
@@ -62,15 +63,15 @@ export const SolutionApplications: React.FC<{ applications: string[] }> = ({ app
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#014d8f]/50 via-transparent to-transparent pointer-events-none" />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${isGreen ? 'from-[#0E4A20]/50' : 'from-[#014d8f]/50'} via-transparent to-transparent pointer-events-none`} />
                 </div>
 
                 {/* Content Area */}
                 <div className="p-7 space-y-4">
-                  <h3 className="text-lg font-bold text-white group-hover:text-cyan-200 transition-colors leading-snug">
+                  <h3 className={`text-lg font-bold text-white ${isGreen ? 'group-hover:text-emerald-200' : 'group-hover:text-cyan-200'} transition-colors leading-snug`}>
                     {app}
                   </h3>
-                  <p className="text-xs text-blue-100/70 font-light leading-relaxed">
+                  <p className={`text-xs ${isGreen ? 'text-green-100/70' : 'text-blue-100/70'} font-light leading-relaxed`}>
                     {APP_TAGLINES[idx % APP_TAGLINES.length]}
                   </p>
                 </div>

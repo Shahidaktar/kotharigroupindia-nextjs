@@ -17,6 +17,7 @@ export interface Product {
 
 interface FeaturedProductsProps {
   products?: Product[];
+  theme?: 'blue' | 'green';
 }
 
 const DEFAULT_PRODUCTS: Product[] = [
@@ -74,7 +75,9 @@ const DEFAULT_PRODUCTS: Product[] = [
 
 export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   products = DEFAULT_PRODUCTS,
+  theme = 'blue',
 }) => {
+  const isGreen = theme === 'green';
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -158,10 +161,10 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
   );
 
   return (
-    <section className="bg-[#015CAA] py-24 relative overflow-hidden select-none">
+    <section className={`${isGreen ? 'bg-[#145E2A]' : 'bg-[#015CAA]'} py-24 relative overflow-hidden select-none`}>
       {/* Background Decorative Elements */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-cyan-400/10 to-transparent blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr from-blue-900/40 to-transparent blur-3xl pointer-events-none" />
+      <div className={`absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br ${isGreen ? 'from-emerald-300/10' : 'from-cyan-400/10'} to-transparent blur-3xl pointer-events-none`} />
+      <div className={`absolute bottom-0 left-0 w-[500px] h-[500px] bg-gradient-to-tr ${isGreen ? 'from-green-950/40' : 'from-blue-900/40'} to-transparent blur-3xl pointer-events-none`} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-14 relative z-10">
         
@@ -173,7 +176,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
             </h2>
           </div>
 
-          <p className="text-xs sm:text-sm text-blue-100/80 max-w-md font-light leading-relaxed">
+          <p className={`text-xs sm:text-sm ${isGreen ? 'text-green-100/80' : 'text-blue-100/80'} max-w-md font-light leading-relaxed`}>
             World-class piping and irrigation engineering, crafted for extreme durability, operational efficiency, and long-term reliability.
           </p>
         </div>
@@ -198,10 +201,10 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                     key={product.id}
                     onMouseEnter={() => setIsPaused(true)}
                     onMouseLeave={() => setIsPaused(false)}
-                    className="group relative bg-[#014d8f]/40 backdrop-blur-md border border-white/15 hover:border-white/40 transition-all duration-500 flex flex-col justify-between shadow-xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 overflow-hidden"
+                    className={`group relative ${isGreen ? 'bg-[#0E4A20]/40' : 'bg-[#014d8f]/40'} backdrop-blur-md border border-white/15 hover:border-white/40 transition-all duration-500 flex flex-col justify-between shadow-xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] hover:-translate-y-1 overflow-hidden`}
                   >
                     {/* Top Accent Light Bar */}
-                    <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <div className={`absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent ${isGreen ? 'via-emerald-300' : 'via-cyan-400'} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
                     <div>
                       {/* Product Showcase Image Frame */}
@@ -217,12 +220,12 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                       {/* Content Area */}
                       <div className="p-7 space-y-4">
                         <div className="space-y-1">
-                          <h3 className="text-lg font-bold text-white group-hover:text-cyan-200 transition-colors leading-snug line-clamp-1">
+                          <h3 className={`text-lg font-bold text-white ${isGreen ? 'group-hover:text-emerald-200' : 'group-hover:text-cyan-200'} transition-colors leading-snug line-clamp-1`}>
                             {product.title}
                           </h3>
                         </div>
 
-                        <p className="text-xs text-blue-100/70 font-light leading-relaxed line-clamp-3">
+                        <p className={`text-xs ${isGreen ? 'text-green-100/70' : 'text-blue-100/70'} font-light leading-relaxed line-clamp-3`}>
                           {product.description}
                         </p>
                       </div>
@@ -232,10 +235,10 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
                     <div className="p-7 pt-0">
                       <Link
                         href={product.link}
-                        className="w-full inline-flex items-center justify-between bg-white/10 hover:bg-white text-white hover:text-[#015CAA] border border-white/20 hover:border-white text-xs font-semibold uppercase tracking-wider py-3.5 px-5 transition-all duration-300 group/btn"
+                        className={`w-full inline-flex items-center justify-between bg-white/10 hover:bg-white text-white ${isGreen ? 'hover:text-[#145E2A]' : 'hover:text-[#015CAA]'} border border-white/20 hover:border-white text-xs font-semibold uppercase tracking-wider py-3.5 px-5 transition-all duration-300 group/btn`}
                       >
                         <span>Explore Product</span>
-                        <ArrowUpRight className="w-4 h-4 text-cyan-300 group-hover/btn:text-[#015CAA] group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all" />
+                        <ArrowUpRight className={`w-4 h-4 ${isGreen ? 'text-emerald-300 group-hover/btn:text-[#145E2A]' : 'text-cyan-300 group-hover/btn:text-[#015CAA]'} group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-all`} />
                       </Link>
                     </div>
 
@@ -257,7 +260,7 @@ export const FeaturedProducts: React.FC<FeaturedProductsProps> = ({
               }}
               className={`h-1 transition-all duration-500 ${
                 idx === safePage
-                  ? 'w-12 bg-cyan-400'
+                  ? `w-12 ${isGreen ? 'bg-emerald-400' : 'bg-cyan-400'}`
                   : 'w-4 bg-white/20 hover:bg-white/50'
               }`}
               aria-label={`Go to slide ${idx + 1}`}

@@ -368,6 +368,7 @@ const [hoveredDivision, setHoveredDivision] = useState<string | null>(null);
 const [aboutOpen, setAboutOpen] = useState(false);
 const [divOpen, setDivOpen] = useState(false);
 const division = solutionsMegaMenu.headline.includes('Irrigation') ? 'irrigation-division' : 'pipe-division';
+  const isIrrigation = division === 'irrigation-division';
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -489,7 +490,7 @@ const handleSegmentClick = (segIdx: number) => {
   const isSolid = solid || isScrolled || mobileOpen;
   const navItemStyle = `px-3 py-2 text-[16px] font-medium transition-all duration-200 flex items-center gap-1 ${
     isSolid
-      ? 'text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF]/60'
+      ? `text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]/60' : 'hover:bg-[#F5FAFF]/60'}`
       : 'text-white/90 hover:text-white hover:bg-white/10'
   }`;
 
@@ -498,7 +499,7 @@ const handleSegmentClick = (segIdx: number) => {
       <header
         className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-300 ease-in-out ${
           isSolid
-            ? 'bg-white backdrop-blur-md border-b border-[#DCEAF5] shadow-sm py-2'
+            ? `bg-white backdrop-blur-md border-b ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-sm py-2`
             : 'bg-transparent border-b border-white/10 py-3'
         }`}
         style={{
@@ -552,11 +553,11 @@ const handleSegmentClick = (segIdx: number) => {
   </button>
 
   {activeDropdown === 'products' && (
-    <div className="absolute left-0 top-full w-full bg-white border-b border-[#DCEAF5] shadow-2xl py-6 px-8 sm:px-12 transition-all duration-300 z-50">
+    <div className={`absolute left-0 top-full w-full bg-white border-b ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-2xl py-6 px-8 sm:px-12 transition-all duration-300 z-50`}>
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-8 items-start">
 
         {/* LEFT — Segments Sidebar */}
-        <div className="col-span-4 border-r border-[#DCEAF5] pr-8 flex flex-col justify-between h-full">
+        <div className={`col-span-4 border-r ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} pr-8 flex flex-col justify-between h-full`}>
           <div>
             {/* Vertical Segment List */}
             <div className="flex flex-col gap-2">
@@ -569,8 +570,8 @@ const handleSegmentClick = (segIdx: number) => {
                     onClick={() => setActiveProductSegment(segIdx)}
                     className={`flex items-center justify-between px-4 py-3 border transition-all duration-200 text-left cursor-pointer ${
                       isActive
-                        ? 'border-[#1575B3] bg-[#F0F7FC] shadow-sm text-[#1575B3]'
-                        : 'border-[#E2EBF3] bg-white text-[#1E293B] hover:border-[#1575B3]/30 hover:bg-[#F8FAFC]'
+                        ? `${isIrrigation ? 'border-[#1E8E3E]' : 'border-[#1575B3]'} ${isIrrigation ? 'bg-[#EFF7F0]' : 'bg-[#F0F7FC]'} shadow-sm ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`
+                        : `border-[#E2EBF3] bg-white text-[#1E293B] ${isIrrigation ? 'hover:border-[#1E8E3E]/30' : 'hover:border-[#1575B3]/30'} hover:bg-[#F8FAFC]`
                     }`}
                   >
                     <span className="text-sm font-semibold tracking-wide">
@@ -578,7 +579,7 @@ const handleSegmentClick = (segIdx: number) => {
                     </span>
                     <ChevronRight
                       className={`w-4 h-4 transition-transform duration-200 ${
-                        isActive ? 'text-[#1575B3] translate-x-1' : 'text-[#94A3B8]'
+                        isActive ? `${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'} translate-x-1` : 'text-[#94A3B8]'
                       }`}
                     />
                   </button>
@@ -592,7 +593,7 @@ const handleSegmentClick = (segIdx: number) => {
         <div className="col-span-8 pl-2">
           {/* Segment Name Above Product Grid */}
           <div className="mb-4 pb-2 border-b border-[#E2EBF3]">
-            <h3 className="text-lg font-bold text-[#1575B3]">
+            <h3 className={`text-lg font-bold ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`}>
               {productsMegaMenu.segments[activeProductSegment]?.name}
             </h3>
           </div>
@@ -609,7 +610,7 @@ const handleSegmentClick = (segIdx: number) => {
                 key={idx}
                 href={product.url}
                 onClick={handleNavClick}
-                className="group flex flex-col justify-between items-center p-3.5 border border-[#E2EBF3]  hover:border-[#1575B3]/40 hover:shadow-md bg-white  transition-all"
+                className={`group flex flex-col justify-between items-center p-3.5 border border-[#E2EBF3]  ${isIrrigation ? 'hover:border-[#1E8E3E]/40' : 'hover:border-[#1575B3]/40'} hover:shadow-md bg-white  transition-all`}
               >
                 <div className="flex flex-col items-center w-full">
                   {/* Image Container */}
@@ -622,7 +623,7 @@ const handleSegmentClick = (segIdx: number) => {
                   </div>
 
                   {/* Product Title */}
-                  <span className="text-sm font-semibold text-[#111111] group-hover:text-[#1575B3] transition-colors text-center leading-snug mb-1">
+                  <span className={`text-sm font-semibold text-[#111111] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} transition-colors text-center leading-snug mb-1`}>
                     {product.title}
                   </span>
 
@@ -635,7 +636,7 @@ const handleSegmentClick = (segIdx: number) => {
                 </div>
 
                 {/* View Product Button */}
-                <span className="w-full text-center py-1.5 px-3 mt-2 text-xs font-semibold text-[#1575B3] bg-[#F0F7FC] border border-[#1575B3]/20  group-hover:bg-[#1575B3] group-hover:text-white transition-all">
+                <span className={`w-full text-center py-1.5 px-3 mt-2 text-xs font-semibold ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'} ${isIrrigation ? 'bg-[#EFF7F0]' : 'bg-[#F0F7FC]'} border ${isIrrigation ? 'border-[#1E8E3E]/20' : 'border-[#1575B3]/20'}  ${isIrrigation ? 'group-hover:bg-[#1E8E3E]' : 'group-hover:bg-[#1575B3]'} group-hover:text-white transition-all`}>
                   View Product
                 </span>
               </Link>
@@ -665,12 +666,12 @@ const handleSegmentClick = (segIdx: number) => {
   </button>
 
   {activeDropdown === 'solutions' && (
-    <div className="absolute left-0 top-full w-full bg-white border-b border-[#DCEAF5] shadow-2xl py-10 px-8 sm:px-12 transition-all duration-300 z-50">
+    <div className={`absolute left-0 top-full w-full bg-white border-b ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-2xl py-10 px-8 sm:px-12 transition-all duration-300 z-50`}>
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-10 items-start">
         {/* Left Column - Category Info + Featured Callout */}
-        <div className="col-span-5 border-r border-[#DCEAF5] pr-10 flex flex-col justify-between h-full">
+        <div className={`col-span-5 border-r ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} pr-10 flex flex-col justify-between h-full`}>
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1575b3] block mb-2">
+            <span className={`text-xs font-bold uppercase tracking-wider ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575b3]'} block mb-2`}>
               {solutionsMegaMenu.category}
             </span>
             <h3 className="text-5xl font-normal text-[#0f172b] leading-snug mb-3">
@@ -682,14 +683,14 @@ const handleSegmentClick = (segIdx: number) => {
           </div>
 
           {/* Bottom Action Link */}
-          <div className="mt-8 pt-6 border-t border-[#DCEAF5]">
+          <div className={`mt-8 pt-6 border-t ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'}`}>
             <Link
               href="/solutions"
               onClick={handleNavClick}
-              className="inline-flex items-center gap-2 text-sm font-semibold text-[#0f172b] hover:text-[#1575B3] group transition-colors"
+              className={`inline-flex items-center gap-2 text-sm font-semibold text-[#0f172b] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} group transition-colors`}
             >
               <span>Explore All Industry Segments</span>
-              <ChevronRight className="w-4 h-4 text-[#0f172b] group-hover:text-[#1575B3] group-hover:translate-x-1 transition-transform" />
+              <ChevronRight className={`w-4 h-4 text-[#0f172b] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} group-hover:translate-x-1 transition-transform`} />
             </Link>
           </div>
         </div>
@@ -710,9 +711,9 @@ const handleSegmentClick = (segIdx: number) => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                 />
               </div>
-              <div className="flex items-center gap-1.5 text-sm font-medium text-[#111111] group-hover:text-[#1575B3] transition-colors">
+              <div className={`flex items-center gap-1.5 text-sm font-medium text-[#111111] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} transition-colors`}>
                 <span>{item.title}</span>
-                <ChevronRight className="w-4 h-4 text-[#5F6B7A] group-hover:text-[#1575B3] group-hover:translate-x-0.5 transition-all" />
+                <ChevronRight className={`w-4 h-4 text-[#5F6B7A] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} group-hover:translate-x-0.5 transition-all`} />
               </div>
             </Link>
           ))}
@@ -742,12 +743,12 @@ const handleSegmentClick = (segIdx: number) => {
                 </button>
 
                 {activeDropdown === 'resources' && (
-                  <div className="absolute left-0 top-full w-full bg-white border-b border-[#DCEAF5] shadow-2xl py-10 px-8 sm:px-12 transition-all duration-300 z-50">
+                  <div className={`absolute left-0 top-full w-full bg-white border-b ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-2xl py-10 px-8 sm:px-12 transition-all duration-300 z-50`}>
                     <div className="max-w-7xl mx-auto grid grid-cols-12 gap-10 items-start">
                   
-                      <div className="col-span-5 border-r border-[#DCEAF5] pr-10 flex flex-col justify-between h-full">
+                      <div className={`col-span-5 border-r ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} pr-10 flex flex-col justify-between h-full`}>
                         <div>
-                          <span className="text-xs font-bold uppercase tracking-wider text-[#1575b3] block mb-2">
+                          <span className={`text-xs font-bold uppercase tracking-wider ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575b3]'} block mb-2`}>
                             {resourcesMegaMenu.category}
                           </span>
                           <h3 className="text-5xl font-normal text-[#0f172b] leading-snug mb-3">
@@ -758,14 +759,14 @@ const handleSegmentClick = (segIdx: number) => {
                           </p>
                         </div>
                       {/* Resources Mega Menu: Text Action Link */}
-<div className="mt-8 pt-6 border-t border-[#DCEAF5]">
+<div className={`mt-8 pt-6 border-t ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'}`}>
   <Link 
     href="/resources/knowledge-section"
     onClick={handleNavClick}
-    className="inline-flex items-center gap-2 text-sm font-semibold text-[#0f172b] hover:text-[#1575B3] group transition-colors"
+    className={`inline-flex items-center gap-2 text-sm font-semibold text-[#0f172b] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} group transition-colors`}
   >
     <span>Explore Technical Specifications & Documentation</span>
-    <ChevronRight className="w-4 h-4 text-[#0f172b] group-hover:text-[#1575B3] group-hover:translate-x-1 transition-transform" />
+    <ChevronRight className={`w-4 h-4 text-[#0f172b] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} group-hover:translate-x-1 transition-transform`} />
   </Link>
 </div>
                       </div>
@@ -786,9 +787,9 @@ const handleSegmentClick = (segIdx: number) => {
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                               />
                             </div>
-                            <div className="flex items-center gap-1.5 text-sm font-medium text-[#111111] group-hover:text-[#1575B3] transition-colors">
+                            <div className={`flex items-center gap-1.5 text-sm font-medium text-[#111111] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} transition-colors`}>
                               <span>{item.title}</span>
-                              <ChevronRight className="w-4 h-4 text-[#5F6B7A] group-hover:text-[#1575B3] group-hover:translate-x-0.5 transition-all" />
+                              <ChevronRight className={`w-4 h-4 text-[#5F6B7A] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} group-hover:translate-x-0.5 transition-all`} />
                             </div>
                           </Link>
                         ))}
@@ -815,12 +816,12 @@ const handleSegmentClick = (segIdx: number) => {
                 </button>
 
                 {activeDropdown === 'about' && (
-                  <div className="absolute left-0 top-full w-full bg-white border-b border-[#DCEAF5] shadow-2xl py-10 px-8 sm:px-12 transition-all duration-300 z-50">
+                  <div className={`absolute left-0 top-full w-full bg-white border-b ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-2xl py-10 px-8 sm:px-12 transition-all duration-300 z-50`}>
                     <div className="max-w-7xl mx-auto grid grid-cols-12 gap-10 items-start">
                     
-                      <div className="col-span-5 border-r border-[#DCEAF5] pr-10 flex flex-col justify-between h-full">
+                      <div className={`col-span-5 border-r ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} pr-10 flex flex-col justify-between h-full`}>
                         <div>
-                          <span className="text-xs font-bold uppercase tracking-wider text-[#1575b3] block mb-2">
+                          <span className={`text-xs font-bold uppercase tracking-wider ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575b3]'} block mb-2`}>
                             {aboutMegaMenu.category}
                           </span>
                           <h3 className="text-5xl font-normal text-[#0f172b] leading-snug mb-3">
@@ -831,14 +832,14 @@ const handleSegmentClick = (segIdx: number) => {
                           </p>
                         </div>
                 
-<div className="mt-8 pt-6 border-t border-[#DCEAF5] flex items-center gap-8">
+<div className={`mt-8 pt-6 border-t ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} flex items-center gap-8`}>
   <div>
-    <span className="text-3xl font-light text-[#1575b3] tracking-tight">35+</span>
+    <span className={`text-3xl font-light ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575b3]'} tracking-tight`}>35+</span>
     <span className="block text-xs font-medium text-[#5F6B7A] uppercase tracking-wider mt-0.5">Years Legacy</span>
   </div>
-  <div className="w-px h-8 bg-[#DCEAF5]" />
+  <div className={`w-px h-8 ${isIrrigation ? 'bg-[#C8E6C9]' : 'bg-[#DCEAF5]'}`} />
   <div>
-    <span className="text-3xl font-light text-[#1575b3] tracking-tight">800+</span>
+    <span className={`text-3xl font-light ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575b3]'} tracking-tight`}>800+</span>
     <span className="block text-xs font-medium text-[#5F6B7A] uppercase tracking-wider mt-0.5">Partners</span>
   </div>
 </div>
@@ -860,9 +861,9 @@ const handleSegmentClick = (segIdx: number) => {
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
                               />
                             </div>
-                            <div className="flex items-center gap-1.5 text-sm font-medium text-[#111111] group-hover:text-[#1575B3] transition-colors">
+                            <div className={`flex items-center gap-1.5 text-sm font-medium text-[#111111] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} transition-colors`}>
                               <span>{item.title}</span>
-                              <ChevronRight className="w-4 h-4 text-[#5F6B7A] group-hover:text-[#1575B3] group-hover:translate-x-0.5 transition-all" />
+                              <ChevronRight className={`w-4 h-4 text-[#5F6B7A] ${isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]'} group-hover:translate-x-0.5 transition-all`} />
                             </div>
                           </Link>
                         ))}
@@ -889,9 +890,9 @@ const handleSegmentClick = (segIdx: number) => {
                                 onClick={() => setAboutOpen(!aboutOpen)}
                                 className={`flex items-center gap-1.5 px-3.5 py-2 text-[17px] font-medium transition-all duration-200 ${
                                   active === 'why-kothari'
-                                    ? 'text-[#1575B3]'
+                                    ? `${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`
                                     : isScrolled
-                                    ? 'text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF]/60'
+                                    ? `text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]/60' : 'hover:bg-[#F5FAFF]/60'}`
                                     : 'text-white/90 hover:text-white hover:bg-white/10'
                                 }`}
                               >
@@ -901,7 +902,7 @@ const handleSegmentClick = (segIdx: number) => {
               
                               {aboutOpen && (
                                 <div className="absolute left-0 top-full pt-2 w-72">
-                                  <div className="bg-white border border-[#DCEAF5] shadow-xl p-2 space-y-1">
+                                  <div className={`bg-white border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-xl p-2 space-y-1`}>
                                     {aboutUsItems.map((item, i) => {
                                       const Icon = item.icon;
                                       return (
@@ -912,7 +913,7 @@ const handleSegmentClick = (segIdx: number) => {
                                             setAboutOpen(false);
                                             setMobileOpen(false);
                                           }}
-                                          className="w-full flex items-start gap-3 p-3 hover:bg-[#F5FAFF] transition-colors text-left"
+                                          className={`w-full flex items-start gap-3 p-3 ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition-colors text-left`}
                                         >
                                           <span className={`w-10 h-10 flex items-center justify-center shrink-0 ${item.accent}`}>
                                             <Icon className="w-5 h-5" />
@@ -957,7 +958,7 @@ const handleSegmentClick = (segIdx: number) => {
      
         <div className="col-span-5 border-r border-[#DCEAF5] pr-10 flex flex-col justify-between h-full">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-[#1575b3] block mb-2">
+            <span className={`text-xs font-bold uppercase tracking-wider ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575b3]'} block mb-2`}>
               {divisionsMegaMenu.category}
             </span>
             <h3 className="text-5xl font-normal text-[#0f172b] leading-snug mb-3">
@@ -978,19 +979,21 @@ const handleSegmentClick = (segIdx: number) => {
                     onMouseEnter={() => setHoveredDivision(div.id)}
                     className={`group flex items-center justify-between p-4 border transition-all duration-300 ${
                       isActive
-                        ? 'border-[#1575B3] bg-[#F5F9FC] shadow-sm'
+                        ? div.id === 'pipes'
+                          ? 'border-[#1575B3] bg-[#F5F9FC] shadow-sm'
+                          : 'border-[#1E8E3E] bg-[#EFF7F0] shadow-sm'
                         : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
                     <div>
-                      <h4 className={`text-base font-semibold ${isActive ? 'text-[#1575B3]' : 'text-[#111111]'}`}>
+                      <h4 className={`text-base font-semibold ${isActive ? (div.id === 'pipes' ? 'text-[#1575B3]' : 'text-[#1E8E3E]') : 'text-[#111111]'}`}>
                         {div.title}
                       </h4>
                       <p className="text-sm text-[#5F6B7A] line-clamp-1 mt-0.5">
                         {div.shortDesc}
                       </p>
                     </div>
-                    <ChevronRight className={`w-5 h-5 transition-transform ${isActive ? 'text-[#1575B3] translate-x-1' : 'text-[#5F6B7A]'}`} />
+                    <ChevronRight className={`w-5 h-5 transition-transform ${isActive ? `${div.id === 'pipes' ? 'text-[#1575B3]' : 'text-[#1E8E3E]'} translate-x-1` : 'text-[#5F6B7A]'}`} />
                   </Link>
                 );
               })}
@@ -1081,9 +1084,9 @@ const handleSegmentClick = (segIdx: number) => {
                   onClick={() => setDivOpen(!divOpen)}
                   className={`flex items-center gap-1.5 px-3.5 py-2 text-[17px] font-medium transition-all duration-200 ${
                     active === 'solutions'
-                      ? 'text-[#1575B3]'
+                      ? `${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`
                       : isScrolled
-                      ? 'text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF]/60'
+                      ? `text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]/60' : 'hover:bg-[#F5FAFF]/60'}`
                       : 'text-white/90 hover:text-white hover:bg-white/10'
                   }`}
                 >
@@ -1093,7 +1096,7 @@ const handleSegmentClick = (segIdx: number) => {
 
                 {divOpen && (
                   <div className="absolute right-0 top-full pt-2 w-72">
-                    <div className="bg-white border border-[#DCEAF5] shadow-xl p-2 space-y-1">
+                    <div className={`bg-white border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-xl p-2 space-y-1`}>
                       {divisions.map((d, i) => {
                         const Icon = d.icon;
                         return (
@@ -1101,7 +1104,7 @@ const handleSegmentClick = (segIdx: number) => {
                             href={d.url}
                             key={i}
                             onClick={() => handleNav(d.id)}
-                            className="w-full flex items-start gap-3 p-3 hover:bg-[#F5FAFF] transition-colors text-left"
+                            className={`w-full flex items-start gap-3 p-3 ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition-colors text-left`}
                           >
                             <span className={`w-10 h-10 flex items-center justify-center shrink-0 ${d.accent}`}>
                               <Icon className="w-5 h-5" />
@@ -1125,7 +1128,7 @@ const handleSegmentClick = (segIdx: number) => {
               onClick={handleOpenGetInTouch}
               className={`hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-medium transition-all ${
                 isSolid || activeDropdown
-                  ? 'bg-[#1575B3] hover:bg-[#0E588A] text-white shadow-md shadow-[#1575B3]/15'
+                  ? `${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'} text-white shadow-md ${isIrrigation ? 'shadow-[#1E8E3E]/15' : 'shadow-[#1575B3]/15'}`
                   : 'bg-white hover:bg-white/90 text-black shadow-lg'
               }`}
             >
@@ -1137,7 +1140,7 @@ const handleSegmentClick = (segIdx: number) => {
               onClick={() => setMobileOpen(!mobileOpen)}
               className={`lg:hidden p-2.5 border transition ${
                 isSolid || activeDropdown
-                  ? 'text-[#1575B3] bg-[#F5FAFF] border-[#DCEAF5] hover:bg-[#DCEAF5]/50'
+                  ? `${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'} ${isIrrigation ? 'bg-[#EAF6EE]' : 'bg-[#F5FAFF]'} ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} ${isIrrigation ? 'hover:bg-[#C8E6C9]/50' : 'hover:bg-[#DCEAF5]/50'}`
                   : 'text-white bg-white/10 border-white/20 hover:bg-white/20'
               }`}
               aria-label="Toggle Navigation Menu"
@@ -1149,12 +1152,12 @@ const handleSegmentClick = (segIdx: number) => {
 
         {/* Mobile Navigation Drawer */}
         {mobileOpen && (
-          <div className="lg:hidden fixed top-[65px] left-0 w-full h-[calc(100vh-65px)] bg-white z-[999] flex flex-col justify-between px-6 py-6 border-t border-[#DCEAF5] overflow-y-auto">
+          <div className={`lg:hidden fixed top-[65px] left-0 w-full h-[calc(100vh-65px)] bg-white z-[999] flex flex-col justify-between px-6 py-6 border-t ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} overflow-y-auto`}>
             <div className="space-y-2">
               {/* <Link
                 href="/"
                 onClick={handleNavClick}
-                className="block w-full px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] hover:text-[#1575B3] transition"
+                className={`block w-full px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} transition`}
               >
                 Home
               </Link> */}
@@ -1172,7 +1175,7 @@ const handleSegmentClick = (segIdx: number) => {
         setActiveProductCategory(0);
       }
     }}
-    className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] transition"
+    className={`w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
   >
     <span>Products</span>
     <ChevronDown
@@ -1191,7 +1194,7 @@ const handleSegmentClick = (segIdx: number) => {
               setActiveProductCategory(0);
             }}
             className={`w-full text-left px-2.5 py-2 text-sm font-semibold transition-colors ${
-              activeProductSegment === segIdx ? 'text-[#1575B3]' : 'text-[#111111]'
+              activeProductSegment === segIdx ? `${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}` : 'text-[#111111]'
             }`}
           >
             {segment.name}
@@ -1203,7 +1206,7 @@ const handleSegmentClick = (segIdx: number) => {
                   <button
                     onClick={() => setActiveProductCategory(catIdx)}
                     className={`w-full text-left px-2.5 py-1.5 text-sm font-medium transition-colors ${
-                      activeProductCategory === catIdx ? 'text-[#1575B3]' : 'text-[#5F6B7A]'
+                      activeProductCategory === catIdx ? `${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}` : 'text-[#5F6B7A]'
                     }`}
                   >
                     {cat.name}
@@ -1215,7 +1218,7 @@ const handleSegmentClick = (segIdx: number) => {
                           key={pIdx}
                           href={product.url}
                           onClick={handleNavClick}
-                          className="block px-2.5 py-1.5 text-sm text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF] transition"
+                          className={`block px-2.5 py-1.5 text-sm text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                         >
                           {product.title}
                         </Link>
@@ -1237,7 +1240,7 @@ const handleSegmentClick = (segIdx: number) => {
               <div>
                 <button
                   onClick={() => setActiveDropdown(activeDropdown === 'solutions' ? null : 'solutions')}
-                  className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] transition"
+                  className={`w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                 >
                   <span>Solutions</span>
                   <ChevronDown
@@ -1253,7 +1256,7 @@ const handleSegmentClick = (segIdx: number) => {
                         key={i}
                         href={item.url}
                         onClick={handleNavClick}
-                        className="block p-2.5 text-sm font-medium text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF] transition"
+                        className={`block p-2.5 text-sm font-medium text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                       >
                         {item.title}
                       </Link>
@@ -1267,7 +1270,7 @@ const handleSegmentClick = (segIdx: number) => {
                <Link
                 href={`/applications?division=${division}`}
                 onClick={handleNavClick}
-                className="block w-full px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] hover:text-[#1575B3] transition"
+                className={`block w-full px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} transition`}
               >
                 Applications
               </Link>
@@ -1278,7 +1281,7 @@ const handleSegmentClick = (segIdx: number) => {
               <div>
                 <button
                   onClick={() => setActiveDropdown(activeDropdown === 'resources' ? null : 'resources')}
-                  className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] transition"
+                  className={`w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                 >
                   <span>Resources</span>
                   <ChevronDown
@@ -1294,7 +1297,7 @@ const handleSegmentClick = (segIdx: number) => {
                         key={i}
                         href={item.url}
                         onClick={handleNavClick}
-                        className="block p-2.5 text-sm font-medium text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF] transition"
+                        className={`block p-2.5 text-sm font-medium text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                       >
                         {item.title}
                       </Link>
@@ -1308,7 +1311,7 @@ const handleSegmentClick = (segIdx: number) => {
               {/* <div>
                 <button
                   onClick={() => setActiveDropdown(activeDropdown === 'about' ? null : 'about')}
-                  className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] transition"
+                  className={`w-full flex items-center justify-between px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                 >
                   <span>About Us</span>
                   <ChevronDown
@@ -1324,7 +1327,7 @@ const handleSegmentClick = (segIdx: number) => {
                         key={i}
                         href={item.url}
                         onClick={handleNavClick}
-                        className="block p-2.5 text-sm font-medium text-[#5F6B7A] hover:text-[#1575B3] hover:bg-[#F5FAFF] transition"
+                        className={`block p-2.5 text-sm font-medium text-[#5F6B7A] ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                       >
                         {item.title}
                       </Link>
@@ -1336,7 +1339,7 @@ const handleSegmentClick = (segIdx: number) => {
               {/* <Link
                 href="/about"
                 onClick={handleNavClick}
-                className="block w-full px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] hover:text-[#1575B3] transition"
+                className={`block w-full px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} transition`}
               >
                 About Us
               </Link> */}
@@ -1344,7 +1347,7 @@ const handleSegmentClick = (segIdx: number) => {
                  <div className="space-y-1">
                               <button
                                 onClick={() => setAboutOpen(!aboutOpen)}
-                                className="w-full flex items-center justify-between px-4 py-3.5 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] transition"
+                                className={`w-full flex items-center justify-between px-4 py-3.5 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                               >
                                 <span>About</span>
                                 <ChevronDown className={`w-5 h-5 text-[#5F6B7A] transition-transform ${aboutOpen ? 'rotate-180' : ''}`} />
@@ -1381,7 +1384,7 @@ const handleSegmentClick = (segIdx: number) => {
               <Link
                 href="/contact"
                 onClick={handleNavClick}
-                className="block w-full px-4 py-3 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] hover:text-[#1575B3] transition"
+                className={`block w-full px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} transition`}
               >
                 Contact Us
               </Link>
@@ -1392,7 +1395,7 @@ const handleSegmentClick = (segIdx: number) => {
               <div className="space-y-1 pt-2">
                 <button
                   onClick={() => setActiveDropdown(activeDropdown === 'divisions' ? null : 'divisions')}
-                  className="w-full flex items-center justify-between px-4 py-3.5 text-base font-medium text-[#111111] hover:bg-[#F5FAFF] transition"
+                  className={`w-full flex items-center justify-between px-4 py-3.5 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition`}
                 >
                   <span>Divisions</span>
                   <ChevronDown className={`w-5 h-5 text-[#5F6B7A] transition-transform ${activeDropdown === 'divisions' ? 'rotate-180' : ''}`} />
@@ -1429,7 +1432,7 @@ const handleSegmentClick = (segIdx: number) => {
             <div className="pt-6 border-t border-slate-100 mt-auto">
               <button
                 onClick={handleOpenGetInTouch}
-                className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white py-3.5 font-medium text-base shadow-sm transition-colors"
+                className={`w-full flex items-center justify-center gap-2 ${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'} text-white py-3.5 font-medium text-base shadow-sm transition-colors`}
               >
                 Get in Touch
                 <ArrowRight className="w-5 h-5" />
@@ -1447,16 +1450,16 @@ const handleSegmentClick = (segIdx: number) => {
             onClick={() => setIsModalOpen(false)}
           />
 
-          <div className="relative w-full max-w-4xl bg-white border border-[#DCEAF5] shadow-2xl z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col md:flex-row">
+          <div className={`relative w-full max-w-4xl bg-white border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-2xl z-10 overflow-hidden my-auto max-h-[90vh] flex flex-col md:flex-row`}>
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 z-20 p-2 text-[#5F6B7A] hover:text-[#111111] hover:bg-[#F5FAFF] transition border border-transparent hover:border-[#DCEAF5]"
+              className={`absolute top-4 right-4 z-20 p-2 text-[#5F6B7A] hover:text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} transition border border-transparent hover:${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'}`}
               aria-label="Close dialog"
             >
               <X className="w-6 h-6" />
             </button>
 
-            <div className="hidden md:flex md:w-5/12 bg-[#0E588A] text-white p-6 sm:p-8 flex-col justify-between shrink-0">
+            <div className={`hidden md:flex md:w-5/12 ${isIrrigation ? 'bg-[#145E2A]' : 'bg-[#0E588A]'} text-white p-6 sm:p-8 flex-col justify-between shrink-0`}>
               <div>
                 <span className="text-xs font-semibold tracking-wider uppercase text-white/70 block mb-2">
                   Kothari Group
@@ -1471,7 +1474,7 @@ const handleSegmentClick = (segIdx: number) => {
 
               <div className="space-y-4 pt-6 border-t border-white/15">
                 <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-[#82C3EC] shrink-0 mt-0.5" />
+                  <Phone className={`w-5 h-5 ${isIrrigation ? 'text-[#A9DDB8]' : 'text-[#82C3EC]'} shrink-0 mt-0.5`} />
                   <div>
                     <span className="block text-xs text-white/60 uppercase">Phone</span>
                     <span className="text-sm font-medium text-white">+91 1800 120 4343</span>
@@ -1479,7 +1482,7 @@ const handleSegmentClick = (segIdx: number) => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Mail className="w-5 h-5 text-[#82C3EC] shrink-0 mt-0.5" />
+                  <Mail className={`w-5 h-5 ${isIrrigation ? 'text-[#A9DDB8]' : 'text-[#82C3EC]'} shrink-0 mt-0.5`} />
                   <div>
                     <span className="block text-xs text-white/60 uppercase">Email</span>
                     <span className="text-sm font-medium text-white">enquiry@kotharigroupindia.com</span>
@@ -1487,7 +1490,7 @@ const handleSegmentClick = (segIdx: number) => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-[#82C3EC] shrink-0 mt-0.5" />
+                  <MapPin className={`w-5 h-5 ${isIrrigation ? 'text-[#A9DDB8]' : 'text-[#82C3EC]'} shrink-0 mt-0.5`} />
                   <div>
                     <span className="block text-xs text-white/60 uppercase">Headquarters</span>
                     <span className="text-sm text-white/90">
@@ -1528,7 +1531,7 @@ const handleSegmentClick = (segIdx: number) => {
                       placeholder="e.g. Rajesh Kumar"
                       value={formData.fullName}
                       onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none focus:border-[#1575B3] focus:bg-white transition"
+                      className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
                     />
                   </div>
 
@@ -1543,7 +1546,7 @@ const handleSegmentClick = (segIdx: number) => {
                         placeholder="name@company.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none focus:border-[#1575B3] focus:bg-white transition"
+                        className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
                       />
                     </div>
                     <div>
@@ -1556,7 +1559,7 @@ const handleSegmentClick = (segIdx: number) => {
                         placeholder="+91 98765 43210"
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none focus:border-[#1575B3] focus:bg-white transition"
+                        className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
                       />
                     </div>
                   </div>
@@ -1568,7 +1571,7 @@ const handleSegmentClick = (segIdx: number) => {
                     <select
                       value={formData.division}
                       onChange={(e) => setFormData({ ...formData, division: e.target.value })}
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] focus:outline-none focus:border-[#1575B3] focus:bg-white transition"
+                      className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
                     >
                       <option value="Agriculture Division">Agriculture Division (Drip & Irrigation)</option>
                       <option value="Pipe Division">Pipe Division (Agri, Plumbing & Drainage)</option>
@@ -1585,13 +1588,13 @@ const handleSegmentClick = (segIdx: number) => {
                       placeholder="Specify product requirements, location, or general query..."
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none focus:border-[#1575B3] focus:bg-white transition resize-none"
+                      className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition resize-none`}
                     />
                   </div>
 
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2"
+                    className={`w-full flex items-center justify-center gap-2 ${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'} text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2`}
                   >
                     Submit Inquiry
                     <ArrowRight className="w-4 h-4" />

@@ -4,7 +4,10 @@ import React from 'react';
 import { ArrowUpRight, Clock, Quote, Star } from 'lucide-react';
 import { Reveal } from './main/Reveal';
 
-export const NewsDivision: React.FC = () => {
+export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = 'blue' }) => {
+  const isGreen = theme === 'green';
+  const accentHoverBorder = isGreen ? 'hover:border-[#1E8E3E]' : 'hover:border-[#1575B3]';
+  const accentGroupHoverText = isGreen ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]';
   const newsItems = [
     {
       id: 'NEWS-01',
@@ -90,7 +93,7 @@ export const NewsDivision: React.FC = () => {
     <div className="w-full text-slate-900">
 
       {/* ==================== 1. TESTIMONIALS (GREY BG) ==================== */}
-      <section id="testimonials" className="w-full py-16 sm:py-24 bg-[#F5F6F8] text-slate-900 scroll-mt-20">
+      <section id="testimonials" className={`w-full py-16 sm:py-24 ${isGreen ? 'bg-[#EAF6EE]' : 'bg-[#F5F6F8]'} text-slate-900 scroll-mt-20`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
 
           {/* Section Header */}
@@ -111,14 +114,14 @@ export const NewsDivision: React.FC = () => {
               {testimonials.map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-white border border-slate-200 p-8 flex flex-col justify-between relative hover:border-[#1575B3] hover:shadow-lg transition-all duration-300 group"
+                  className={`bg-white border border-slate-200 p-8 flex flex-col justify-between relative ${accentHoverBorder} hover:shadow-lg transition-all duration-300 group`}
                 >
-                  <Quote className="w-8 h-8 text-[#1575B3]/20 absolute top-6 right-6" />
+                  <Quote className={`w-8 h-8 ${isGreen ? 'text-[#1E8E3E]/20' : 'text-[#1575B3]/20'} absolute top-6 right-6`} />
 
                   <div className="space-y-6 relative z-10">
                     <div className="flex items-center gap-1">
                       {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-[#1575B3] text-[#1575B3]" />
+                        <Star key={i} className={`w-4 h-4 ${isGreen ? 'fill-[#1E8E3E] text-[#1E8E3E]' : 'fill-[#1575B3] text-[#1575B3]'}`} />
                       ))}
                     </div>
 
@@ -128,7 +131,7 @@ export const NewsDivision: React.FC = () => {
                   </div>
 
                   <div className="pt-6 mt-6 border-t border-slate-200">
-                    <h4 className="text-base font-medium text-slate-900 group-hover:text-[#1575B3] transition-colors duration-300">
+                    <h4 className={`text-base font-medium text-slate-900 ${accentGroupHoverText} transition-colors duration-300`}>
                       {item.author}
                     </h4>
                     <p className="text-xs font-mono text-slate-500 mt-1 uppercase tracking-wider">
@@ -164,7 +167,7 @@ export const NewsDivision: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {newsItems.map((item, idx) => (
                 <Reveal key={idx} delay={idx * 90} className="h-full">
-                  <article className="group relative bg-[#F5F6F8] border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl hover:border-[#1575B3] transition-all duration-500 overflow-hidden">
+                  <article className={`group relative ${isGreen ? 'bg-[#EAF6EE]' : 'bg-[#F5F6F8]'} border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl ${accentHoverBorder} transition-all duration-500 overflow-hidden`}>
 
                     {/* Image Header */}
                     <div className="relative aspect-[16/10] overflow-hidden bg-slate-900 border-b border-slate-200">
@@ -200,7 +203,7 @@ export const NewsDivision: React.FC = () => {
                           </span>
                         </div>
 
-                        <h3 className="text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight group-hover:text-[#1575B3] transition-colors duration-300">
+                        <h3 className={`text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight ${accentGroupHoverText} transition-colors duration-300`}>
                           {item.title}
                         </h3>
 
@@ -212,7 +215,7 @@ export const NewsDivision: React.FC = () => {
                       {/* Card CTA */}
                       <a
                         href={`#${item.id.toLowerCase()}`}
-                        className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase group-hover:text-[#1575B3] transition-colors"
+                        className={`pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase ${accentGroupHoverText} transition-colors`}
                       >
                         <span>READ NEWS</span>
                         <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
@@ -228,7 +231,7 @@ export const NewsDivision: React.FC = () => {
       </section>
 
       {/* ==================== 3. LATEST BLOGS (GREY BG) ==================== */}
-      <section id="blogs" className="w-full bg-[#F5F6F8] py-16 sm:py-24 border-b border-slate-300/70 scroll-mt-20">
+      <section id="blogs" className={`w-full ${isGreen ? 'bg-[#EAF6EE]' : 'bg-[#F5F6F8]'} py-16 sm:py-24 border-b ${isGreen ? 'border-[#1E8E3E]/15' : 'border-slate-300/70'} scroll-mt-20`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
 
           {/* Section Header */}
@@ -248,7 +251,7 @@ export const NewsDivision: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {blogPosts.map((item, idx) => (
                 <Reveal key={idx} delay={idx * 90} className="h-full">
-                  <article className="group relative bg-white border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl hover:border-[#1575B3] transition-all duration-500 overflow-hidden">
+                  <article className={`group relative bg-white border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl ${accentHoverBorder} transition-all duration-500 overflow-hidden`}>
 
                     {/* Image Header */}
                     <div className="relative aspect-[16/10] overflow-hidden bg-slate-900 border-b border-slate-200">
@@ -284,7 +287,7 @@ export const NewsDivision: React.FC = () => {
                           </span>
                         </div>
 
-                        <h3 className="text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight group-hover:text-[#1575B3] transition-colors duration-300">
+                        <h3 className={`text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight ${accentGroupHoverText} transition-colors duration-300`}>
                           {item.title}
                         </h3>
 
@@ -294,7 +297,7 @@ export const NewsDivision: React.FC = () => {
                       </div>
 
                       {/* Card CTA */}
-                      <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase group-hover:text-[#1575B3] transition-colors">
+                      <div className={`pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase ${accentGroupHoverText} transition-colors`}>
                         <span>READ BLOG</span>
                         <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
                       </div>

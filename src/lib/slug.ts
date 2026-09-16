@@ -27,3 +27,30 @@ export function findProductBySlugs(catSlug: string, prodSlug: string, products: 
     (p) => getCategorySlug(p.category) === catSlug && getProductSlug(p) === prodSlug
   );
 }
+
+// Category slugs served under the Pipe Division chrome (blue theme).
+// Any other category slug falls under the Irrigation Division (green theme).
+// Keep in sync with the division menus in src/data/products.ts.
+export const PIPE_CATEGORY_SLUGS = [
+  'cpvc',
+  'upvc',
+  'soil-waste-and-rainwater-pipes-and-fittings',
+  'underground-pipe-and-fittings',
+  'cable-protection',
+  'upvc-pressure-pipes-fittings',
+  'pe-pipes-and-fittings',
+  'valves',
+  'column-pipes',
+  'casing-pipes',
+  'pvc-suction-hose-pipes',
+  'pvc-tubing-garden-pipes',
+  'pvc-braided-hose-pipe',
+  'plumbing-pipes-and-fittings',
+  'agri-pipes-and-fittings',
+  'plumbing-pipes-fittings',
+];
+
+export function isPipeCategorySlug(catSlug?: string | null): boolean {
+  if (!catSlug) return true;
+  return PIPE_CATEGORY_SLUGS.includes(catSlug);
+}

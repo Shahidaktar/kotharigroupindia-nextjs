@@ -2,6 +2,7 @@
 import React from 'react';
 import { HeaderDivison} from '@/components/HeaderDivision';
 import { Footer } from '@/components/Footer';
+import { isPipeCategorySlug } from '@/lib/slug';
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { IrrigationproductsMegaMenu, irrigationSolutionsMegaMenu, PipeproductsMegaMenu, pipeSolutionsMegaMenu } from '@/data/products';
@@ -522,7 +523,7 @@ export const IrrigationfooterData = {
 // };
 
 export default function ProductPageLayout({ catSlug, children }: { catSlug: string; children: React.ReactNode }) {
-  const isPipe = ['cpvc','upvc','soil-waste-and-rainwater-pipes-and-fittings','underground-pipe-and-fittings','cable-protection','upvc-pressure-pipes-fittings','pe-pipes-and-fittings','valves','column-pipes','casing-pipes','pvc-suction-hose-pipes','pvc-tubing-garden-pipes','pvc-braided-hose-pipe','plumbing-pipes-and-fittings','agri-pipes-and-fittings','plumbing-pipes-fittings'].includes(catSlug);
+  const isPipe = isPipeCategorySlug(catSlug);
   const megaMenu = isPipe ? PipeproductsMegaMenu : IrrigationproductsMegaMenu;
   const footerData = isPipe ? PipefooterData : IrrigationfooterData;
   const solutionsMenu = isPipe ? pipeSolutionsMegaMenu : irrigationSolutionsMegaMenu;

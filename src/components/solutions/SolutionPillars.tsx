@@ -74,14 +74,19 @@ export const SolutionPillars: React.FC<{
   pillars: SolutionPillar[];
   title?: string;
   description?: string;
+  theme?: 'blue' | 'green';
 }> = ({
   pillars,
   title = 'Key Pillars',
   description = 'The engineering principles every system in this solution is built on.',
+  theme = 'blue',
 }) => {
+  const isGreen = theme === 'green';
+  const accentHoverBorder = isGreen ? 'hover:border-[#1E8E3E]' : 'hover:border-[#1575B3]';
+  const accentGroupHoverText = isGreen ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]';
   if (!pillars.length) return null;
   return (
-    <section className="w-full bg-[#F5F6F8] py-16 sm:py-24 border-b border-slate-300/70">
+    <section className={`w-full ${isGreen ? 'bg-[#EAF6EE]' : 'bg-[#F5F6F8]'} py-16 sm:py-24 border-b ${isGreen ? 'border-[#1E8E3E]/15' : 'border-slate-300/70'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
         <SectionHeader title={title} description={description} />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
@@ -90,7 +95,7 @@ export const SolutionPillars: React.FC<{
             return (
               <div
                 key={pillar.label}
-                className="group bg-white border border-slate-200/90 flex flex-col shadow-sm hover:shadow-xl hover:border-[#1575B3] hover:-translate-y-1 transition-all duration-500 overflow-hidden"
+                className={`group bg-white border border-slate-200/90 flex flex-col shadow-sm hover:shadow-xl ${accentHoverBorder} hover:-translate-y-1 transition-all duration-500 overflow-hidden`}
               >
                 <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 border-b border-slate-200">
                   <img
@@ -106,7 +111,7 @@ export const SolutionPillars: React.FC<{
                   </div> */}
                 </div>
                 <div className="p-5 sm:p-6 space-y-1.5 flex-1">
-                  <h3 className="text-sm font-semibold text-slate-900 leading-snug group-hover:text-[#1575B3] transition-colors">
+                  <h3 className={`text-sm font-semibold text-slate-900 leading-snug ${accentGroupHoverText} transition-colors`}>
                     {pillar.label}
                   </h3>
                   <p className="text-xs text-slate-600 font-normal leading-relaxed">{pillar.text}</p>

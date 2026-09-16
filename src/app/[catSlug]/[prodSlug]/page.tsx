@@ -7,7 +7,7 @@ import { ProductDetailPage } from '@/components/ProductDetailPage';
 import { ProductDetailSkeleton } from '@/components/ProductDetailSkeleton';
 import ProductPageLayout from '@/components/ProductPageLayout';
 import { productsData } from '@/data/products';
-import { findProductBySlugs, getCategorySlug, getProductSlug } from '@/lib/slug';
+import { findProductBySlugs, getCategorySlug, getProductSlug, isPipeCategorySlug } from '@/lib/slug';
 import { fetchWpProductBySlug } from '@/lib/wp-product';
 import type { ProductItem } from '@/lib/types';
 
@@ -75,6 +75,7 @@ async function ProductDetailLoader({ catSlug, prodSlug, staticProduct }: { catSl
     <ProductDetailPage
       product={staticProduct || undefined}
       wp={wpProduct || undefined}
+      theme={isPipeCategorySlug(catSlug) ? 'blue' : 'green'}
     />
   );
 }

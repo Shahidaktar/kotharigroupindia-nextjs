@@ -6,9 +6,10 @@ import { motion, AnimatePresence, type PanInfo } from 'framer-motion';
 import { ArrowUpRight } from 'lucide-react';
 import type { ApplicationItem } from '@/data/applications';
 
-function ApplicationCard({ item }: { item: ApplicationItem }) {
+function ApplicationCard({ item, theme = 'blue' }: { item: ApplicationItem; theme?: 'blue' | 'green' }) {
+  const isGreen = theme === 'green';
   return (
-    <div className="group relative h-full flex flex-col bg-white border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 overflow-hidden">
+    <div className={`group relative h-full flex flex-col ${isGreen ? 'bg-[#F2FAF4]' : 'bg-white'} border border-slate-200/90 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 overflow-hidden`}>
       {/* Image */}
       <div className="relative h-52 sm:h-56 w-full overflow-hidden border-b border-slate-200">
         <img
@@ -38,7 +39,7 @@ function ApplicationCard({ item }: { item: ApplicationItem }) {
               <Link
                 key={product.name}
                 href={product.url}
-                className="inline-flex items-center gap-1.5 border border-[#1575B3]/25 bg-[#F0F7FC] text-[#1575B3] hover:bg-[#1575B3] hover:text-white px-3 py-1.5 text-xs font-medium transition-all duration-200"
+                className={`inline-flex items-center gap-1.5 border ${isGreen ? 'border-[#1E8E3E]/25 bg-[#EFF7F0] text-[#1E8E3E] hover:bg-[#1E8E3E]' : 'border-[#1575B3]/25 bg-[#F0F7FC] text-[#1575B3] hover:bg-[#1575B3]'} hover:text-white px-3 py-1.5 text-xs font-medium transition-all duration-200`}
               >
                 {product.name}
                 <ArrowUpRight className="w-3 h-3" />
@@ -55,9 +56,11 @@ export { ApplicationCard };
 
 interface ApplicationSliderProps {
   items: ApplicationItem[];
+  theme?: 'blue' | 'green';
 }
 
-export const ApplicationSlider: React.FC<ApplicationSliderProps> = ({ items }) => {
+export const ApplicationSlider: React.FC<ApplicationSliderProps> = ({ items, theme = 'blue' }) => {
+  const isGreen = theme === 'green';
   const [itemsPerPage, setItemsPerPage] = useState(3);
   const [currentPage, setCurrentPage] = useState(0);
   const [direction, setDirection] = useState(1);
@@ -157,7 +160,7 @@ export const ApplicationSlider: React.FC<ApplicationSliderProps> = ({ items }) =
                   onMouseLeave={() => setIsPaused(false)}
                   className="h-full"
                 >
-                  <ApplicationCard item={item} />
+                  <ApplicationCard item={item} theme={theme} />
                 </div>
               ))}
             </div>
@@ -176,7 +179,7 @@ export const ApplicationSlider: React.FC<ApplicationSliderProps> = ({ items }) =
             }}
             className={`h-1 transition-all duration-500 ${
               idx === safePage
-                ? 'w-12 bg-[#1575B3]'
+                ? `w-12 ${isGreen ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'}`
                 : 'w-4 bg-slate-300 hover:bg-slate-400'
             }`}
             aria-label={`Go to slide ${idx + 1}`}

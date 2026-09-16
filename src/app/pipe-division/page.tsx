@@ -3,6 +3,7 @@
 import AppShell from '@/components/AppShell';
 import { KnowledgeCentre } from '@/components/KnowledgeCentre';
 import { HeroDivision } from '@/components/HeroDivision';
+import { DivisionOverview } from '@/components/DivisionOverview';
 import { HeaderDivison } from '@/components/HeaderDivision';
 import { Category } from '@/components/Category';
 import { WhyKothariGroup } from '@/components/main/WhyKothariGroup';
@@ -359,7 +360,17 @@ const FEATURE_PRODUCTS = [
     <>
       <HeaderDivison productsMegaMenu={PipeproductsMegaMenu} solutionsMegaMenu={pipeSolutionsMegaMenu}/>
       <HeroDivision heroData={heroData} />
-      <Category tab="pipes"/>
+      <DivisionOverview
+        heading="Plumbing Pipes & Fittings: Built for Every Structure"
+        accent="blue"
+        paragraphs={[
+          'Modern buildings demand plumbing that can handle hard water, high temperatures, and years of continuous daily use without corrosion or scaling. CPVC and UPVC pipes and fittings meet this need with lightweight, corrosion-free systems built for long-term reliability. We manufacture both to IS and ASTM standards, with our CPVC systems built for hot and cold water applications up to 93°C, and our UPVC systems engineered for reliable cold water plumbing across homes, high-rises, and commercial complexes.',
+          'Reliable water supply is only half the picture — what happens after water is used matters just as much. Our SWR piping systems handle soil, waste, and rainwater discharge for buildings, using push-fit rubber ring joints that stay leak-proof for decades without solvent welding. For larger infrastructure and municipal projects, our UDS underground drainage systems are engineered to withstand soil pressure and heavy loads well below the surface, where a pipe failure is far more costly to repair.',
+          'Groundwater access presents its own engineering challenge: a pipe buried hundreds of feet underground has to perform flawlessly from day one, since failure means re-drilling. Our PVC pipes for borewell and agricultural applications are built with this in mind, supporting everything from column and casing pipes to on-farm water distribution, alongside our HDPE and MDPE piping and a complete line of valves for reliable flow control.',
+          'Rounding out our range, our garden hose pipes bring the same engineering discipline to everyday watering needs, alongside cable protection pipes, electrical conduit, and braided hose pipes built for industrial use. With ISI-marked quality across every product line, we bring the same technical precision to a single household tap that we bring to large-scale infrastructure projects.',
+        ]}
+      />
+      {/* <Category tab="pipes"/> */}
       <FeaturedProducts products={FEATURE_PRODUCTS}/>
       {/* <WhyKothariGroup /> */}
       {/* <Impact /> */}

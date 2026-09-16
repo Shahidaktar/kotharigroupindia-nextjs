@@ -53,6 +53,9 @@ export const Footer: React.FC<FooterProps> = ({
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
+  const division = footerData?.productSegments?.[0]?.includes('Irrigation') ? 'irrigation-division' : 'pipe-division';
+  const isIrrigation = division === 'irrigation-division';
+
   // Checks prop -> checks footerData.socialGroups or footerData.socialgroup -> fallback to defaults
   const activeSocialGroups = 
     (socialGroups && socialGroups.length > 0) ? socialGroups :
@@ -106,7 +109,7 @@ export const Footer: React.FC<FooterProps> = ({
   );
 
   return (
-    <footer className="bg-[#1575B3] pt-16 pb-8 text-left text-white">
+    <footer className={`${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} pt-16 pb-8 text-left text-white`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
 
         {/* Main Footer Sitemap Columns */}

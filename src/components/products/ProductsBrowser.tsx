@@ -171,6 +171,13 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
   const startIdx = filtered.length ? (safePage - 1) * PRODUCTS_PER_PAGE + 1 : 0;
   const endIdx = Math.min(safePage * PRODUCTS_PER_PAGE, filtered.length);
 
+  // Division theme follows the active filter (same rule as the page chrome):
+  // irrigation division — or a segment that belongs to it — → green, else blue.
+  const activeDivisionSlug =
+    division ||
+    (segment ? products.find((p) => p.segmentSlug === segment)?.divisionSlug || '' : '');
+  const isGreen = /irrigat/i.test(activeDivisionSlug);
+
   return (
     <div className="space-y-8">
       {/* Toolbar: result count + filter button */}
@@ -216,7 +223,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
       {pageProducts.length > 0 ? (
         <div ref={gridRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {pageProducts.map((product, i) => (
-            <ProductCard key={product.id} product={product} index={i} />
+            <ProductCard key={product.id} product={product} index={i} theme={isGreen ? 'green' : 'blue'} />
           ))}
         </div>
       ) : (
@@ -237,7 +244,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
             onClick={() => gotoPage(safePage - 1)}
             disabled={safePage <= 1}
             aria-label="Previous page"
-            className="w-9 h-9 flex items-center justify-center border border-slate-300 bg-white text-slate-600 hover:border-[#1575B3] hover:text-[#1575B3] disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-600 disabled:cursor-not-allowed transition-all cursor-pointer"
+            className={`w-9 h-9 flex items-center justify-center border border-slate-300 bg-white text-slate-600 ${isGreen ? 'hover:border-[#1E8E3E] hover:text-[#1E8E3E]' : 'hover:border-[#1575B3] hover:text-[#1575B3]'} disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-600 disabled:cursor-not-allowed transition-all cursor-pointer`}
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -259,8 +266,12 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
                   aria-current={item === safePage ? 'page' : undefined}
                   className={`w-9 h-9 text-xs font-semibold border transition-all cursor-pointer ${
                     item === safePage
-                      ? 'border-[#1575B3] bg-[#1575B3] text-white shadow-sm'
-                      : 'border-slate-300 bg-white text-slate-600 hover:border-[#1575B3] hover:text-[#1575B3]'
+                      ? isGreen
+                        ? 'border-[#1E8E3E] bg-[#1E8E3E] text-white shadow-sm'
+                        : 'border-[#1575B3] bg-[#1575B3] text-white shadow-sm'
+                      : isGreen
+                        ? 'border-slate-300 bg-white text-slate-600 hover:border-[#1E8E3E] hover:text-[#1E8E3E]'
+                        : 'border-slate-300 bg-white text-slate-600 hover:border-[#1575B3] hover:text-[#1575B3]'
                   }`}
                 >
                   {item}
@@ -272,7 +283,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
             onClick={() => gotoPage(safePage + 1)}
             disabled={safePage >= totalPages}
             aria-label="Next page"
-            className="w-9 h-9 flex items-center justify-center border border-slate-300 bg-white text-slate-600 hover:border-[#1575B3] hover:text-[#1575B3] disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-600 disabled:cursor-not-allowed transition-all cursor-pointer"
+            className={`w-9 h-9 flex items-center justify-center border border-slate-300 bg-white text-slate-600 ${isGreen ? 'hover:border-[#1E8E3E] hover:text-[#1E8E3E]' : 'hover:border-[#1575B3] hover:text-[#1575B3]'} disabled:opacity-40 disabled:hover:border-slate-300 disabled:hover:text-slate-600 disabled:cursor-not-allowed transition-all cursor-pointer`}
           >
             <ChevronRight className="w-4 h-4" />
           </button>
@@ -308,7 +319,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
                   aria-label="Filter products"
                 >
               {/* Header */}
-              <div className="relative bg-[#0E588A] text-white px-6 py-6 shrink-0">
+              <div className={`relative ${isGreen ? 'bg-[#145E2A]' : 'bg-[#0E588A]'} text-white px-6 py-6 shrink-0`}>
                 <button
                   onClick={() => setDrawerOpen(false)}
                   className="absolute top-4 right-4 p-2 text-white/80 hover:text-white hover:bg-white/10 transition border border-transparent hover:border-white/20 cursor-pointer"
@@ -350,7 +361,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
                 {/* Division */}
                 <div className="mb-7">
                   <div className="flex items-center gap-2 mb-3">
-                    <Layers className="w-4 h-4 text-[#1575B3]" />
+                    <Layers className={`w-4 h-4 ${isGreen ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`} />
                     <span className="block text-xs font-medium text-[#111111] uppercase tracking-wider">
                       Division
                     </span>
@@ -364,15 +375,21 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
                           onClick={() => applyFilters(pill.value, '')}
                           className={`w-full flex items-center justify-between gap-3 px-3.5 py-2.5 text-sm transition-all cursor-pointer ${
                             active
-                              ? 'bg-[#F0F7FC] border border-[#1575B3] text-[#1575B3]'
-                              : 'bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] hover:bg-white hover:border-[#1575B3]'
+                              ? isGreen
+                                ? 'bg-[#EFF7F0] border border-[#1E8E3E] text-[#1E8E3E]'
+                                : 'bg-[#F0F7FC] border border-[#1575B3] text-[#1575B3]'
+                              : isGreen
+                                ? 'bg-[#EFF7F0] border border-[#C8E6C9] text-[#111111] hover:bg-white hover:border-[#1E8E3E]'
+                                : 'bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] hover:bg-white hover:border-[#1575B3]'
                           }`}
                         >
                           <span className="flex items-center gap-2.5">
                             <span
                               className={`w-4 h-4 flex items-center justify-center border ${
                                 active
-                                  ? 'bg-[#1575B3] border-[#1575B3]'
+                                  ? isGreen
+                                    ? 'bg-[#1E8E3E] border-[#1E8E3E]'
+                                    : 'bg-[#1575B3] border-[#1575B3]'
                                   : 'border-[#5F6B7A]'
                               }`}
                             >
@@ -393,7 +410,7 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
                 {segmentPills.length > 1 && (
                   <div className="mb-7">
                     <div className="flex items-center gap-2 mb-3">
-                      <PackageSearch className="w-4 h-4 text-[#1575B3]" />
+                      <PackageSearch className={`w-4 h-4 ${isGreen ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`} />
                       <span className="block text-xs font-medium text-[#111111] uppercase tracking-wider">
                         Segment
                       </span>
@@ -435,16 +452,16 @@ export const ProductsBrowser: React.FC<ProductsBrowserProps> = ({
               </div>
 
               {/* Actions */}
-              <div className="px-6 py-4 border-t border-[#DCEAF5] bg-white shrink-0 space-y-2">
+              <div className={`px-6 py-4 border-t ${isGreen ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} bg-white shrink-0 space-y-2`}>
                 <button
                   onClick={() => setDrawerOpen(false)}
-                  className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white py-3.5 font-medium text-sm transition-colors shadow-sm cursor-pointer"
+                  className={`w-full flex items-center justify-center gap-2 ${isGreen ? 'bg-[#1E8E3E] hover:bg-[#145E2A]' : 'bg-[#1575B3] hover:bg-[#0E588A]'} text-white py-3.5 font-medium text-sm transition-colors shadow-sm cursor-pointer`}
                 >
                   Show {filtered.length} {filtered.length === 1 ? 'Product' : 'Products'}
                 </button>
                 <button
                   onClick={resetFilters}
-                  className="w-full flex items-center justify-center gap-2 border border-[#DCEAF5] bg-[#F5F6F8] hover:bg-white text-[#111111] py-3.5 font-medium text-sm transition-colors cursor-pointer"
+                  className={`w-full flex items-center justify-center gap-2 border ${isGreen ? 'border-[#C8E6C9] bg-[#EFF7F0]' : 'border-[#DCEAF5] bg-[#F5F6F8]'} hover:bg-white text-[#111111] py-3.5 font-medium text-sm transition-colors cursor-pointer`}
                 >
                   <RotateCcw className="w-4 h-4" />
                   Reset Filters

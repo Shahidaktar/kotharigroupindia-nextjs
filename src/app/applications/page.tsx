@@ -101,7 +101,11 @@ function ApplicationsContent({ data, isPipe }: { data: DivisionApplications; isP
           <section
             key={group.title}
             className={`w-full py-16 sm:py-24 ${
-              groupIdx % 2 === 1 ? 'bg-[#F5F6F8] border-y border-slate-300/70' : 'bg-white'
+              groupIdx % 2 === 1
+                ? isPipe
+                  ? 'bg-[#F5F6F8] border-y border-slate-300/70'
+                  : 'bg-[#EAF6EE] border-y border-[#1E8E3E]/15'
+                : 'bg-white'
             }`}
           >
             <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -126,15 +130,15 @@ function ApplicationsContent({ data, isPipe }: { data: DivisionApplications; isP
                     }`}
                   >
                     {group.items.map((item) => (
-                      <ApplicationCard key={item.title} item={item} />
+                      <ApplicationCard key={item.title} item={item} theme={isPipe ? 'blue' : 'green'} />
                     ))}
                   </div>
                   <div className="md:hidden">
-                    <ApplicationSlider items={group.items} />
+                    <ApplicationSlider items={group.items} theme={isPipe ? 'blue' : 'green'} />
                   </div>
                 </>
               ) : (
-                <ApplicationSlider items={group.items} />
+                <ApplicationSlider items={group.items} theme={isPipe ? 'blue' : 'green'} />
               )}
             </div>
           </section>
@@ -142,7 +146,7 @@ function ApplicationsContent({ data, isPipe }: { data: DivisionApplications; isP
       </div>
 
       {/* CTA */}
-      <section className="w-full bg-[#061E33] py-16 sm:py-24 text-white">
+      <section className={`w-full ${isPipe ? 'bg-[#061E33]' : 'bg-[#0B3D20]'} py-16 sm:py-24 text-white`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
           <div>
             {/* <span className="text-[11px] font-mono tracking-[0.25em] uppercase text-[#7CC4EE] font-semibold mb-4 block">
@@ -158,7 +162,7 @@ function ApplicationsContent({ data, isPipe }: { data: DivisionApplications; isP
             </p>
             <Link
               href="/contact-us"
-              className="inline-flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white px-7 py-3.5 text-sm font-medium transition-all duration-300 group"
+              className={`inline-flex items-center justify-center gap-2 ${isPipe ? 'bg-[#1575B3] hover:bg-[#0E588A]' : 'bg-[#1E8E3E] hover:bg-[#145E2A]'} text-white px-7 py-3.5 text-sm font-medium transition-all duration-300 group`}
             >
               {data.cta.ctaText}
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />

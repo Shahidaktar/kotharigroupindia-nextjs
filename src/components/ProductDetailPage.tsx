@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion'; // <-- Add this line
 import { productsData } from '@/data/products';
 import { ProductItem } from '@/lib/types';
-import { getProductHref, findProductBySlugs } from '@/lib/slug';
+import { getProductHref, findProductBySlugs, getCategorySlug, isPipeCategorySlug } from '@/lib/slug';
 import {
   Download, ShieldCheck, CheckCircle2, ChevronRight,
   Send, Sparkles, Layers, HelpCircle, Award, Search,
@@ -18,12 +18,37 @@ type HeroTab = 'FEATURES' | 'SPECIFICATIONS' | 'STANDARDS' | 'DIMENSIONS' | 'FIT
 export const ProductDetailPage: React.FC<{
   product?: ProductItem;
   wp?: WpProductData;
-}> = ({ product: productProp, wp }) => {
+  theme?: 'blue' | 'green';
+}> = ({ product: productProp, wp, theme: themeProp }) => {
   const params = useParams() as Record<string, string | undefined>;
   const router = useRouter();
   const id = params.id;
   const catSlug = params.catSlug;
   const prodSlug = params.prodSlug;
+
+  // Division theme: explicit prop wins, else WP division slug, else URL/static category.
+  const resolvedCatSlug = catSlug || (productProp ? getCategorySlug(productProp.category) : undefined);
+  const wpDivisionSlug = wp?.divisionSlug || '';
+  const isIrrigation = themeProp
+    ? themeProp === 'green'
+    : wpDivisionSlug
+      ? /irrigat/i.test(wpDivisionSlug)
+      : resolvedCatSlug
+        ? !isPipeCategorySlug(resolvedCatSlug)
+        : false;
+
+  // Theme accents: pipe = blue (unchanged), irrigation = green.
+  const tText = isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]';
+  const tHoverText = isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]';
+  const tBg = isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]';
+  const tBgHover = isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]';
+  const tHoverBg = isIrrigation ? 'hover:bg-[#1E8E3E]' : 'hover:bg-[#1575B3]';
+  const tHoverBorder = isIrrigation ? 'hover:border-[#1E8E3E]' : 'hover:border-[#1575B3]';
+  const tGroupHoverBg = isIrrigation ? 'group-hover:bg-[#1E8E3E]' : 'group-hover:bg-[#1575B3]';
+  const tGroupHoverBorder = isIrrigation ? 'group-hover:border-[#1E8E3E]' : 'group-hover:border-[#1575B3]';
+  const tGroupHoverText = isIrrigation ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]';
+  const tFocusBorder = isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]';
+  const tDot = isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]';
 
   const isWp = !!wp;
   const displayName = wp?.name || productProp?.name || 'Product';
@@ -118,7 +143,7 @@ export const ProductDetailPage: React.FC<{
       <div className="py-2">
         <div className="border border-white/20 bg-white/10 backdrop-blur-sm px-6 py-12 text-center max-w-xl mx-auto">
           <div className="w-14 h-14 mx-auto mb-4 rounded-full bg-white flex items-center justify-center shadow-md">
-            <Icon className="w-6 h-6 text-[#1575B3]" />
+            <Icon className={`w-6 h-6 ${tText}`} />
           </div>
           <p className="text-white text-base font-semibold tracking-wide">No {label.toLowerCase()} available yet</p>
           <p className="text-white/70 text-xs mt-2 leading-relaxed">Detailed {label.toLowerCase()} for this product are coming soon — reach out to our team for assistance meanwhile.</p>
@@ -169,9 +194,9 @@ export const ProductDetailPage: React.FC<{
         <div className="w-full border-b border-slate-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-8">
             <nav className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest uppercase text-slate-500 overflow-x-auto whitespace-nowrap py-4">
-              <Link href="/" className="hover:text-[#1575B3] transition-colors">Home</Link>
+              <Link href="/" className={`${tHoverText} transition-colors`}>Home</Link>
               <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
-              <Link href={`/products?division=${wp?.divisionSlug || 'pipe-division'}`} className="hover:text-[#1575B3] transition-colors">
+              <Link href={`/products?division=${wp?.divisionSlug || 'pipe-division'}`} className={`${tHoverText} transition-colors`}>
                 {wp?.divisionName || 'Division'}
               </Link>
               <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
@@ -197,7 +222,7 @@ export const ProductDetailPage: React.FC<{
                     onClick={() => setBrochureOpen(true)}
                     aria-label="Download Product Brochure"
                     title="Download Product Brochure"
-                    className="absolute top-3 left-3 w-9 h-9 bg-white border border-slate-200 flex items-center justify-center text-slate-700 hover:bg-[#1575B3] hover:text-white hover:border-[#1575B3] group-hover:bg-[#1575B3] group-hover:text-white group-hover:border-[#1575B3] transition-colors shadow-sm"
+                    className={`absolute top-3 left-3 w-9 h-9 bg-white border border-slate-200 flex items-center justify-center text-slate-700 ${tHoverBg} hover:text-white ${tHoverBorder} ${tGroupHoverBg} group-hover:text-white ${tGroupHoverBorder} transition-colors shadow-sm`}
                   >
                     <Download className="w-4 h-4" />
                   </button>
@@ -211,7 +236,7 @@ export const ProductDetailPage: React.FC<{
                 <h1 className="text-2xl sm:text-3xl lg:text-[32px] font-serif font-light tracking-tight uppercase text-slate-900 leading-tight">
                   {displayName}
                 </h1>
-                <p className="text-sm font-medium text-[#1575B3] mt-2 tracking-wide">{displayTagline}</p>
+                <p className={`text-sm font-medium ${tText} mt-2 tracking-wide`}>{displayTagline}</p>
               </div>
               
               <div 
@@ -222,13 +247,13 @@ export const ProductDetailPage: React.FC<{
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => { setEnquiryModalOpen(true); setFormError(''); }}
-                  className="inline-flex items-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white text-sm font-mono tracking-widest uppercase px-6 py-4 transition-colors"
+                  className={`inline-flex items-center gap-2 ${tBg} ${tBgHover} text-white text-sm font-mono tracking-widest uppercase px-6 py-4 transition-colors`}
                 >
                   Enquire Now <ArrowRight className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCertModalOpen(true)}
-                  className="inline-flex items-center gap-2 bg-white border border-slate-300 hover:border-[#1575B3] hover:text-[#1575B3] text-slate-700 text-sm font-mono tracking-widest uppercase px-6 py-4 transition-colors"
+                  className={`inline-flex items-center gap-2 bg-white border border-slate-300 ${tHoverBorder} ${tHoverText} text-slate-700 text-sm font-mono tracking-widest uppercase px-6 py-4 transition-colors`}
                 >
                   <Award className="w-4 h-4" /> View Certifications
                 </button>
@@ -241,7 +266,7 @@ export const ProductDetailPage: React.FC<{
       {/* TABS SECTION */}
       <section className="relative w-full border-b border-white/20 overflow-hidden">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=1600&q=80)` }} />
-        <div className="absolute inset-0 bg-gradient-to-br from-[#0E588A]/95 via-[#1575B3]/90 to-[#083251]/90" />
+        <div className={`absolute inset-0 bg-gradient-to-br ${isIrrigation ? 'from-[#145E2A]/95 via-[#1E8E3E]/90 to-[#052E16]/90' : 'from-[#0E588A]/95 via-[#1575B3]/90 to-[#083251]/90'}`} />
         
         <div className="relative z-10 w-full border-b border-white/20">
           <div className="max-w-7xl mx-auto px-4 sm:px-8">
@@ -254,7 +279,7 @@ export const ProductDetailPage: React.FC<{
                     onClick={() => setHeroTab(t.key)}
                     className={`flex-1 flex items-center justify-center gap-2 whitespace-nowrap px-2 sm:px-4 py-3.5 text-sm sm:text-base font-medium tracking-wide uppercase border-b-2 -mb-px transition-all duration-200 ${
                       heroTab === t.key
-                        ? 'bg-white text-[#1575B3] border-white shadow-sm'
+                        ? `bg-white ${tText} border-white shadow-sm`
                         : 'bg-transparent text-white/85 border-transparent hover:bg-white/10 hover:text-white hover:border-white/30'
                     }`}
                   >
@@ -395,7 +420,7 @@ export const ProductDetailPage: React.FC<{
 
             {/* RELATED PRODUCTS (Slider with Dots) */}
       {displayRelated.length > 0 && (
-        <section className="w-full bg-[#F5F6F8] py-16 border-b border-slate-300/70">
+        <section className={`w-full ${isIrrigation ? 'bg-[#EAF6EE]' : 'bg-[#F5F6F8]'} py-16 border-b ${isIrrigation ? 'border-[#1E8E3E]/15' : 'border-slate-300/70'}`}>
           <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300">
               <div>
@@ -429,7 +454,7 @@ export const ProductDetailPage: React.FC<{
                     >
                       <Wrapper
                         {...wrapperProps}
-                        className="group relative bg-white border border-slate-200/90 flex flex-col h-full shadow-sm hover:shadow-xl hover:border-[#1575B3] transition-all duration-500 overflow-hidden text-left"
+                        className={`group relative bg-white border border-slate-200/90 flex flex-col h-full shadow-sm hover:shadow-xl ${tHoverBorder} transition-all duration-500 overflow-hidden text-left`}
                       >
                         <div className={`relative aspect-[16/10] overflow-hidden border-b border-slate-200 ${isWpRel ? '' : 'bg-slate-900'}`}>
                           <img 
@@ -447,14 +472,14 @@ export const ProductDetailPage: React.FC<{
                         </div>
                         <div className="p-6 flex-1 flex flex-col justify-between space-y-5">
                           <div className="space-y-3">
-                            <h3 className="text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight group-hover:text-[#1575B3] transition-colors duration-300 line-clamp-2">
+                            <h3 className={`text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight ${tGroupHoverText} transition-colors duration-300 line-clamp-2`}>
                               {rel.name}
                             </h3>
                             <p className="text-xs text-slate-600 font-normal leading-relaxed line-clamp-3">
                               {rel.shortDescription}
                             </p>
                           </div>
-                          <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase group-hover:text-[#1575B3] transition-colors">
+                           <div className={`pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase ${tGroupHoverText} transition-colors`}>
                             <span>View Product</span>
                             <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
                           </div>
@@ -475,7 +500,7 @@ export const ProductDetailPage: React.FC<{
                     onClick={() => setCurrentIndex(idx)}
                     aria-label={`Go to slide ${idx + 1}`}
                     className={`h-1 transition-all duration-300 ${
-                      safeIndex === idx ? 'bg-[#1575B3] w-6' : 'bg-slate-300 w-2 hover:bg-slate-400'
+                      safeIndex === idx ? `${tDot} w-6` : 'bg-slate-300 w-2 hover:bg-slate-400'
                     }`}
                   />
                 ))}
@@ -492,13 +517,13 @@ export const ProductDetailPage: React.FC<{
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setBrochureOpen(false)} />
           <div className="relative bg-white border border-slate-200 max-w-md w-full shadow-2xl">
             <div className="p-6 sm:p-8 space-y-4">
-              <div className="w-10 h-10 bg-[#F5F6F8] border border-slate-200 flex items-center justify-center"><Download className="w-5 h-5 text-[#1575B3]" /></div>
+              <div className="w-10 h-10 bg-[#F5F6F8] border border-slate-200 flex items-center justify-center"><Download className={`w-5 h-5 ${tText}`} /></div>
               <div>
                 <h3 className="text-lg font-serif text-slate-900">Product Brochure</h3>
                 <p className="text-xs text-slate-600 mt-1">Official Kothari PDF specification sheet for {displayName}.</p>
               </div>
               <div className="bg-[#F5F6F8] border border-slate-200 p-3 space-y-1">
-                <span className="block text-xs font-mono font-semibold text-[#1575B3]">{displayPdfName}</span>
+                <span className={`block text-xs font-mono font-semibold ${tText}`}>{displayPdfName}</span>
                 <span className="block text-[11px] text-slate-500">
                   PDF · {displayPdfSize ? `${(displayPdfSize / 1048576).toFixed(1)} MB` : '—'}
                 </span>
@@ -509,12 +534,12 @@ export const ProductDetailPage: React.FC<{
                     href={displayPdfUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex-1 bg-[#1575B3] hover:bg-[#0E588A] text-white text-xs font-mono tracking-widest uppercase py-3 inline-flex items-center justify-center gap-1.5"
+                    className={`flex-1 ${tBg} ${tBgHover} text-white text-xs font-mono tracking-widest uppercase py-3 inline-flex items-center justify-center gap-1.5`}
                   >
                     <Download className="w-4 h-4" /> Download PDF
                   </a>
                 ) : (
-                  <button onClick={() => setBrochureOpen(false)} className="flex-1 bg-[#1575B3] hover:bg-[#0E588A] text-white text-xs font-mono tracking-widest uppercase py-3 inline-flex items-center justify-center gap-1.5">
+                  <button onClick={() => setBrochureOpen(false)} className={`flex-1 ${tBg} ${tBgHover} text-white text-xs font-mono tracking-widest uppercase py-3 inline-flex items-center justify-center gap-1.5`}>
                     <Download className="w-4 h-4" /> Not Available
                   </button>
                 )}
@@ -567,24 +592,24 @@ export const ProductDetailPage: React.FC<{
                   <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                   <h4 className="text-sm font-semibold text-slate-900">Request Received</h4>
                   <p className="text-xs text-slate-600">Thank you, <span className="font-semibold">{enquiry.name}</span> — our team will contact you on {enquiry.phone} shortly.</p>
-                  <button onClick={() => { setEnquiryModalOpen(false); setTimeout(() => setEnquirySent(false), 300); }} className="mt-2 text-xs font-mono tracking-widest uppercase text-[#1575B3] hover:underline">Close</button>
+                  <button onClick={() => { setEnquiryModalOpen(false); setTimeout(() => setEnquirySent(false), 300); }} className={`mt-2 text-xs font-mono tracking-widest uppercase ${tText} hover:underline`}>Close</button>
                 </div>
               ) : (
                 <form onSubmit={(e) => { handleEnquiry(e); if (!formError) setTimeout(() => setEnquiryModalOpen(false), 1500); }} className="space-y-4">
                   <div>
                     <label className="block text-[11px] font-mono tracking-widest uppercase text-slate-600 mb-1.5">Name *</label>
-                    <input value={enquiry.name} onChange={(e) => setEnquiry({ ...enquiry, name: e.target.value })} placeholder="Your full name" className="w-full bg-[#F5F6F8] border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1575B3]" />
+                    <input value={enquiry.name} onChange={(e) => setEnquiry({ ...enquiry, name: e.target.value })} placeholder="Your full name" className={`w-full bg-[#F5F6F8] border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none ${tFocusBorder}`} />
                   </div>
                   <div>
                     <label className="block text-[11px] font-mono tracking-widest uppercase text-slate-600 mb-1.5">Email *</label>
-                    <input type="email" value={enquiry.email} onChange={(e) => setEnquiry({ ...enquiry, email: e.target.value })} placeholder="name@company.com" className="w-full bg-[#F5F6F8] border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1575B3]" />
+                    <input type="email" value={enquiry.email} onChange={(e) => setEnquiry({ ...enquiry, email: e.target.value })} placeholder="name@company.com" className={`w-full bg-[#F5F6F8] border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none ${tFocusBorder}`} />
                   </div>
                   <div>
                     <label className="block text-[11px] font-mono tracking-widest uppercase text-slate-600 mb-1.5">Phone *</label>
-                    <input value={enquiry.phone} onChange={(e) => setEnquiry({ ...enquiry, phone: e.target.value })} placeholder="+91 98765 43210" className="w-full bg-[#F5F6F8] border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#1575B3]" />
+                    <input value={enquiry.phone} onChange={(e) => setEnquiry({ ...enquiry, phone: e.target.value })} placeholder="+91 98765 43210" className={`w-full bg-[#F5F6F8] border border-slate-200 px-3.5 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:outline-none ${tFocusBorder}`} />
                   </div>
                   {formError && <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2">{formError}</p>}
-                  <button type="submit" className="w-full bg-[#1575B3] hover:bg-[#0E588A] text-white text-xs font-mono tracking-widest uppercase py-3.5 inline-flex items-center justify-center gap-2 transition-colors">
+                  <button type="submit" className={`w-full ${tBg} ${tBgHover} text-white text-xs font-mono tracking-widest uppercase py-3.5 inline-flex items-center justify-center gap-2 transition-colors`}>
                     <Send className="w-4 h-4" /> Submit Request
                   </button>
                 </form>
