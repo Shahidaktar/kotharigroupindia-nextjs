@@ -1464,10 +1464,10 @@ const handleSegmentClick = (segIdx: number) => {
             <div className={`hidden md:flex md:w-5/12 ${isIrrigation ? 'bg-[#145E2A]' : 'bg-[#0E588A]'} text-white p-6 sm:p-8 flex-col justify-between shrink-0`}>
               <div>
                 <img
-                  src="https://kotharigroupindia.com/img/kothari-logo.png"
+                  src={isIrrigation ? '/logos/Kothari%20Irrigation_W.png' : '/logos/Kothari%20Pipes_W.png'}
                   alt="Kothari Group Logo"
                   referrerPolicy="no-referrer"
-                  className="h-15 w-auto object-contain mb-5"
+                  className="h-10 w-auto object-contain mb-5"
                   onError={(e) => {
                     (e.target as HTMLElement).style.display = 'none';
                   }}
@@ -1501,9 +1501,9 @@ const handleSegmentClick = (segIdx: number) => {
                   <MapPin className={`w-5 h-5 ${isIrrigation ? 'text-[#A9DDB8]' : 'text-[#82C3EC]'} shrink-0 mt-0.5`} />
                   <div>
                     <span className="block text-xs text-white/60 uppercase">Headquarters</span>
-                    <span className="text-sm text-white/90">
+                    <a href='https://maps.app.goo.gl/qCPHM3aF8EQkpaBw7' target="_blank" className="flex items-start gap-2 hover:text-white hover:underline ">
                       Sun Plaza, Subhash Chowk, Murarji Peth, Solapur - 413001, Maharashtra
-                    </span>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -1576,14 +1576,11 @@ const handleSegmentClick = (segIdx: number) => {
                     <label className="block text-xs font-medium text-[#111111] uppercase tracking-wider mb-1.5">
                       Division Interest
                     </label>
-                    <select
-                      value={formData.division}
-                      onChange={(e) => setFormData({ ...formData, division: e.target.value })}
-                      className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
+                    <div
+                      className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111]`}
                     >
-                      <option value="Irrigation Division">Irrigation Division (Drip & Irrigation)</option>
-                      <option value="Pipe Division">Pipe Division (Agri, Plumbing & Drainage)</option>
-                    </select>
+                      {defaultDivisionInterest}
+                    </div>
                   </div>
 
                   <div>

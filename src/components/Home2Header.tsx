@@ -518,7 +518,7 @@ className={`hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-me
             <div className="hidden md:flex md:w-5/12 bg-[#0E588A] text-white p-6 sm:p-8 flex-col justify-between shrink-0">
               <div>
                 <img
-                  src="https://kotharigroupindia.com/img/kothari-logo.png"
+                  src="/logos/Kothari Group_W.png"
                   alt="Kothari Group Logo"
                   referrerPolicy="no-referrer"
                   className="h-15 w-auto object-contain mb-5"
@@ -555,7 +555,7 @@ className={`hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-me
                   <MapPin className="w-5 h-5 text-[#82C3EC] shrink-0 mt-0.5" />
                   <div>
                     <span className="block text-xs text-white/60 uppercase">Headquarters</span>
-                    <span className="text-sm text-white/90">Sun Plaza, Subhash Chowk, Murarji Peth, Solapur - 413001, Maharashtra</span>
+                    <a href='https://maps.app.goo.gl/qCPHM3aF8EQkpaBw7' target="_blank" className="flex items-start gap-2 hover:text-white hover:underline ">Sun Plaza, Subhash Chowk, Murarji Peth, Solapur - 413001, Maharashtra</a>
                   </div>
                 </div>
               </div>
