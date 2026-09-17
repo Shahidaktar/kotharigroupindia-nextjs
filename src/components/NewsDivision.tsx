@@ -1,40 +1,55 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { ArrowUpRight, Clock, Quote, Star } from 'lucide-react';
 import { Reveal } from './main/Reveal';
 
-export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = 'blue' }) => {
+export interface DivisionNewsCard {
+  key: string;
+  title: string;
+  snippet: string;
+  date: string;
+  readTime: string;
+  category: string;
+  image: string;
+  href: string;
+}
+
+export const NewsDivision: React.FC<{ theme?: 'blue' | 'green'; newsItems?: DivisionNewsCard[]; blogPosts?: DivisionNewsCard[] }> = ({ theme = 'blue', newsItems: newsItemsProp, blogPosts: blogPostsProp }) => {
   const isGreen = theme === 'green';
   const accentHoverBorder = isGreen ? 'hover:border-[#1E8E3E]' : 'hover:border-[#1575B3]';
   const accentGroupHoverText = isGreen ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]';
-  const newsItems = [
+  const FALLBACK_NEWS: DivisionNewsCard[] = [
     {
-      id: 'NEWS-01',
+      key: 'NEWS-01',
       title: 'Kothari Group Expands High-Density Polyethylene Production Line',
       snippet: 'State-of-the-art extrusion machinery deployed to meet surging infrastructure demand across Western and Southern India.',
       date: 'AUG 18, 2026',
       readTime: '5 MIN READ',
       category: 'CORPORATE',
-      image: 'https://kotharigroupindia.com/img/images/Building_pipe.webp'
+      image: 'https://kotharigroupindia.com/img/images/Building_pipe.webp',
+      href: '/news'
     },
     {
-      id: 'NEWS-02',
+      key: 'NEWS-02',
       title: 'Next-Gen Drip Irrigation Systems Unveiled at AgriTech Summit',
       snippet: 'Introducing pressure-compensating micro drippers engineered for precise fertigation in hilly agricultural terrains.',
       date: 'JUL 24, 2026',
       readTime: '7 MIN READ',
       category: 'AGRI TECH',
-      image: 'https://kotharigroupindia.com/img/images/Agri_Pipes.webp'
+      image: 'https://kotharigroupindia.com/img/images/Agri_Pipes.webp',
+      href: '/news'
     },
     {
-      id: 'NEWS-03',
+      key: 'NEWS-03',
       title: 'Kothari Performance Labs Achieves ISO 17025 Accreditation',
       snippet: 'Independent quality validation setup reinforces strict quality control standardizations across polymer pipe testing.',
       date: 'JUN 10, 2026',
       readTime: '4 MIN READ',
       category: 'QUALITY',
-      image: 'https://kotharigroupindia.com/img/images/Irrigation_products.webp'
+      image: 'https://kotharigroupindia.com/img/images/Irrigation_products.webp',
+      href: '/news'
     }
   ];
 
@@ -59,35 +74,41 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = '
     }
   ];
 
-  const blogPosts = [
+  const FALLBACK_BLOGS: DivisionNewsCard[] = [
     {
-      id: 'BLOG-01',
+      key: 'BLOG-01',
       title: 'CPVC vs. UPVC: Choosing The Right Plumbing Pipe For Your Building',
       snippet: 'An engineering comparison of temperature thresholds, working pressure SDR ratings, chemical resistance, and solvent welding best practices.',
       date: 'June 2026',
       readTime: '8 MIN READ',
       category: 'PLUMBING SYSTEMS',
-      image: 'https://kotharigroupindia.com/img/images/Agri_Pipes.webp'
+      image: 'https://kotharigroupindia.com/img/images/Agri_Pipes.webp',
+      href: '/blogs'
     },
     {
-      id: 'BLOG-02',
+      key: 'BLOG-02',
       title: 'How Micro Irrigation Boosts Crop Yield By 40% With 50% Less Water',
       snippet: 'Discover the science behind targeted root-zone drip irrigation, fertigation nutrient uptake, and preventing evaporation losses in arid farmland.',
       date: 'July 2026',
       readTime: '12 MIN READ',
       category: 'MICRO IRRIGATION',
-      image: 'https://images.pexels.com/photos/11679735/pexels-photo-11679735.jpeg'
+      image: 'https://images.pexels.com/photos/11679735/pexels-photo-11679735.jpeg',
+      href: '/blogs'
     },
     {
-      id: 'BLOG-03',
+      key: 'BLOG-03',
       title: 'Preventing Borewell Column Failure: Submersible Pipe Installation Rules',
       snippet: 'Key guidelines on thread locking, torque limits, pump weight support, and preventing back-siphonage in deep underground borewells.',
       date: 'May 2026',
       readTime: '6 MIN READ',
       category: 'AGRI & BOREWELL',
-      image: 'https://kotharigroupindia.com/img/images/Irrigation_products.webp'
+      image: 'https://kotharigroupindia.com/img/images/Irrigation_products.webp',
+      href: '/blogs'
     }
   ];
+
+  const newsItems = newsItemsProp ?? FALLBACK_NEWS;
+  const blogPosts = blogPostsProp ?? FALLBACK_BLOGS;
 
   return (
     <div className="w-full text-slate-900">
@@ -166,7 +187,8 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = '
           <Reveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {newsItems.map((item, idx) => (
-                <Reveal key={idx} delay={idx * 90} className="h-full">
+                <Reveal key={item.key} delay={idx * 90} className="h-full">
+                  <Link href={item.href} className="block h-full">
                   <article className={`group relative ${isGreen ? 'bg-[#EAF6EE]' : 'bg-[#F5F6F8]'} border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl ${accentHoverBorder} transition-all duration-500 overflow-hidden`}>
 
                     {/* Image Header */}
@@ -213,15 +235,15 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = '
                       </div>
 
                       {/* Card CTA */}
-                      <a
-                        href={`#${item.id.toLowerCase()}`}
+                      <div
                         className={`pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase ${accentGroupHoverText} transition-colors`}
                       >
                         <span>READ NEWS</span>
                         <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
-                      </a>
+                      </div>
                     </div>
                   </article>
+                  </Link>
                 </Reveal>
               ))}
             </div>
@@ -250,7 +272,8 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = '
           <Reveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {blogPosts.map((item, idx) => (
-                <Reveal key={idx} delay={idx * 90} className="h-full">
+                <Reveal key={item.key} delay={idx * 90} className="h-full">
+                  <Link href={item.href} className="block h-full">
                   <article className={`group relative bg-white border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl ${accentHoverBorder} transition-all duration-500 overflow-hidden`}>
 
                     {/* Image Header */}
@@ -303,6 +326,7 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green' }> = ({ theme = '
                       </div>
                     </div>
                   </article>
+                  </Link>
                 </Reveal>
               ))}
             </div>

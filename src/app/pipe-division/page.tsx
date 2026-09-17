@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import AppShell from '@/components/AppShell';
 import { KnowledgeCentre } from '@/components/KnowledgeCentre';
 import { HeroDivision } from '@/components/HeroDivision';
@@ -9,7 +10,7 @@ import { Category } from '@/components/Category';
 import { WhyKothariGroup } from '@/components/main/WhyKothariGroup';
 import { Impact } from '@/components/main/Impact';
 import { Footer } from '@/components/Footer';
-import { NewsDivision } from '@/components/NewsDivision';
+import { NewsDivision, type DivisionNewsCard } from '@/components/NewsDivision';
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { FaWhatsapp } from 'react-icons/fa';
 import { FeaturedProducts } from '@/components/FeaturedProducts';
@@ -17,6 +18,28 @@ import { PipeproductsMegaMenu, pipeSolutionsMegaMenu } from '@/data/products';
 
 
 function PipeDivisionContent() {
+  // Live WP news/blogs (events + blogs categories); static fallbacks show until loaded.
+  const [cards, setCards] = useState<{
+    newsItems?: DivisionNewsCard[];
+    blogPosts?: DivisionNewsCard[];
+  }>({});
+
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/division-news')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!alive || !data) return;
+        setCards({
+          newsItems: data.events?.length ? data.events : undefined,
+          blogPosts: data.blogs?.length ? data.blogs : undefined,
+        });
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
   const heroData = {
     videoSrc: '/kothari-banner2.mp4',
     headline: <>Engineered for<br />unmatched flow</>,
@@ -375,7 +398,7 @@ const FEATURE_PRODUCTS = [
       {/* <WhyKothariGroup /> */}
       {/* <Impact /> */}
       <KnowledgeCentre itemData={items} />
-      <NewsDivision />
+      <NewsDivision newsItems={cards.newsItems} blogPosts={cards.blogPosts} />
       <Footer footerData={footerData}/>
     </>
   );

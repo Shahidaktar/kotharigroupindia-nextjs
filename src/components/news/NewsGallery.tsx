@@ -97,7 +97,10 @@ export const NewsGallery: React.FC<NewsGalleryProps> = ({ news, categories }) =>
         </div>
       ) : (
         <div className="py-24 text-center">
-          <p className="text-sm text-slate-500">No news found in this category.</p>
+          {/* <p className="text-lg font-semibold text-slate-900">Not Found</p> */}
+          <p className="text-sm text-slate-500 mt-2">
+            No news found in this category yet.
+          </p>
         </div>
       )}
     </div>

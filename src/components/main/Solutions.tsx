@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export const Solutions = () => {
   return (
@@ -69,15 +70,15 @@ export const Solutions = () => {
 </div>
 
               {/* Square / Sharp CTA Button */}
-              <a
-                href="/about"
+              <Link
+                href="/about-us"
                 className="group inline-flex items-center gap-3 px-6 py-3.5 rounded-none border border-gray-900 bg-transparent text-gray-900 text-sm font-semibold hover:bg-[#1575B3] hover:border-[#1575B3] hover:text-white transition-all duration-300 self-start sm:self-auto"
               >
                 <span>Discover Our Story</span>
                 <span className="transition-transform duration-300 group-hover:translate-x-1">
                   →
                 </span>
-              </a>
+              </Link>
             </div>
 
           </div>

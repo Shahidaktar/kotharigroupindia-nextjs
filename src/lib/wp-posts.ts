@@ -12,6 +12,7 @@ export interface WpBlogPost {
   author: string;
   authorAvatar: string | null;
   category: string;
+  categorySlug: string;
   featuredImage: string | null;
   readMinutes: number;
   content?: string;
@@ -84,7 +85,9 @@ function mapPost(raw: any): WpBlogPost {
   const embed = raw._embedded || {};
   const media = embed['wp:featuredmedia'];
   const term = embed['wp:term'];
-  const category = term?.[0]?.find((t: any) => t.taxonomy === 'category')?.name ?? 'Kothari Group';
+  const categoryTerm = term?.[0]?.find((t: any) => t.taxonomy === 'category');
+  const category = categoryTerm?.name ?? 'Kothari Group';
+  const categorySlug = (categoryTerm?.slug ?? '').toLowerCase();
   const author =
     raw.acf?.author_name ??
     embed?.author?.[0]?.name ??
@@ -104,6 +107,7 @@ function mapPost(raw: any): WpBlogPost {
     author,
     authorAvatar: authorImageOverride || authorAvatar,
     category,
+    categorySlug,
     featuredImage: media?.[0]?.source_url ?? null,
     readMinutes: estimateReadMinutes(content),
     content,
@@ -139,6 +143,69 @@ export const WP_CATEGORIES = {
   successStory: 180,
 } as const;
 
+// News tabs served on /news — resolved by slug so no hardcoded IDs are needed.
+export const NEWS_CATEGORY_SLUGS = ['events', 'announcements', 'updates'] as const;
+
+export const NEWS_CATEGORY_LABELS: Record<string, string> = {
+  events: 'Events',
+  announcements: 'Announcements',
+  updates: 'Updates',
+};
+
+// Resolve WP category slugs → numeric IDs via /wp/v2/categories.
+// Returns only the IDs that exist — fail-soft so the page falls back to static data.
+export const fetchWpCategoryIds = cache(async (slugs: readonly string[] | string[]): Promise<number[]> => {
+  if (!slugs.length) return [];
+  const url = `${WP_API}/wp/v2/categories?slug=${slugs.map((s) => encodeURIComponent(s)).join(',')}&per_page=100&_fields=id,slug`;
+  try {
+    const res = await fetchWithTimeout(url, {
+      next: { revalidate: 600 },
+      headers: { 'User-Agent': 'Mozilla/5.0' },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    if (!Array.isArray(data)) return [];
+    // Preserve the requested slug order.
+    const bySlug = new Map(data.map((c: any) => [String(c.slug).toLowerCase(), Number(c.id)]));
+    return slugs
+      .map((s) => bySlug.get(s.toLowerCase()))
+      .filter((id): id is number => Number.isFinite(id));
+  } catch {
+    console.error('[wp-posts] Failed to fetch categories:', url);
+    return [];
+  }
+});
+
+// Fetch news posts across the Events / Announcements / Updates categories.
+// Returns a flat, date-desc list (each post carries its category name + slug).
+// Returns [] on failure — callers fall back to static news data.
+export const fetchWpNewsPosts = cache(async (perCategory = 100): Promise<WpBlogPost[]> => {
+  const ids = await fetchWpCategoryIds(NEWS_CATEGORY_SLUGS);
+  if (!ids.length) return [];
+  try {
+    const settled = await Promise.allSettled(
+      ids.map((id) =>
+        fetchWithTimeout(
+          `${WP_API}/wp/v2/posts?categories=${id}&per_page=${perCategory}&orderby=date&order=desc&_embed`,
+          {
+            next: { revalidate: 600 },
+            headers: { 'User-Agent': 'Mozilla/5.0' },
+          }
+        ).then(async (res) => {
+          if (!res.ok) return [];
+          const data = await res.json();
+          return (Array.isArray(data) ? data : []).map(mapPost) as WpBlogPost[];
+        })
+      )
+    );
+    const posts = settled.flatMap((r) => (r.status === 'fulfilled' ? r.value : []));
+    return posts.sort((a, b) => b.id - a.id);
+  } catch {
+    console.error('[wp-posts] Failed to fetch news posts');
+    return [];
+  }
+});
+
 // Fetch a single post by slug (full content included).
 // Returns null on failure instead of throwing.
 export const fetchWpBlogPostBySlug = cache(async (slug: string): Promise<WpBlogPost | null> => {
@@ -157,3 +224,51 @@ export const fetchWpBlogPostBySlug = cache(async (slug: string): Promise<WpBlogP
     return null;
   }
 });
+
+const DIVISION_CARD_FALLBACK_IMAGE =
+  'https://kotharigroupindia.com/img/images/Irrigation_products.webp';
+
+// Map live WordPress posts to division/home news cards
+// ({ key, title, snippet, date, readTime, category, image, href }).
+// Server-safe: lives in lib so server components can call it.
+export function mapWpPostsToDivisionCards(
+  posts: WpBlogPost[],
+  basePath: '/news' | '/blogs'
+): import('@/components/NewsDivision').DivisionNewsCard[] {
+  return posts.map((post) => ({
+    key: `wp-${basePath.replace('/', '')}-${post.id}`,
+    title: post.title,
+    snippet: post.excerpt,
+    date: post.date,
+    readTime: `${post.readMinutes} MIN READ`,
+    category: post.category,
+    image: post.featuredImage || DIVISION_CARD_FALLBACK_IMAGE,
+    href: `${basePath}/${post.slug}`,
+  }));
+}
+
+// Latest posts for the home page: 3 from the blogs category + 3 from events.
+// Fail-soft — each list is independently empty on failure so static fallbacks show.
+export const fetchWpHomeNews = cache(
+  async (): Promise<{ blogs: WpBlogPost[]; events: WpBlogPost[] }> => {
+    const empty = { blogs: [] as WpBlogPost[], events: [] as WpBlogPost[] };
+    try {
+      const [blogsRes, eventIds] = await Promise.all([
+        fetchWpBlogPosts(1, 3, WP_CATEGORIES.blogs).catch(() => null),
+        fetchWpCategoryIds(['events']).catch(() => [] as number[]),
+      ]);
+      const blogs = blogsRes?.posts ?? [];
+      let events: WpBlogPost[] = [];
+      if (eventIds.length) {
+        const eventsRes = await fetchWpBlogPosts(1, 3, eventIds[0]).catch(
+          () => null
+        );
+        events = eventsRes?.posts ?? [];
+      }
+      return { blogs, events };
+    } catch {
+      console.error('[wp-posts] Failed to fetch home news');
+      return empty;
+    }
+  }
+);

@@ -265,7 +265,7 @@ export const ProductDetailPage: React.FC<{
 
       {/* TABS SECTION */}
       <section className="relative w-full border-b border-white/20 overflow-hidden">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=1600&q=80)` }} />
+        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${isIrrigation ? 'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1600&q=80' : 'https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=1600&q=80'})` }} />
         <div className={`absolute inset-0 bg-gradient-to-br ${isIrrigation ? 'from-[#145E2A]/95 via-[#1E8E3E]/90 to-[#052E16]/90' : 'from-[#0E588A]/95 via-[#1575B3]/90 to-[#083251]/90'}`} />
         
         <div className="relative z-10 w-full border-b border-white/20">

@@ -3,7 +3,12 @@ import AppShell from '@/components/AppShell';
 import { Home2Header } from '@/components/Home2Header';
 import { Home2Footer } from '@/components/Home2Footer';
 import { NewsGallery } from '@/components/news/NewsGallery';
-import { newsData } from '@/lib/news';
+import { newsData, type NewsItem } from '@/lib/news';
+import {
+  fetchWpNewsPosts,
+  NEWS_CATEGORY_SLUGS,
+  NEWS_CATEGORY_LABELS,
+} from '@/lib/wp-posts';
 
 export const metadata = {
   title: 'News & Press Releases | Kothari Group',
@@ -11,8 +16,70 @@ export const metadata = {
     'Stay updated with the latest press releases from Kothari Group, covering our awards, launches and major announcements in the agricultural sector.',
 };
 
+export const revalidate = 600;
+
+const FALLBACK_IMAGE = 'https://kotharigroupindia.com/img/images/Irrigation_products.webp';
+
+// Preferred tab order — a tab only appears when it has at least one post.
+const TAB_ORDER = [...NEWS_CATEGORY_SLUGS];
+
+async function NewsContent() {
+  const wpPosts = await fetchWpNewsPosts().catch(() => []);
+
+  const seen = new Set<string>();
+  const news: NewsItem[] = [];
+
+  // Live WordPress posts first (Events / Announcements / Updates).
+  for (const post of wpPosts) {
+    if (!post.slug || seen.has(post.slug)) continue;
+    seen.add(post.slug);
+    news.push({
+      slug: post.slug,
+      image: post.featuredImage || FALLBACK_IMAGE,
+      title: post.title,
+      description: post.excerpt,
+      info: post.content || '',
+      category:
+        NEWS_CATEGORY_LABELS[post.categorySlug] ||
+        post.category ||
+        'Updates',
+      date: post.date,
+    });
+  }
+
+  // Static press releases are a per-category fallback: they only fill
+  // categories WordPress doesn't serve yet (or when WP is down).
+  const wpCategories = new Set(
+    wpPosts.map(
+      (post) => NEWS_CATEGORY_LABELS[post.categorySlug] || post.category
+    )
+  );
+  for (const item of newsData.news) {
+    if (seen.has(item.slug)) continue;
+    if (wpCategories.has(item.category)) continue;
+    seen.add(item.slug);
+    news.push(item);
+  }
+
+  // All three tabs always show — an empty category renders the
+  // gallery's Not Found state instead of hiding the tab.
+  const present = new Set(news.map((n) => n.category));
+  const categories = [
+    'All',
+    ...TAB_ORDER.map((slug) => NEWS_CATEGORY_LABELS[slug]),
+    ...[...present]
+      .filter(
+        (cat) =>
+          cat !== 'All' &&
+          !Object.values(NEWS_CATEGORY_LABELS).includes(cat)
+      )
+      .sort(),
+  ];
+
+  return <NewsGallery news={news} categories={categories} />;
+}
+
 export default async function NewsPage() {
-  const { news, categories } = newsData;
 
   return (
     <AppShell>
@@ -67,7 +134,7 @@ export default async function NewsPage() {
                 </div>
               }
             >
-              <NewsGallery news={news} categories={categories} />
+              <NewsContent />
             </Suspense>
           </div>
         </section>

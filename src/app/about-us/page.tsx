@@ -10,6 +10,7 @@ import {
   AboutLegacy,
   AboutWhyKothari,
 } from '@/components/about/AboutSections';
+import { ManufacturingUnits } from '@/components/about/ManufacturingUnits';
 
 export const metadata = {
   title: 'About Us | Kothari Group — Nurturing Lands, Building Dreams',
@@ -28,7 +29,8 @@ export default function AboutPage() {
         <AboutApproach />
        
         <AboutLegacy />
-         <AboutCoreValues />
+        <ManufacturingUnits />
+        <AboutCoreValues />
         <AboutWhyKothari />
         <Home2Footer />
       </div>

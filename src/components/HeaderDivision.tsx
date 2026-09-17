@@ -367,8 +367,9 @@ const [openSegment, setOpenSegment] = useState<number | null>(null);
 const [hoveredDivision, setHoveredDivision] = useState<string | null>(null);
 const [aboutOpen, setAboutOpen] = useState(false);
 const [divOpen, setDivOpen] = useState(false);
-const division = solutionsMegaMenu.headline.includes('Irrigation') ? 'irrigation-division' : 'pipe-division';
+  const division = solutionsMegaMenu.headline.includes('Irrigation') ? 'irrigation-division' : 'pipe-division';
   const isIrrigation = division === 'irrigation-division';
+  const defaultDivisionInterest = division === 'pipe-division' ? 'Pipe Division' : 'Irrigation Division';
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -377,7 +378,7 @@ const division = solutionsMegaMenu.headline.includes('Irrigation') ? 'irrigation
     fullName: '',
     email: '',
     phone: '',
-    division: 'Agriculture Division',
+    division: defaultDivisionInterest,
     message: '',
   });
 
@@ -466,6 +467,7 @@ const handleSegmentClick = (segIdx: number) => {
     setMobileOpen(false);
     setActiveDropdown(null);
     setFormSubmitted(false);
+    setFormData((prev) => ({ ...prev, division: defaultDivisionInterest }));
     setIsModalOpen(true);
     setAboutOpen(false);
     setDivOpen(false);
@@ -481,7 +483,7 @@ const handleSegmentClick = (segIdx: number) => {
         fullName: '',
         email: '',
         phone: '',
-        division: 'Agriculture Division',
+        division: defaultDivisionInterest,
         message: '',
       });
     }, 2500);
@@ -1461,9 +1463,15 @@ const handleSegmentClick = (segIdx: number) => {
 
             <div className={`hidden md:flex md:w-5/12 ${isIrrigation ? 'bg-[#145E2A]' : 'bg-[#0E588A]'} text-white p-6 sm:p-8 flex-col justify-between shrink-0`}>
               <div>
-                <span className="text-xs font-semibold tracking-wider uppercase text-white/70 block mb-2">
-                  Kothari Group
-                </span>
+                <img
+                  src="https://kotharigroupindia.com/img/kothari-logo.png"
+                  alt="Kothari Group Logo"
+                  referrerPolicy="no-referrer"
+                  className="h-15 w-auto object-contain mb-5"
+                  onError={(e) => {
+                    (e.target as HTMLElement).style.display = 'none';
+                  }}
+                />
                 <h3 className="text-2xl sm:text-3xl font-semibold leading-tight text-white mb-4">
                   Let’s build sustainable solutions together.
                 </h3>
@@ -1485,7 +1493,7 @@ const handleSegmentClick = (segIdx: number) => {
                   <Mail className={`w-5 h-5 ${isIrrigation ? 'text-[#A9DDB8]' : 'text-[#82C3EC]'} shrink-0 mt-0.5`} />
                   <div>
                     <span className="block text-xs text-white/60 uppercase">Email</span>
-                    <span className="text-sm font-medium text-white">enquiry@kotharigroupindia.com</span>
+                    <span className="text-sm font-medium text-white">{formData.division === 'Pipe Division' ? 'sales.pipe@kotharigroupindia.com' : 'sales.irrigation@kotharigroupindia.com'}</span>
                   </div>
                 </div>
 
@@ -1573,9 +1581,8 @@ const handleSegmentClick = (segIdx: number) => {
                       onChange={(e) => setFormData({ ...formData, division: e.target.value })}
                       className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
                     >
-                      <option value="Agriculture Division">Agriculture Division (Drip & Irrigation)</option>
+                      <option value="Irrigation Division">Irrigation Division (Drip & Irrigation)</option>
                       <option value="Pipe Division">Pipe Division (Agri, Plumbing & Drainage)</option>
-                      <option value="General Corporate">General Corporate Inquiry</option>
                     </select>
                   </div>
 

@@ -6,7 +6,7 @@ import { Home2Header } from '@/components/Home2Header';
 import { Home2Footer } from '@/components/Home2Footer';
 import { BlogCard } from '@/components/blog/BlogCard';
 import { Pagination } from '@/components/blog/Pagination';
-import { fetchWpBlogPosts } from '@/lib/wp-posts';
+import { fetchWpBlogPosts, WP_CATEGORIES } from '@/lib/wp-posts';
 
 export const metadata = {
   title: 'Blogs & Insights | Kothari Group',
@@ -19,7 +19,11 @@ export const revalidate = 600;
 const POSTS_PER_PAGE = 9;
 
 async function BlogsContent({ page }: { page: number }) {
-  const { posts, total, totalPages } = await fetchWpBlogPosts(page, POSTS_PER_PAGE);
+  const { posts, total, totalPages } = await fetchWpBlogPosts(
+    page,
+    POSTS_PER_PAGE,
+    WP_CATEGORIES.blogs
+  );
 
   const from = total === 0 ? 0 : (page - 1) * POSTS_PER_PAGE + 1;
   const to = Math.min(page * POSTS_PER_PAGE, total);
