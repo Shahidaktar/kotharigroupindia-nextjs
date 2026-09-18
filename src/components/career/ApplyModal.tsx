@@ -1,7 +1,12 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
+import Script from 'next/script';
 import { X, Send, ArrowRight, Phone, Mail, MapPin } from 'lucide-react';
+import {
+  RECAPTCHA_SITE_KEY,
+  getRecaptchaToken,
+} from '@/lib/recaptcha-client';
 
 interface ApplyModalProps {
   jobTitle: string;
@@ -25,6 +30,8 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ jobTitle, onClose }) => 
   });
   const [resumeName, setResumeName] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
   const resumeRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -47,17 +54,49 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ jobTitle, onClose }) => 
     setResumeName(file.name);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (sending) return;
     if (!resumeRef.current?.files?.[0]) {
-      alert('Please attach your updated resume.');
+      setError('Please attach your updated resume.');
       return;
     }
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      onClose();
-    }, 3000);
+    setError('');
+    setSending(true);
+    try {
+      const recaptchaToken = await getRecaptchaToken();
+      const payload = new FormData();
+      payload.append('name', form.name);
+      payload.append('email', form.email);
+      payload.append('phone', form.phone);
+      payload.append('totalExperience', form.totalExperience);
+      payload.append('relevantExperience', form.relevantExperience);
+      payload.append('currentCTC', form.currentCTC);
+      payload.append('expectedCTC', form.expectedCTC);
+      payload.append('noticePeriod', form.noticePeriod);
+      payload.append('position', form.position);
+      payload.append('location', form.location);
+      payload.append('qualification', form.qualification);
+      payload.append('linkdin', form.linkdin);
+      payload.append('recaptchaToken', recaptchaToken);
+      const file = resumeRef.current?.files?.[0];
+      if (file) payload.append('resume', file);
+
+      const res = await fetch('/api/career', { method: 'POST', body: payload });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Could not send your application.');
+      }
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        onClose();
+      }, 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not send your application.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const inputClass =
@@ -69,6 +108,13 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ jobTitle, onClose }) => 
   const fieldWrap = 'space-y-1';
 
   return (
+    <>
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="afterInteractive"
+        />
+      )}
     <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 sm:p-6 lg:p-8">
       {/* Dark Backdrop */}
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={onClose} />
@@ -334,15 +380,45 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({ jobTitle, onClose }) => 
 
               <button
                 type="submit"
-                className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2"
+                disabled={sending}
+                className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] disabled:opacity-60 disabled:cursor-not-allowed text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2"
               >
-                Submit Application
+                {sending ? 'Submitting…' : 'Submit Application'}
                 <ArrowRight className="w-4 h-4" />
               </button>
+              {error && (
+                <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2">
+                  {error}
+                </p>
+              )}
+              {RECAPTCHA_SITE_KEY && (
+                <p className="text-[11px] text-slate-400 leading-relaxed">
+                  Protected by reCAPTCHA — the Google{' '}
+                  <a
+                    href="https://policies.google.com/privacy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-slate-500"
+                  >
+                    Privacy Policy
+                  </a>{' '}
+                  and{' '}
+                  <a
+                    href="https://policies.google.com/terms"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="underline hover:text-slate-500"
+                  >
+                    Terms of Service
+                  </a>{' '}
+                  apply.
+                </p>
+              )}
             </form>
           )}
         </div>
       </div>
     </div>
+    </>
   );
 };

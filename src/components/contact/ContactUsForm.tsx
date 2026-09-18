@@ -1,6 +1,11 @@
 'use client';
 import React, { useState } from 'react';
+import Script from 'next/script';
 import { Send, CheckCircle2 } from 'lucide-react';
+import {
+  RECAPTCHA_SITE_KEY,
+  getRecaptchaToken,
+} from '@/lib/recaptcha-client';
 
 const interests = [
   'Pipe Division',
@@ -9,6 +14,8 @@ const interests = [
 
 export const ContactUsForm: React.FC = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -17,19 +24,38 @@ export const ContactUsForm: React.FC = () => {
     message: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({
-        fullName: '',
-        email: '',
-        phone: '',
-        interest: interests[0],
-        message: '',
+    if (sending) return;
+    setError('');
+    setSending(true);
+    try {
+      const recaptchaToken = await getRecaptchaToken();
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, recaptchaToken }),
       });
-    }, 6000);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Could not send your enquiry.');
+      }
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          interest: interests[0],
+          message: '',
+        });
+      }, 6000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not send your enquiry.');
+    } finally {
+      setSending(false);
+    }
   };
 
   const fieldClass =
@@ -52,6 +78,13 @@ export const ContactUsForm: React.FC = () => {
   }
 
   return (
+    <>
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="afterInteractive"
+        />
+      )}
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label className={labelClass}>Full Name *</label>
@@ -129,11 +162,41 @@ export const ContactUsForm: React.FC = () => {
 
       <button
         type="submit"
-        className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white py-3.5 font-medium text-sm transition-colors shadow-sm"
+        disabled={sending}
+        className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] disabled:opacity-60 disabled:cursor-not-allowed text-white py-3.5 font-medium text-sm transition-colors shadow-sm"
       >
-        Submit
+        {sending ? 'Sending…' : 'Submit'}
         <Send className="w-4 h-4" />
       </button>
+      {error && (
+        <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2">
+          {error}
+        </p>
+      )}
+      {RECAPTCHA_SITE_KEY && (
+        <p className="text-[11px] text-slate-400 leading-relaxed">
+          Protected by reCAPTCHA — the Google{' '}
+          <a
+            href="https://policies.google.com/privacy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-slate-500"
+          >
+            Privacy Policy
+          </a>{' '}
+          and{' '}
+          <a
+            href="https://policies.google.com/terms"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-slate-500"
+          >
+            Terms of Service
+          </a>{' '}
+          apply.
+        </p>
+      )}
     </form>
+    </>
   );
 };

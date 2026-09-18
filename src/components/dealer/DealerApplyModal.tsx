@@ -2,7 +2,12 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import Script from 'next/script';
 import { X, Send, ArrowRight, Phone, Mail, MapPin } from 'lucide-react';
+import {
+  RECAPTCHA_SITE_KEY,
+  getRecaptchaToken,
+} from '@/lib/recaptcha-client';
 
 interface DealerApplyButtonProps {
   applyLink?: string;
@@ -23,6 +28,8 @@ export const DealerApplyButton: React.FC<DealerApplyButtonProps> = ({ applyLink 
   });
   const [docName, setDocName] = useState('');
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
   const docRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (
@@ -47,30 +54,65 @@ export const DealerApplyButton: React.FC<DealerApplyButtonProps> = ({ applyLink 
     setDocName(file.name);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => {
-      setSubmitted(false);
-      setDocName('');
-      setForm({
-        proprietorName: '',
-        mobile: '',
-        email: '',
-        pincode: '',
-        firmName: '',
-        gstNumber: '',
-        divisionInterest: '',
-        heardAbout: '',
-        description: '',
-      });
-      onClose();
-    }, 3000);
+    if (sending) return;
+    setError('');
+    setSending(true);
+    try {
+      const recaptchaToken = await getRecaptchaToken();
+      const payload = new FormData();
+      payload.append('proprietorName', form.proprietorName);
+      payload.append('mobile', form.mobile);
+      payload.append('email', form.email);
+      payload.append('pincode', form.pincode);
+      payload.append('firmName', form.firmName);
+      payload.append('gstNumber', form.gstNumber);
+      payload.append('divisionInterest', form.divisionInterest);
+      payload.append('heardAbout', form.heardAbout);
+      payload.append('description', form.description);
+      payload.append('recaptchaToken', recaptchaToken);
+      const file = docRef.current?.files?.[0];
+      if (file) payload.append('document', file);
+
+      const res = await fetch('/api/dealer', { method: 'POST', body: payload });
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Could not send your application.');
+      }
+      setSubmitted(true);
+      setTimeout(() => {
+        setSubmitted(false);
+        resetForm();
+        onClose();
+      }, 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not send your application.');
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const resetForm = () => {
+    setDocName('');
+    if (docRef.current) docRef.current.value = '';
+    setForm({
+      proprietorName: '',
+      mobile: '',
+      email: '',
+      pincode: '',
+      firmName: '',
+      gstNumber: '',
+      divisionInterest: '',
+      heardAbout: '',
+      description: '',
+    });
   };
 
   const onClose = () => {
     setOpen(false);
     setSubmitted(false);
+    setError('');
     setDocName('');
   };
 
@@ -106,6 +148,13 @@ export const DealerApplyButton: React.FC<DealerApplyButtonProps> = ({ applyLink 
         Apply Here
         <ArrowRight className="w-4 h-4" />
       </button>
+
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="afterInteractive"
+        />
+      )}
 
       {open &&
         createPortal(
@@ -335,11 +384,40 @@ export const DealerApplyButton: React.FC<DealerApplyButtonProps> = ({ applyLink 
 
                   <button
                     type="submit"
-                    className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2"
+                    disabled={sending}
+                    className="w-full flex items-center justify-center gap-2 bg-[#1575B3] hover:bg-[#0E588A] disabled:opacity-60 disabled:cursor-not-allowed text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2"
                   >
-                    Submit Application
+                    {sending ? 'Submitting…' : 'Submit Application'}
                     <ArrowRight className="w-4 h-4" />
                   </button>
+                  {error && (
+                    <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2">
+                      {error}
+                    </p>
+                  )}
+                  {RECAPTCHA_SITE_KEY && (
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      Protected by reCAPTCHA — the Google{' '}
+                      <a
+                        href="https://policies.google.com/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-slate-500"
+                      >
+                        Privacy Policy
+                      </a>{' '}
+                      and{' '}
+                      <a
+                        href="https://policies.google.com/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-slate-500"
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      apply.
+                    </p>
+                  )}
                 </form>
               )}
             </div>

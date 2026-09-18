@@ -3,6 +3,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Menu, X, ChevronDown, ChevronRight, Phone, Mail, MapPin, Send, ArrowRight, Factory, Sprout, Users, Award, Building2 } from 'lucide-react';
 import Link from 'next/link';
+import Script from 'next/script';
+import {
+  RECAPTCHA_SITE_KEY,
+  getRecaptchaToken,
+} from '@/lib/recaptcha-client';
 import { pipeSolutionsMegaMenu, irrigationSolutionsMegaMenu } from '@/data/products';
 
 // Mega Menu Data Configurations
@@ -374,6 +379,8 @@ const [divOpen, setDivOpen] = useState(false);
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formSending, setFormSending] = useState(false);
+  const [formError, setFormError] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -473,20 +480,40 @@ const handleSegmentClick = (segIdx: number) => {
     setDivOpen(false);
   };
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => {
-      setIsModalOpen(false);
-      setFormSubmitted(false);
-      setFormData({
-        fullName: '',
-        email: '',
-        phone: '',
-        division: defaultDivisionInterest,
-        message: '',
+    if (formSending) return;
+    setFormError('');
+    setFormSending(true);
+    try {
+      const recaptchaToken = await getRecaptchaToken();
+      const res = await fetch('/api/get-in-touch', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, recaptchaToken }),
       });
-    }, 2500);
+      const data = await res.json().catch(() => null);
+      if (!res.ok || !data?.ok) {
+        throw new Error(data?.error || 'Could not send your enquiry.');
+      }
+      setFormSubmitted(true);
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setFormSubmitted(false);
+        setFormError('');
+        setFormData({
+          fullName: '',
+          email: '',
+          phone: '',
+          division: defaultDivisionInterest,
+          message: '',
+        });
+      }, 2500);
+    } catch (err) {
+      setFormError(err instanceof Error ? err.message : 'Could not send your enquiry.');
+    } finally {
+      setFormSending(false);
+    }
   };
 
   const isSolid = solid || isScrolled || mobileOpen;
@@ -1444,6 +1471,13 @@ const handleSegmentClick = (segIdx: number) => {
         )}
       </header>
 
+      {RECAPTCHA_SITE_KEY && (
+        <Script
+          src={`https://www.google.com/recaptcha/api.js?render=${RECAPTCHA_SITE_KEY}`}
+          strategy="afterInteractive"
+        />
+      )}
+
       {/* Modal Dialog */}
       {isModalOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4 sm:p-6 lg:p-8">
@@ -1598,11 +1632,40 @@ const handleSegmentClick = (segIdx: number) => {
 
                   <button
                     type="submit"
-                    className={`w-full flex items-center justify-center gap-2 ${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'} text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2`}
+                    disabled={formSending}
+                    className={`w-full flex items-center justify-center gap-2 ${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'} disabled:opacity-60 disabled:cursor-not-allowed text-white py-3.5 font-medium text-sm transition-colors shadow-sm mt-2`}
                   >
-                    Submit Inquiry
+                    {formSending ? 'Submitting…' : 'Submit Inquiry'}
                     <ArrowRight className="w-4 h-4" />
                   </button>
+                  {formError && (
+                    <p className="text-xs text-red-600 bg-red-50 border border-red-200 px-3 py-2">
+                      {formError}
+                    </p>
+                  )}
+                  {RECAPTCHA_SITE_KEY && (
+                    <p className="text-[11px] text-slate-400 leading-relaxed">
+                      Protected by reCAPTCHA — the Google{' '}
+                      <a
+                        href="https://policies.google.com/privacy"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-slate-500"
+                      >
+                        Privacy Policy
+                      </a>{' '}
+                      and{' '}
+                      <a
+                        href="https://policies.google.com/terms"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="underline hover:text-slate-500"
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      apply.
+                    </p>
+                  )}
                 </form>
               )}
             </div>
