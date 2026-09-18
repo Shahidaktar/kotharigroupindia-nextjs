@@ -18,9 +18,9 @@ const ArrowIcon = () => (
 
 const stats = [
   { value: '35+', label: 'Years of excellence' },
-  { value: '23+', label: 'States served pan-India' },
-  { value: '2L+', label: 'Farmers empowered *' },
-  { value: '800+', label: 'Channel partners *' },
+  { value: '8', label: 'Factories' },
+  { value: '14', label: 'Warehouses' },
+  { value: '10', label: `Countries' products exported` },
 ];
 
 export const HeroDivision = ({heroData}: {heroData: any}) => {
@@ -84,7 +84,7 @@ export const HeroDivision = ({heroData}: {heroData: any}) => {
         <div className="w-full flex flex-col lg:flex-row justify-between items-stretch lg:items-end gap-6 sm:gap-8 lg:gap-12">
           
           {/* Left Side: Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-10 border-t border-white/20 pt-6 w-full lg:w-auto">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-6 border-t border-white/20 pt-6 w-full lg:w-auto">
             {stats.map((stat, idx) => (
               <div key={idx} className="flex flex-col">
                 <span className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-white drop-shadow-md">

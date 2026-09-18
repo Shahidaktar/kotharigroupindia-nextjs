@@ -43,13 +43,13 @@ export async function POST(req: Request) {
   const division = String(data.division ?? '').trim();
   const message = String(data.message ?? '').trim();
 
-  if (!fullName || !email || !phone) {
+  if (!fullName || !phone) {
     return NextResponse.json(
-      { ok: false, error: 'Name, email and phone are required.' },
+      { ok: false, error: 'Name and phone are required.' },
       { status: 400 }
     );
   }
-  if (!EMAIL_RE.test(email)) {
+  if (email && !EMAIL_RE.test(email)) {
     return NextResponse.json(
       { ok: false, error: 'Enter a valid email address.' },
       { status: 400 }
@@ -92,7 +92,7 @@ export async function POST(req: Request) {
   const subject = `WEBSITE ENQUIRY - ${division.toUpperCase()} - ${fullName.toUpperCase()}`;
   const text = [
     `Name: ${fullName}`,
-    `Email: ${email}`,
+    `Email: ${email || '-'}`,
     `Phone: ${phone}`,
     `Division Interest: ${division || '-'}`,
     '',
@@ -102,7 +102,7 @@ export async function POST(req: Request) {
     <h2>New get-in-touch enquiry</h2>
     <table cellpadding="6" cellspacing="0" border="0">
       <tr><td><strong>Name</strong></td><td>${escapeHtml(fullName)}</td></tr>
-      <tr><td><strong>Email</strong></td><td>${escapeHtml(email)}</td></tr>
+      <tr><td><strong>Email</strong></td><td>${escapeHtml(email || '-')}</td></tr>
       <tr><td><strong>Phone</strong></td><td>${escapeHtml(phone)}</td></tr>
       <tr><td><strong>Division Interest</strong></td><td>${escapeHtml(division || '-')}</td></tr>
     </table>
@@ -113,7 +113,9 @@ export async function POST(req: Request) {
     await transporter.sendMail({
       from: `"Kothari Group" <${from}>`,
       to,
-      replyTo: `"${fullName.replace(/"/g, '')}" <${email}>`,
+      replyTo: email
+        ? `"${fullName.replace(/"/g, '')}" <${email}>`
+        : undefined,
       subject,
       text,
       html,

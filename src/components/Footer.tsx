@@ -120,7 +120,7 @@ export const Footer: React.FC<FooterProps> = ({
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center  px-3 py-1 w-fit">
                 <img
-                  src={footerData?.logo}
+                  src={`${isIrrigation ? '/logos/Kothari Irrigation_W.png' : '/logos/Kothari Pipes_W.png'}`}
                   alt="Kothari Group Logo"
                   referrerPolicy="no-referrer"
                   className="h-22 w-auto object-contain max-w-[140px]"

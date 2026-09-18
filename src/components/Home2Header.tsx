@@ -14,7 +14,8 @@ import {
   Send,
   Building2,
   Users,
-  Award
+  Award,
+  ArrowUp
 } from 'lucide-react';
 import Link from 'next/link';
 import Script from 'next/script';
@@ -103,6 +104,19 @@ export const Home2Header: React.FC<{ solid?: boolean }> = ({ solid = false }) =>
     division: 'Irrigation Division',
     message: ''
   });
+
+
+
+  const [showTopButton, setShowTopButton] = useState(false);
+  
+    useEffect(() => {
+      const handleScroll = () => {
+        setShowTopButton(window.scrollY > 300);
+      };
+      handleScroll();
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
   // Lock scroll when mobile menu or modal is active
   useEffect(() => {
@@ -238,8 +252,8 @@ export const Home2Header: React.FC<{ solid?: boolean }> = ({ solid = false }) =>
             }`}
             aria-label="Kothari Group Home"
           >
-            <img
-              src="https://kotharigroupindia.com/img/Kothariblue_logo.png"
+            <img 
+              src="logos/Kothari Group.png"
               alt="Kothari Group Logo"
               referrerPolicy="no-referrer"
               className="h-14 sm:h-16 object-contain max-w-[150px] sm:max-w-[180px] transition-all duration-300"
@@ -633,11 +647,10 @@ className={`hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-me
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-[#111111] uppercase tracking-wider mb-1.5">
-                        Email Address *
+                        Email Address
                       </label>
                       <input
                         type="email"
-                        required
                         placeholder="name@company.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -651,7 +664,7 @@ className={`hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-me
                       <input
                         type="tel"
                         required
-                        placeholder="+91 98765 43210"
+                        placeholder="+91 "
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className="w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border border-[#DCEAF5] text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none focus:border-[#1575B3] focus:bg-white transition"
@@ -728,6 +741,32 @@ className={`hidden lg:inline-flex items-center gap-2 px-5 py-2.5 text-sm font-me
           </div>
         </div>
       )}
+
+
+
+
+       <Link
+              href="/become-dealer"
+        style={{ writingMode: 'vertical-rl' }}
+        className="fixed right-0 top-1/2 -translate-y-1/2 z-[45] bg-[#1575B3] hover:bg-[#0E588A] text-white font-extrabold text-[10px] sm:text-xs tracking-wider sm:tracking-widest uppercase py-4 sm:py-5 px-2.5 sm:px-3 shadow-[0_8px_30px_rgb(21,117,179,0.3)] hover:shadow-[0_8px_35px_rgb(21,117,179,0.5)] border-l-1 border-y border-[#fff] hover:border-[#fff] transition-all duration-300 ease-out active:scale-95 cursor-pointer select-none group flex items-center justify-center gap-2"
+      >
+        <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:scale-110 transition-transform duration-300 rotate-90" />
+        <span className="whitespace-nowrap">Become Dealer</span>
+      </Link>
+
+
+
+
+      {showTopButton && (
+                <button
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  aria-label="Back to top"
+                  title="Back to top"
+                  className="fixed bottom-6 right-6 z-[45] w-11 h-11 bg-[#1575B3] hover:bg-[#0E588A] text-white shadow-lg flex items-center justify-center transition-all"
+                >
+                  <ArrowUp className="w-5 h-5" />
+                </button>
+              )}
     </>
   );
 };

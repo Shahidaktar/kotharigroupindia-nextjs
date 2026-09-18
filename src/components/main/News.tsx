@@ -95,8 +95,8 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
         <Link href={item.href} className="block h-full">
           <article className="group relative bg-white border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl hover:border-[#1575B3] transition-all duration-500 overflow-hidden">
 
-            {/* Image Header */}
-            <div className="relative aspect-[16/10] overflow-hidden bg-slate-900 border-b border-slate-200">
+            {/* Image Header - full image, not cropped */}
+            <div className="relative overflow-hidden bg-slate-900 border-b border-slate-200">
               <img
                 src={item.image}
                 alt={item.title}
@@ -105,7 +105,7 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
                   const target = e.target as HTMLElement;
                   target.style.opacity = '0.3';
                 }}
-                className="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700 ease-out"
+                className="w-full h-auto object-contain opacity-90 group-hover:scale-105 transition-transform duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent opacity-80" />
 
@@ -122,11 +122,11 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
               <div className="space-y-3">
                 <div className="flex items-center gap-3 text-[11px] font-mono tracking-widest text-slate-500 uppercase font-medium">
                   <span>{item.date}</span>
-                  <span>•</span>
+                  {/* <span>•</span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-3 h-3 text-slate-400" />
                     {item.readTime}
-                  </span>
+                  </span> */}
                 </div>
 
                 <h3 className="text-lg font-serif font-normal text-slate-900 leading-snug tracking-tight group-hover:text-[#1575B3] transition-colors duration-300">
@@ -159,39 +159,11 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
   }) => {
     return (
     <div className="w-full text-slate-900">
-      
-      {/* ==================== BOTTOM SECTION: NEWS AND ARTICLES (Editorial List) ==================== */}
-      <section id="news" className="w-full py-16 sm:py-24 bg-[#F5F6F8] text-slate-900 scroll-mt-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          
-          {/* Section Header */}
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300">
-            <div>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight uppercase font-serif text-slate-900">
-                News and Articles
-              </h2>
-            </div>
-            <p className="text-xs sm:text-sm text-slate-600 max-w-md font-normal leading-relaxed">
-              Manufacturing expansions, corporate developments, and official press releases from Kothari Group.
-            </p>
-          </div>
 
-          {/* News Cards Grid — same as Blogs */}
-          <Reveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {newsItems.map((item, idx) => (
-                <NewsCard key={item.key} item={item} idx={idx} />
-              ))}
-            </div>
-          </Reveal>
-
-        </div>
-      </section>
-
-      {/* ==================== TOP SECTION: LATEST BLOGS (Grid Cards) ==================== */}
-      <section id="blogs" className="w-full bg-white pt-16 pb-16 sm:pt-20 sm:pb-20 border-b border-slate-300/70 scroll-mt-20">
+      {/* ==================== LATEST BLOGS (Grid Cards) ==================== */}
+      <section id="blogs" className="w-full bg-[#F5F6F8] pt-16 pb-16 sm:pt-20 sm:pb-20 border-b border-slate-300/70 scroll-mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
-          
+
           {/* Section Header */}
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300/80">
             <div>
@@ -208,6 +180,34 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
           <Reveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {blogPosts.map((item, idx) => (
+                <NewsCard key={item.key} item={item} idx={idx} />
+              ))}
+            </div>
+          </Reveal>
+
+        </div>
+      </section>
+
+      {/* ==================== NEWS AND ARTICLES (Editorial List) ==================== */}
+      <section id="news" className="w-full py-16 sm:py-24 bg-white text-slate-900 border-b border-slate-300/70 scroll-mt-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+
+          {/* Section Header */}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-slate-300">
+            <div>
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-light tracking-tight uppercase font-serif text-slate-900">
+                News and Articles
+              </h2>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-md font-normal leading-relaxed">
+              Manufacturing expansions, corporate developments, and official press releases from Kothari Group.
+            </p>
+          </div>
+
+          {/* News Cards Grid — same as Blogs */}
+          <Reveal>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {newsItems.map((item, idx) => (
                 <NewsCard key={item.key} item={item} idx={idx} />
               ))}
             </div>

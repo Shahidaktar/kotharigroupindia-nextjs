@@ -48,9 +48,9 @@ const slides = [
 
 const stats = [
   { value: '35+', label: 'Years of excellence' },
-  { value: '23+', label: 'States served pan-India' },
-  { value: '2L+', label: 'Farmers empowered *' },
-  { value: '800+', label: 'Channel partners *' },
+  { value: '8', label: 'Factories' },
+  { value: '14', label: 'Warehouses' },
+  { value: '10', label: `Countries' products exported` },
 ];
 
 export const Hero = () => {
@@ -137,7 +137,7 @@ export const Hero = () => {
         <div className="flex flex-col-reverse lg:flex-row justify-between items-stretch lg:items-end gap-6 sm:gap-8 lg:gap-12 w-full mt-auto">
           
           {/* Left Side: Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-10 w-full lg:w-auto border-t border-white/20 pt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 lg:gap-6 w-full lg:w-auto border-t border-white/20 pt-6">
             {stats.map((stat, idx) => (
               <div key={idx} className="flex flex-col">
                 <span className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight text-white drop-shadow-md">

@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useEffect, useState, useRef } from 'react';
-import { Menu, X, ChevronDown, ChevronRight, Phone, Mail, MapPin, Send, ArrowRight, Factory, Sprout, Users, Award, Building2 } from 'lucide-react';
+import { Menu, X, ChevronDown, ChevronRight, Phone, Mail, MapPin, Send, ArrowRight, Factory, Sprout, Users, Award, Building2, ArrowUp } from 'lucide-react';
 import Link from 'next/link';
 import Script from 'next/script';
+import { useRouter } from 'next/navigation';
 import {
   RECAPTCHA_SITE_KEY,
   getRecaptchaToken,
@@ -287,7 +288,12 @@ const divisionsMegaMenu = {
       image: "https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=1600&q=80",
       link: "/pipe-division",
       accent: "text-[#1575B3]",
-      badges: ["Plumbing & Fluid Systems", "Sewerage & Drainage", "Cable & Underground Ducting", "Borewell & Deep Extraction"],
+      badges: [
+        { label: 'Residential & Commercial Plumbing Solutions', link: '/solutions/residential-commercial-plumbing' },
+      { label: 'Urban Drainage & Sewerage Networks', link: '/solutions/urban-drainage-sewerage' },
+      { label: 'Groundwater Access Solutions', link: '/solutions/groundwater-access' },
+      { label: 'Farm Infrastructure Piping Solutions', link: '/solutions/farm-infrastructure-piping' },
+      ],
     },
     {
       id: "irrigation",
@@ -297,7 +303,12 @@ const divisionsMegaMenu = {
       image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1600&q=80",
       link: "/irrigation-division",
       accent: "text-emerald-700",
-      badges: ["Agri Supply Piping", "Precision Drip & Micro", "Sprinklers & Filtration", "Automated Farm Systems"],
+      badges: [
+          { label: 'Precision Irrigation', link: '/solutions/precision-irrigation' },
+      { label: 'Polyhouse (Greenhouse) Irrigation', link: '/solutions/polyhouse-greenhouse-irrigation' },
+      { label: 'Agricultural Field Irrigation', link: '/solutions/agricultural-field-irrigation' },
+      { label: 'Water Management', link: '/solutions/water-management' },
+      ],
     },
   ],
 };
@@ -374,6 +385,7 @@ const [aboutOpen, setAboutOpen] = useState(false);
 const [divOpen, setDivOpen] = useState(false);
   const division = solutionsMegaMenu.headline.includes('Irrigation') ? 'irrigation-division' : 'pipe-division';
   const isIrrigation = division === 'irrigation-division';
+  const router = useRouter();
   const defaultDivisionInterest = division === 'pipe-division' ? 'Pipe Division' : 'Irrigation Division';
 
   // Modal State
@@ -388,6 +400,18 @@ const [divOpen, setDivOpen] = useState(false);
     division: defaultDivisionInterest,
     message: '',
   });
+
+
+   const [showTopButton, setShowTopButton] = useState(false);
+    
+      useEffect(() => {
+        const handleScroll = () => {
+          setShowTopButton(window.scrollY > 300);
+        };
+        handleScroll();
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        return () => window.removeEventListener('scroll', handleScroll);
+      }, []);
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -539,7 +563,7 @@ const handleSegmentClick = (segIdx: number) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between gap-4">
           {/* Brand Logo */}
           <Link
-            href="/"
+            href={`/${isIrrigation ? 'irrigation-division' : 'pipe-division'}`}
             onClick={() => scrollToId('home')}
             className={`flex items-center shrink-0 transition-all duration-300 px-3 py-1 ${
               isSolid ? 'bg-transparent' : 'bg-white'
@@ -547,7 +571,7 @@ const handleSegmentClick = (segIdx: number) => {
             aria-label="Kothari Group Home"
           >
             <img
-              src="https://kotharigroupindia.com/img/Kothariblue_logo.png"
+              src={`${isIrrigation ? '/logos/Kothari Irrigation.png' : '/logos/Kothari Pipes.png'}`}
               alt="Kothari Group Logo"
               referrerPolicy="no-referrer"
               className="h-14 sm:h-16 object-contain max-w-[150px] sm:max-w-[180px] transition-all duration-300"
@@ -1074,12 +1098,18 @@ const handleSegmentClick = (segIdx: number) => {
 
            
                   <div className="flex flex-wrap gap-2 mb-6">
-                    {activeDiv.badges?.map((b: string) => (
+                    {activeDiv.badges?.map((b: { label: string; link: string }) => (
                       <span
-                        key={b}
-                        className="text-xs px-2.5 py-1 border bg-white/10 text-white border-white/20 backdrop-blur-sm"
+                        key={b.label}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          handleNavClick();
+                          router.push(b.link);
+                        }}
+                        className="text-xs px-2.5 py-1 border bg-white/10 text-white border-white/20 backdrop-blur-sm cursor-pointer hover:bg-white hover:text-slate-900 hover:border-white transition-colors"
                       >
-                        {b}
+                        {b.label}
                       </span>
                     ))}
                   </div>
@@ -1580,11 +1610,10 @@ const handleSegmentClick = (segIdx: number) => {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-medium text-[#111111] uppercase tracking-wider mb-1.5">
-                        Email Address *
+                        Email Address
                       </label>
                       <input
                         type="email"
-                        required
                         placeholder="name@company.com"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -1598,7 +1627,7 @@ const handleSegmentClick = (segIdx: number) => {
                       <input
                         type="tel"
                         required
-                        placeholder="+91 98765 43210"
+                        placeholder="+91 "
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         className={`w-full px-3.5 py-2.5 text-sm bg-[#F5F6F8] border ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} text-[#111111] placeholder:text-[#5F6B7A]/60 focus:outline-none ${isIrrigation ? 'focus:border-[#1E8E3E]' : 'focus:border-[#1575B3]'} focus:bg-white transition`}
@@ -1672,6 +1701,33 @@ const handleSegmentClick = (segIdx: number) => {
           </div>
         </div>
       )}
+
+
+
+
+      
+       <Link
+              href="/become-dealer"
+        style={{ writingMode: 'vertical-rl' }}
+        className={`fixed right-0 top-1/2 -translate-y-1/2 z-[45] ${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'}   ${isIrrigation ? 'shadow-[#1E8E3E]/15' : 'shadow-[#1575B3]/15'}  text-white font-extrabold text-[10px] sm:text-xs tracking-wider sm:tracking-widest uppercase py-4 sm:py-5 px-2.5 sm:px-3 shadow-[0_8px_30px_rgb(21,117,179,0.3)] hover:shadow-[0_8px_35px_rgb(21,117,179,0.5)] border-l-1 border-y ${isIrrigation ? 'border-[#fff]' : 'border-[#fff]'} hover:border-[#fff] transition-all duration-300 ease-out active:scale-95 cursor-pointer select-none group flex items-center justify-center gap-2`}
+      >
+        <Building2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white group-hover:scale-110 transition-transform duration-300 rotate-90" />
+        <span className="whitespace-nowrap">Become Dealer</span>
+      </Link>
+
+
+
+
+      {showTopButton && (
+                <button
+                  onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                  aria-label="Back to top"
+                  title="Back to top"
+                  className={ `fixed bottom-6 right-6 z-[45] w-11 h-11 ${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} ${isIrrigation ? 'hover:bg-[#145E2A]' : 'hover:bg-[#0E588A]'}  text-white shadow-lg flex items-center justify-center transition-all`}
+                >
+                  <ArrowUp className="w-5 h-5" />
+                </button>
+              )}
     </>
   );
 };
