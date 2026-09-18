@@ -101,7 +101,7 @@ export default function AppShell({ children }: AppShellProps) {
           <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#003F82]">
             <div className="flex flex-col items-center gap-6" style={{ animation: 'logoReveal 1s ease-out forwards' }}>
               <img
-                src="https://kotharigroupindia.com/img/kothari-logo.png"
+                src="/logos/Kothari Group_W.png"
                 alt="Kothari Group"
                 className="h-20 w-auto object-contain brightness-0 invert"
               />
