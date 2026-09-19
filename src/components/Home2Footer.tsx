@@ -19,12 +19,15 @@ const scrollToId = (id: string) => {
 
 const aboutLinks = [
   { label: 'Our Legacy', target: 'about-us' },
-  { label: 'Leadership', target: 'our-board' },
+  { label: 'Leadership', target: 'our-management' },
   { label: 'Career', target: 'career' },
   { label: 'Sustainability', target: 'sustainability' },
+  { label: 'News & Articles', target: '/press-release' },
   { label: 'Blogs', target: 'blogs' },
-  { label: 'News & Articles', target: 'news' },
-  {label: 'Contact Us', target: 'contact-us'},
+  
+{ label: 'Videos', target: '/KothariTV' },
+{ label: 'Success Stories', target: '/successstories' },
+{ label: 'Awards', target: '/awards' },
 ];
 
 const divisionLinks = [
@@ -33,7 +36,8 @@ const divisionLinks = [
 ];
 
 const supportLinks = [
-  { label: 'Downloads', target: 'downloads' },
+  { label: 'Download', target: '/Download' },
+  { label: 'Quality Policy', target: '/quality-policy' },
   { label: 'Become Dealer', target: 'become-dealer' },
   // { label: 'FAQs', target: 'home2-footer' },
   { label: 'Contact Us', target: 'contact-us' }

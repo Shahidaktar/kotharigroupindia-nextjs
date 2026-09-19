@@ -1,8 +1,64 @@
 // src/lib/wp-products.ts
 import { cache } from 'react';
+import { normalizeSlug as cleanSlug } from './slug';
 
 const WP_API =
   process.env.NEXT_PUBLIC_WP_API_URL || 'https://admin.kotharigroupindia.com/wp-json';
+
+// Auth for WooCommerce Admin API (server-side only — only called from server code).
+function getWooAuthHeaders(): HeadersInit {
+  const key = process.env.WOO_CONSUMER_KEY;
+  const secret = process.env.WOO_CONSUMER_SECRET;
+  if (!key || !secret) return {};
+  return {
+    Authorization: 'Basic ' + Buffer.from(`${key}:${secret}`).toString('base64'),
+  };
+}
+
+function normName(s: string): string {
+  return (s || '').toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
+// Join WooCommerce categories onto cards: slim authed request for
+// id/slug/categories only, matched by slug (fallback: normalized name).
+// Empty map when keys are missing or the request fails — cards fall back
+// to segment/division slugs, so listings never break.
+async function fetchWooCategoryMap(): Promise<Map<string, { slug: string; name: string }>> {
+  const map = new Map<string, { slug: string; name: string }>();
+  const apiBase =
+    process.env.NEXT_PUBLIC_WP_API_URL || 'https://admin.kotharigroupindia.com/wp-json';
+  if (!process.env.WOO_CONSUMER_KEY || !process.env.WOO_CONSUMER_SECRET) return map;
+  try {
+    const results = await Promise.allSettled(
+      [1, 2, 3].map(async (page) => {
+        const res = await fetchWithTimeout(
+          `${apiBase}/wc/v3/products?per_page=100&page=${page}&_fields=id,slug,categories`,
+          { headers: { ...getWooAuthHeaders() } }
+        );
+        if (!res.ok) return [];
+        const data = await res.json();
+        return Array.isArray(data) ? data : [];
+      })
+    );
+    for (const result of results) {
+      if (result.status !== 'fulfilled') continue;
+      for (const p of result.value) {
+        const cat = p.categories?.[0];
+        if (!cat?.slug) continue;
+        const entry = { slug: cleanSlug(String(cat.slug)), name: String(cat.name || '') };
+        if (p.slug && !map.has(String(p.slug))) map.set(String(p.slug), entry);
+        if (p.name) {
+          const nameKey = `name:${normName(stripHtml(String(p.name)))}`;
+          if (!map.has(nameKey)) map.set(nameKey, entry);
+        }
+      }
+    }
+    return map;
+  } catch (error) {
+    console.error('[wp-products] Woo category join failed:', error);
+    return map;
+  }
+}
 
 export interface WpProductCard {
   id: number;
@@ -14,6 +70,8 @@ export interface WpProductCard {
   divisionSlug: string;
   segmentName: string;
   segmentSlug: string;
+  categoryName: string;
+  categorySlug: string;
   featuredMediaId: number;
 }
 
@@ -46,10 +104,6 @@ async function fetchWithTimeout(
   throw lastError;
 }
 
-function cleanSlug(slug: string): string {
-  return slug.replace(/^\//, '').trim();
-}
-
 function chunk<T>(arr: T[], size: number): T[][] {
   const out: T[][] = [];
   for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
@@ -59,6 +113,8 @@ function chunk<T>(arr: T[], size: number): T[][] {
 function stripHtml(html: string): string {
   return html
     .replace(/<[^>]*>/g, ' ')
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_, n) => String.fromCharCode(parseInt(n, 16)))
     .replace(/&nbsp;|&#160;/g, ' ')
     .replace(/&amp;/g, '&')
     .replace(/\s+/g, ' ')
@@ -78,6 +134,8 @@ function mapCard(raw: any): WpProductCard {
     divisionSlug: cleanSlug(acf.division_slug ?? ''),
     segmentName: stripHtml(acf.segment_name ?? ''),
     segmentSlug: cleanSlug(acf.segment_slug ?? ''),
+    categoryName: stripHtml(acf.category_name ?? ''),
+    categorySlug: cleanSlug(acf.category_slug ?? ''),
     featuredMediaId: raw.featured_media ?? 0,
   };
 }
@@ -150,6 +208,21 @@ export const fetchWpProductCards = cache(async (): Promise<WpProductCard[]> => {
       const urls = await fetchMediaUrls(mediaIds);
       for (const c of all) {
         c.image = urls.get(c.featuredMediaId) ?? null;
+      }
+    }
+
+    // Join WooCommerce categories (slug + name) onto cards by product slug,
+    // falling back to normalized name. Cards keep segment/division slugs
+    // when no Woo category matches.
+    const wooCats = await fetchWooCategoryMap();
+    if (wooCats.size) {
+      for (const c of all) {
+        const hit =
+          wooCats.get(c.slug) ?? wooCats.get(`name:${normName(c.name)}`);
+        if (hit) {
+          c.categorySlug = hit.slug;
+          c.categoryName = hit.name;
+        }
       }
     }
   } catch (error) {

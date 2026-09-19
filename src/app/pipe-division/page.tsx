@@ -66,11 +66,11 @@ function PipeDivisionContent() {
     ],
     quickLinks: [
        { label: 'Our Legacy', target: 'about-us' },
-  { label: 'Leadership', target: 'our-board' },
+  { label: 'Leadership', target: 'our-management' },
   { label: 'Career', target: 'career' },
   { label: 'Sustainability', target: 'sustainability' },
   { label: 'Blogs', target: 'blogs' },
-  { label: 'News & Articles', target: 'news' },
+  { label: 'News & Articles', target: '/press-release' },
   {label: 'Contact Us', target: 'contact-us'},
     ],
     certifications: [

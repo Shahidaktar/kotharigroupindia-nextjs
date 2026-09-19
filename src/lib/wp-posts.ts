@@ -143,7 +143,7 @@ export const WP_CATEGORIES = {
   successStory: 180,
 } as const;
 
-// News tabs served on /news — resolved by slug so no hardcoded IDs are needed.
+// News tabs served on /press-release — resolved by slug so no hardcoded IDs are needed.
 export const NEWS_CATEGORY_SLUGS = ['events', 'announcements', 'updates'] as const;
 
 export const NEWS_CATEGORY_LABELS: Record<string, string> = {
@@ -233,7 +233,7 @@ const DIVISION_CARD_FALLBACK_IMAGE =
 // Server-safe: lives in lib so server components can call it.
 export function mapWpPostsToDivisionCards(
   posts: WpBlogPost[],
-  basePath: '/news' | '/blogs'
+  basePath: '/press-release' | '/blogs'
 ): import('@/components/NewsDivision').DivisionNewsCard[] {
   return posts.map((post) => ({
     key: `wp-${basePath.replace('/', '')}-${post.id}`,

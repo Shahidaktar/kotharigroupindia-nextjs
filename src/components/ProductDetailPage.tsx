@@ -476,7 +476,7 @@ export const ProductDetailPage: React.FC<{
                               {rel.name}
                             </h3>
                             <p className="text-xs text-slate-600 font-normal leading-relaxed line-clamp-3">
-                              {rel.shortDescription}
+                              {(rel as { tagline?: string }).tagline || rel.shortDescription}
                             </p>
                           </div>
                            <div className={`pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase ${tGroupHoverText} transition-colors`}>

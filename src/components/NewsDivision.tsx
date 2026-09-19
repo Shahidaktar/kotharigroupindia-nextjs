@@ -29,7 +29,7 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green'; newsItems?: Divi
       readTime: '5 MIN READ',
       category: 'CORPORATE',
       image: 'https://kotharigroupindia.com/img/images/Building_pipe.webp',
-      href: '/news'
+      href: '/press-release'
     },
     {
       key: 'NEWS-02',
@@ -39,7 +39,7 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green'; newsItems?: Divi
       readTime: '7 MIN READ',
       category: 'AGRI TECH',
       image: 'https://kotharigroupindia.com/img/images/Agri_Pipes.webp',
-      href: '/news'
+      href: '/press-release'
     },
     {
       key: 'NEWS-03',
@@ -49,7 +49,7 @@ export const NewsDivision: React.FC<{ theme?: 'blue' | 'green'; newsItems?: Divi
       readTime: '4 MIN READ',
       category: 'QUALITY',
       image: 'https://kotharigroupindia.com/img/images/Irrigation_products.webp',
-      href: '/news'
+      href: '/press-release'
     }
   ];
 

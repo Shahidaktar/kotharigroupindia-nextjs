@@ -50,7 +50,7 @@ export const NewsGallery: React.FC<NewsGalleryProps> = ({ news, categories }) =>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {filtered.map((item, i) => (
             <Reveal key={item.slug} delay={(i % 3) * 90} className="h-full">
-              <Link href={`/news/${item.slug}`} className="block h-full">
+              <Link href={`/press-release/${item.slug}`} className="block h-full">
                 <article className="group relative bg-white border border-slate-200/90 flex flex-col justify-between h-full shadow-sm hover:shadow-xl hover:border-[#1575B3] transition-all duration-500 overflow-hidden">
                   {/* Image Header - full image, not cropped */}
                   <div className="relative overflow-hidden bg-slate-900 border-b border-slate-200">

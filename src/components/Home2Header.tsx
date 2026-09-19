@@ -43,7 +43,7 @@ const aboutUsItems = [
     desc: 'Leadership steering our growth.',
     icon: Users,
     accent: 'text-[#1575B3] bg-[#F5FAFF]',
-    url: '/our-board'
+    url: '/our-management'
   },
   {
     name: 'Capabilities & More',
@@ -248,12 +248,12 @@ export const Home2Header: React.FC<{ solid?: boolean }> = ({ solid = false }) =>
             href="/"
             onClick={() => handleNav('home')}
             className={`flex items-center shrink-0 transition-all duration-300 px-3 py-1 ${
-              solidHeader ? 'bg-transparent' : 'bg-white'
+              solidHeader ? 'bg-transparent' : 'bg-transparent'
             }`}
             aria-label="Kothari Group Home"
           >
             <img 
-              src="logos/Kothari Group.png"
+              src="/logos/Kothari%20Group.png"
               alt="Kothari Group Logo"
               referrerPolicy="no-referrer"
               className="h-14 sm:h-16 object-contain max-w-[150px] sm:max-w-[180px] transition-all duration-300"

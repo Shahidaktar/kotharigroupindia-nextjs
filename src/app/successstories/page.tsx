@@ -26,7 +26,7 @@ async function SuccessStoriesContent({ page }: { page: number }) {
       {posts.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {posts.map((post, i) => (
-            <BlogCard key={post.id} post={post} index={i} basePath="/success-stories" />
+            <BlogCard key={post.id} post={post} index={i} basePath="/successstories" />
           ))}
         </div>
       ) : (
@@ -43,7 +43,7 @@ async function SuccessStoriesContent({ page }: { page: number }) {
 
       {posts.length > 0 && (
         <div className="pt-12 flex flex-col items-center gap-4">
-          <Pagination page={page} totalPages={totalPages} basePath="/success-stories" />
+            <Pagination page={page} totalPages={totalPages} basePath="/successstories" />
         </div>
       )}
     </>

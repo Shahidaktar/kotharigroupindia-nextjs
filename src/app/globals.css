@@ -473,3 +473,75 @@
   color: #0f172a;
   font-weight: 700;
 }
+/* Breathing map pin */
+@keyframes breathe {
+  0% { transform: translateX(-50%) scale(0.5); opacity: 0.8; }
+  100% { transform: translateX(-50%) scale(2.4); opacity: 0; }
+}
+.breath-div-icon {
+  background: none;
+  border: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.breath-wrap {
+  position: relative;
+  width: 26px;
+  height: 35px;
+}
+.breath-wrap .breath-pin {
+  position: relative;
+  z-index: 2;
+  width: 26px;
+  height: 35px;
+  display: block;
+}
+.breath-wrap .breath-ring {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: rgba(227, 6, 19, 0.45);
+  z-index: 1;
+  animation: breathe 1.8s ease-out infinite backwards;
+}
+
+@keyframes breatheCenter {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0.6; }
+  100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+}
+.breath-dot-wrap {
+  position: relative;
+  width: 20px;
+  height: 20px;
+}
+.breath-dot-wrap .breath-dot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 9999px;
+  background: #1575B3;
+  border: 2px solid #FFFFFF;
+  z-index: 2;
+}
+.breath-dot-wrap .breath-ring-blue {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  border-radius: 9999px;
+  background: rgba(21, 117, 179, 0.45);
+  z-index: 1;
+  animation: breatheCenter 2.4s ease-out infinite backwards;
+}

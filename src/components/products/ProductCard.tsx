@@ -14,7 +14,7 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0, theme = 'blue' }) => {
-  const href = `/${product.divisionSlug || 'products'}/${product.slug}`;
+  const href = `/${product.categorySlug || product.segmentSlug || product.divisionSlug || 'products'}/${product.slug}`;
   const isGreen = theme === 'green';
   const accentHoverBorder = isGreen ? 'hover:border-[#1E8E3E]' : 'hover:border-[#1575B3]';
   const accentGroupHoverText = isGreen ? 'group-hover:text-[#1E8E3E]' : 'group-hover:text-[#1575B3]';

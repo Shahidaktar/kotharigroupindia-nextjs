@@ -10,7 +10,7 @@ export async function GET() {
     const { blogs, events } = await fetchWpHomeNews();
     return NextResponse.json({
       blogs: mapWpPostsToDivisionCards(blogs, '/blogs'),
-      events: mapWpPostsToDivisionCards(events, '/news'),
+      events: mapWpPostsToDivisionCards(events, '/press-release'),
     });
   } catch {
     return NextResponse.json({ blogs: [], events: [] });

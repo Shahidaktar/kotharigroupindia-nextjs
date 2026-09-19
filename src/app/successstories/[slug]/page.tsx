@@ -49,7 +49,7 @@ async function Article({ slug }: { slug: string }) {
 
           {/* Back to blogs button - top left */}
           <Link
-            href="/success-stories"
+            href="/successstories"
             className="hidden absolute top-4 sm:top-6 left-4 sm:left-6 lg:left-10 sm:inline-flex items-center gap-2 bg-[#1575B3] backdrop-blur-md shadow-lg hover:text-white text-[11px] sm:text-xs font-mono font-semibold tracking-wider uppercase px-4 py-2.5 text-white hover:bg-[#00568f] hover:border-[#1575B3] transition-all duration-300"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -91,7 +91,7 @@ async function Article({ slug }: { slug: string }) {
           />
           <div className="mt-12 pt-8 border-t border-slate-200 flex justify-between items-center gap-4">
             <Link
-              href="/success-stories"
+              href="/successstories"
               className="inline-flex items-center gap-2 text-xs font-mono font-semibold tracking-wider uppercase text-[#1575B3] hover:text-[#0E588A] transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />

@@ -43,7 +43,7 @@ export default async function HomePage() {
         readTime: `${post.readMinutes} MIN READ`,
         category: post.category,
         image: post.featuredImage || FALLBACK_IMAGE,
-        href: `/news/${post.slug}`,
+        href: `/press-release/${post.slug}`,
         cta: 'READ NEWS',
       }))
     : undefined;

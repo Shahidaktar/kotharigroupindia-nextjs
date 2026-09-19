@@ -16,23 +16,35 @@ const PIN_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="26" height="35" 
 const PIN_URL = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(PIN_SVG)}`;
 
 function createPinMarker(Lmod: typeof L, facility: Facility): L.Marker {
-  const icon = Lmod.icon({
-    iconUrl: PIN_URL,
+  const icon = Lmod.divIcon({
+    className: 'breath-div-icon',
+    html: `<div class="breath-wrap"><span class="breath-ring"></span><img src="${PIN_URL}" alt="" class="breath-pin" /></div>`,
     iconSize: [26, 35],
     iconAnchor: [13, 34],
     tooltipAnchor: [0, -22],
   });
-  return Lmod.marker([facility.lat, facility.lng], { icon });
+  const marker = Lmod.marker([facility.lat, facility.lng], { icon });
+  (marker.options as unknown as Record<string, unknown>).isSelectedPin = true;
+  return marker;
 }
 
-function createDotMarker(Lmod: typeof L, facility: Facility): L.CircleMarker {
-  return Lmod.circleMarker([facility.lat, facility.lng], {
-    radius: 7,
-    weight: 2,
-    color: '#FFFFFF',
-    fillColor: '#9CA3AF',
-    fillOpacity: 1,
+function createDotMarker(Lmod: typeof L, facility: Facility, delayMs = 0): L.Marker {
+  const icon = Lmod.divIcon({
+    className: 'breath-div-icon',
+    html: `<div class="breath-dot-wrap"><span class="breath-ring-blue" style="animation-delay:${delayMs}ms"></span><span class="breath-dot"></span></div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    tooltipAnchor: [0, -12],
   });
+  const marker = Lmod.marker([facility.lat, facility.lng], { icon });
+  (marker.options as unknown as Record<string, unknown>).isSelectedPin = false;
+  return marker;
+}
+
+function isPinMarker(marker: L.Marker): boolean {
+  return (
+    (marker.options as unknown as Record<string, unknown>).isSelectedPin === true
+  );
 }
 
 type Category = 'All' | 'MANUFACTURING PLANT' | 'OFFICES' | 'WAREHOUSE';
@@ -240,7 +252,7 @@ export const FacilityMap: React.FC<{ bgColor?: string }> = ({ bgColor = 'white' 
 
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<L.Map | null>(null);
-  const markersRef = useRef<Record<string, L.Marker | L.CircleMarker>>({});
+  const markersRef = useRef<Record<string, L.Marker>>({});
   const selectedRef = useRef<Facility | null>(null);
   const [mapReady, setMapReady] = useState(false);
 
@@ -309,11 +321,11 @@ export const FacilityMap: React.FC<{ bgColor?: string }> = ({ bgColor = 'white' 
 
       const selectedFacility = selectedRef.current;
 
-      visibleFacilities.forEach((facility) => {
+      visibleFacilities.forEach((facility, idx) => {
         const isSelected = selectedFacility?.name === facility.name;
         const marker = isSelected
           ? createPinMarker(Lmod, facility)
-          : createDotMarker(Lmod, facility);
+          : createDotMarker(Lmod, facility, (idx % 6) * 350);
         marker
           .addTo(map)
           .bindTooltip(facility.name, { direction: 'top', offset: [0, -16], opacity: 1 });
@@ -335,16 +347,15 @@ export const FacilityMap: React.FC<{ bgColor?: string }> = ({ bgColor = 'white' 
       const isSelected = selected?.name === name;
 
       void (async () => {
-        const cName = (marker as L.Layer).constructor.name;
-        const needsRecreate =
-          isSelected ? cName !== 'Marker' : cName !== 'CircleMarker';
+        const needsRecreate = isPinMarker(marker) !== isSelected;
         if (!needsRecreate) return;
 
         const Lmod = await loadLeaflet();
+        const idx = visibleFacilities.findIndex((f) => f.name === name);
         marker.remove();
         const replacement = isSelected
           ? createPinMarker(Lmod, facility)
-          : createDotMarker(Lmod, facility);
+          : createDotMarker(Lmod, facility, (Math.max(idx, 0) % 6) * 350);
         replacement
           .addTo(map)
           .bindTooltip(facility.name, { direction: 'top', offset: [0, -16], opacity: 1 });
@@ -356,9 +367,7 @@ export const FacilityMap: React.FC<{ bgColor?: string }> = ({ bgColor = 'white' 
 
   const handleCategory = (cat: Category) => {
     setActiveCategory(cat);
-    const first =
-      cat === 'All' ? facilities[0] : facilities.find((f) => f.category === cat);
-    setSelected(first || null);
+    setSelected(null);
   };
 
   const selectedName = selected?.name || 'India';
@@ -389,25 +398,8 @@ export const FacilityMap: React.FC<{ bgColor?: string }> = ({ bgColor = 'white' 
             </div>
 
       <div className="flex flex-col lg:flex-row text-left border border-slate-200 shadow-sm bg-white h-auto lg:h-[640px] overflow-hidden">
-        {/* Sidebar */}
-        <div className="hidden lg:w-[26%] shrink-0 lg:overflow-y-auto border-b lg:border-b-0 lg:border-r border-[#DCEAF5] bg-[#F5F6F8] flex flex-col">
-          {/* Category tabs */}
-          <div className="p-4 border-b border-[#DCEAF5] bg-white sticky top-0 z-10 flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategory(cat)}
-                className={`px-3 py-1.5 text-[11px] font-mono tracking-[0.15em] uppercase font-semibold transition-colors ${
-                  activeCategory === cat
-                    ? 'bg-[#1575B3] text-white'
-                    : 'bg-white text-slate-600 border border-[#DCEAF5] hover:border-[#1575B3] hover:text-[#1575B3]'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-
+        {/* Left side — facility list for the selected tab */}
+        <div className="w-full lg:w-[26%] shrink-0 max-h-[380px] overflow-y-auto no-scrollbar lg:max-h-none lg:overflow-y-auto border-b lg:border-b-0 lg:border-r border-[#DCEAF5] bg-[#F5F6F8] flex flex-col">
           {/* Facility list */}
           <ul className="flex-1 list-none m-0 p-0">
             {visibleFacilities.length === 0 && (
@@ -449,7 +441,7 @@ export const FacilityMap: React.FC<{ bgColor?: string }> = ({ bgColor = 'white' 
           </ul>
         </div>
 
-        {/* Map */}
+        {/* Right side — map for the selected tab */}
         <div className="relative flex-1 bg-[#F5F6F8] flex flex-col">
           {/* Selected facility info bar */}
           <div className="px-5 py-3.5 border-b border-[#DCEAF5] bg-white flex items-center justify-between gap-4">

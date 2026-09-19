@@ -66,7 +66,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({ post, index, basePath = '/bl
 
             {/* Card CTA */}
             <div className="pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs font-mono font-semibold tracking-wider text-slate-800 uppercase group-hover:text-[#1575B3] transition-colors">
-              <span>{basePath === '/success-stories' ? 'READ STORY' : 'READ BLOG'}</span>
+              <span>{basePath === '/successstories' ? 'READ STORY' : 'READ BLOG'}</span>
               <ArrowUpRight className="w-4 h-4 transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform duration-300" />
             </div>
           </div>

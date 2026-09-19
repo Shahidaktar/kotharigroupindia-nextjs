@@ -24,7 +24,7 @@ const aboutMegaMenu = {
     },
     {
       title: 'Our Board',
-      url: '/our-board',
+      url: '/our-management',
       image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=600&q=80',
     },
     {
@@ -196,17 +196,17 @@ const resourcesMegaMenu = {
     },
     {
       title: 'News',
-      url: '/news',
+      url: '/press-release',
       image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=600&q=80',
     },
     {
       title: 'Success Story',
-      url: '/success-stories',
+      url: '/successstories',
       image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&w=600&q=80',
     },
     {
       title: 'Videos',
-      url: '/videos',
+      url: '/KothariTV',
       image: 'https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?auto=format&fit=crop&w=600&q=80',
     },
     {
@@ -220,7 +220,7 @@ const resourcesMegaMenu = {
 // export const pipeSolutionsMegaMenu = {
 //   category: "SOLUTIONS & SEGMENTS",
 //   headline: "Piping Solutions for Every Need",
-//   description: "Engineered piping systems for buildings, cities, farms and industry — built for flow, strength and longevity.",
+//   description: "Engineered piping systems for buildings, cities, farms and industry - built for flow, strength and longevity.",
 //   items: [
 //     {
 //       title: "Residential & Commercial Plumbing Solutions",
@@ -248,7 +248,7 @@ const resourcesMegaMenu = {
 // export const irrigationSolutionsMegaMenu = {
 //   category: "SOLUTIONS & SEGMENTS",
 //   headline: "Irrigation Solutions for Every Field",
-//   description: "Precision water management from greenhouse to open field — saving water, boosting yield.",
+//   description: "Precision water management from greenhouse to open field - saving water, boosting yield.",
 //   items: [
 //     {
 //       title: "Precision Irrigation",
@@ -275,10 +275,25 @@ const resourcesMegaMenu = {
 
 const solutionsMegaMenu = pipeSolutionsMegaMenu;
 
+const homeDivisionEntry = {
+  id: "home",
+  title: "Home",
+  shortDesc: "Back to the Kothari Group homepage.",
+  fullDesc: "Return to the Kothari Group homepage - explore both divisions and company updates.",
+  image: "/heronew.jpg",
+  link: "/",
+  accent: "text-[#1575B3]",
+  theme: "blue",
+  badges: [
+    { label: "Pipe Division", link: "/pipe-division" },
+    { label: "Irrigation Division", link: "/irrigation-division" },
+  ],
+};
+
 const divisionsMegaMenu = {
   category: "OUR DIVISIONS",
   headline: "Two engines. One purpose.",
-  description: "Piping infrastructure and precision irrigation — two specialized verticals engineered under one Kothari promise of flow, strength and scale.",
+  description: "Piping infrastructure and precision irrigation - two specialized verticals engineered under one Kothari promise of flow, strength and scale.",
   divisions: [
     {
       id: "pipes",
@@ -288,6 +303,7 @@ const divisionsMegaMenu = {
       image: "https://images.unsplash.com/photo-1542013936693-884638332954?auto=format&fit=crop&w=1600&q=80",
       link: "/pipe-division",
       accent: "text-[#1575B3]",
+      theme: "blue",
       badges: [
         { label: 'Residential & Commercial Plumbing Solutions', link: '/solutions/residential-commercial-plumbing' },
       { label: 'Urban Drainage & Sewerage Networks', link: '/solutions/urban-drainage-sewerage' },
@@ -303,6 +319,7 @@ const divisionsMegaMenu = {
       image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&w=1600&q=80",
       link: "/irrigation-division",
       accent: "text-emerald-700",
+      theme: "green",
       badges: [
           { label: 'Precision Irrigation', link: '/solutions/precision-irrigation' },
       { label: 'Polyhouse (Greenhouse) Irrigation', link: '/solutions/polyhouse-greenhouse-irrigation' },
@@ -341,7 +358,7 @@ const aboutUsItems = [
     desc: 'Leadership steering our growth.',
     icon: Users,
     accent: 'text-[#1575B3] bg-[#F5FAFF]',
-    url: '/our-board'
+    url: '/our-management'
   },
   {
     name: 'Capabilities & More',
@@ -387,6 +404,44 @@ const [divOpen, setDivOpen] = useState(false);
   const isIrrigation = division === 'irrigation-division';
   const router = useRouter();
   const defaultDivisionInterest = division === 'pipe-division' ? 'Pipe Division' : 'Irrigation Division';
+
+  // Live products mega menu from WordPress (segments + products).
+  // Static prop menu renders instantly and stays as fallback.
+  const [dynamicMenu, setDynamicMenu] = useState<any>(null);
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/products-menu')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!alive || !data) return;
+        const menu = isIrrigation ? data.irrigation : data.pipe;
+        if (menu?.segments?.length) {
+          setDynamicMenu(menu);
+          setActiveProductSegment(0);
+          setActiveProductCategory(0);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isIrrigation]);
+  const productsMenu = dynamicMenu || productsMegaMenu;
+  const safeProductSegment = Math.min(
+    activeProductSegment,
+    Math.max(0, (productsMenu.segments?.length || 1) - 1)
+  );
+
+  // Divisions menu shows Home (blueish) plus the OTHER division:
+  // on irrigation pages → Home + Pipe, on pipe pages → Home + Irrigation.
+  const visibleDivisions = [
+    homeDivisionEntry,
+    ...(isIrrigation
+      ? divisionsMegaMenu.divisions.filter((d: any) => d.id === 'pipes')
+      : divisionsMegaMenu.divisions.filter((d: any) => d.id === 'irrigation')),
+  ];
+  const defaultDivisionId = visibleDivisions[0]?.id;
 
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -566,7 +621,7 @@ const handleSegmentClick = (segIdx: number) => {
             href={`/${isIrrigation ? 'irrigation-division' : 'pipe-division'}`}
             onClick={() => scrollToId('home')}
             className={`flex items-center shrink-0 transition-all duration-300 px-3 py-1 ${
-              isSolid ? 'bg-transparent' : 'bg-white'
+              isSolid ? 'bg-transparent' : 'bg-transparent'
             }`}
             aria-label="Kothari Group Home"
           >
@@ -609,12 +664,12 @@ const handleSegmentClick = (segIdx: number) => {
     <div className={`absolute left-0 top-full w-full bg-white border-b ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} shadow-2xl py-6 px-8 sm:px-12 transition-all duration-300 z-50`}>
       <div className="max-w-7xl mx-auto grid grid-cols-12 gap-8 items-start">
 
-        {/* LEFT — Segments Sidebar */}
+        {/* LEFT - Segments Sidebar */}
         <div className={`col-span-4 border-r ${isIrrigation ? 'border-[#C8E6C9]' : 'border-[#DCEAF5]'} pr-8 flex flex-col justify-between h-full`}>
           <div>
             {/* Vertical Segment List */}
             <div className="flex flex-col gap-2">
-              {productsMegaMenu.segments.map((segment: any, segIdx: number) => {
+              {productsMenu.segments.map((segment: any, segIdx: number) => {
                 const isActive = activeProductSegment === segIdx;
                 return (
                   <button
@@ -642,21 +697,21 @@ const handleSegmentClick = (segIdx: number) => {
           </div>
         </div>
 
-        {/* RIGHT — All Products Belonging to Selected Segment */}
+        {/* RIGHT - All Products Belonging to Selected Segment */}
         <div className="col-span-8 pl-2">
           {/* Segment Name Above Product Grid */}
           <div className="mb-4 pb-2 border-b border-[#E2EBF3]">
             <h3 className={`text-lg font-bold ${isIrrigation ? 'text-[#1E8E3E]' : 'text-[#1575B3]'}`}>
-              {productsMegaMenu.segments[activeProductSegment]?.name}
+              {productsMenu.segments[safeProductSegment]?.name}
             </h3>
           </div>
 
           <div
-            key={`seg-products-${activeProductSegment}`}
+            key={`seg-products-${safeProductSegment}`}
             className="grid grid-cols-3 gap-5 max-h-[440px] overflow-y-auto pr-2 custom-scrollbar"
             style={{ animation: 'fadeSlideIn 0.25s ease-out' }}
           >
-            {productsMegaMenu.segments[activeProductSegment]?.categories.flatMap(
+            {productsMenu.segments[safeProductSegment]?.categories.flatMap(
               (category: any) => category.products
             ).map((product: any, idx: number) => (
               <Link
@@ -776,7 +831,7 @@ const handleSegmentClick = (segIdx: number) => {
   )}
 </div>
 
-  <Link href={`/applications?division=${division}`} className={navItemStyle}>
+  <Link href={isIrrigation ? '/irrigation-applications' : '/pipe-applications'} className={navItemStyle}>
                 Applications
               </Link>
     
@@ -1022,8 +1077,8 @@ const handleSegmentClick = (segIdx: number) => {
             </p>
 
             <div className="space-y-3">
-              {divisionsMegaMenu.divisions.map((div: any) => {
-                const isActive = (hoveredDivision || divisionsMegaMenu.divisions[0].id) === div.id;
+              {visibleDivisions.map((div: any) => {
+                const isActive = (hoveredDivision || defaultDivisionId) === div.id;
                 return (
                   <Link
                     key={div.id}
@@ -1032,21 +1087,21 @@ const handleSegmentClick = (segIdx: number) => {
                     onMouseEnter={() => setHoveredDivision(div.id)}
                     className={`group flex items-center justify-between p-4 border transition-all duration-300 ${
                       isActive
-                        ? div.id === 'pipes'
+                        ? div.theme === 'blue'
                           ? 'border-[#1575B3] bg-[#F5F9FC] shadow-sm'
                           : 'border-[#1E8E3E] bg-[#EFF7F0] shadow-sm'
                         : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50'
                     }`}
                   >
                     <div>
-                      <h4 className={`text-base font-semibold ${isActive ? (div.id === 'pipes' ? 'text-[#1575B3]' : 'text-[#1E8E3E]') : 'text-[#111111]'}`}>
+                      <h4 className={`text-base font-semibold ${isActive ? (div.theme === 'blue' ? 'text-[#1575B3]' : 'text-[#1E8E3E]') : 'text-[#111111]'}`}>
                         {div.title}
                       </h4>
                       <p className="text-sm text-[#5F6B7A] line-clamp-1 mt-0.5">
                         {div.shortDesc}
                       </p>
                     </div>
-                    <ChevronRight className={`w-5 h-5 transition-transform ${isActive ? `${div.id === 'pipes' ? 'text-[#1575B3]' : 'text-[#1E8E3E]'} translate-x-1` : 'text-[#5F6B7A]'}`} />
+                    <ChevronRight className={`w-5 h-5 transition-transform ${isActive ? `${div.theme === 'blue' ? 'text-[#1575B3]' : 'text-[#1E8E3E]'} translate-x-1` : 'text-[#5F6B7A]'}`} />
                   </Link>
                 );
               })}
@@ -1058,9 +1113,9 @@ const handleSegmentClick = (segIdx: number) => {
 
         <div className="col-span-7">
           {(() => {
-            const activeDiv = divisionsMegaMenu.divisions.find(
-              (d: any) => d.id === (hoveredDivision || divisionsMegaMenu.divisions[0].id)
-            ) || divisionsMegaMenu.divisions[0];
+            const activeDiv = visibleDivisions.find(
+              (d: any) => d.id === (hoveredDivision || defaultDivisionId)
+            ) || visibleDivisions[0];
 
             return (
               <Link
@@ -1077,7 +1132,7 @@ const handleSegmentClick = (segIdx: number) => {
             
                 <div
                   className={`absolute inset-0 transition-opacity duration-500 ${
-                    activeDiv.id === 'pipes'
+                    activeDiv.theme === 'blue'
                       ? 'bg-gradient-to-t from-[#0E588A]/95 via-[#1575B3]/75 to-slate-950/40'
                       : 'bg-gradient-to-t from-emerald-950/95 via-teal-900/75 to-slate-950/40'
                   }`}
@@ -1085,9 +1140,9 @@ const handleSegmentClick = (segIdx: number) => {
 
              
                 <div className="relative z-10 p-8 flex flex-col justify-end h-full">
-                  <span className="text-xs font-bold uppercase tracking-wider text-sky-200 mb-1">
+                  {/* <span className="text-xs font-bold uppercase tracking-wider text-sky-200 mb-1">
                     Selected Division
-                  </span>
+                  </span> */}
                   <h4 className="text-4xl font-normal text-white leading-snug mb-3">
                     {activeDiv.title}
                   </h4>
@@ -1117,7 +1172,7 @@ const handleSegmentClick = (segIdx: number) => {
               
                   <span
                     className={`inline-flex items-center gap-2 text-sm font-semibold ${
-                      activeDiv.id === 'pipes' ? 'text-sky-200' : 'text-emerald-200'
+                      activeDiv.theme === 'blue' ? 'text-sky-200' : 'text-emerald-200'
                     }`}
                   >
                     <span>Explore {activeDiv.title}</span>
@@ -1245,7 +1300,7 @@ const handleSegmentClick = (segIdx: number) => {
   </button>
   {activeDropdown === 'products' && (
     <div className="pl-4 space-y-3 pt-1 pb-2">
-      {productsMegaMenu.segments.map((segment: any, segIdx: number) => (
+      {productsMenu.segments.map((segment: any, segIdx: number) => (
         <div key={segIdx}>
           <button
             onClick={() => {
@@ -1327,7 +1382,7 @@ const handleSegmentClick = (segIdx: number) => {
 
 
                <Link
-                href={`/applications?division=${division}`}
+                href={isIrrigation ? '/irrigation-applications' : '/pipe-applications'}
                 onClick={handleNavClick}
                 className={`block w-full px-4 py-3 text-base font-medium text-[#111111] ${isIrrigation ? 'hover:bg-[#EAF6EE]' : 'hover:bg-[#F5FAFF]'} ${isIrrigation ? 'hover:text-[#1E8E3E]' : 'hover:text-[#1575B3]'} transition`}
               >
@@ -1450,7 +1505,7 @@ const handleSegmentClick = (segIdx: number) => {
 
 
 
-                 {/* Mobile Divisions — same as Home2Header */}
+                 {/* Mobile Divisions - same as Home2Header */}
               <div className="space-y-1 pt-2">
                 <button
                   onClick={() => setActiveDropdown(activeDropdown === 'divisions' ? null : 'divisions')}
@@ -1674,7 +1729,7 @@ const handleSegmentClick = (segIdx: number) => {
                   )}
                   {RECAPTCHA_SITE_KEY && (
                     <p className="text-[11px] text-slate-400 leading-relaxed">
-                      Protected by reCAPTCHA — the Google{' '}
+                      Protected by reCAPTCHA - the Google{' '}
                       <a
                         href="https://policies.google.com/privacy"
                         target="_blank"

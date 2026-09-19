@@ -62,7 +62,7 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
       readTime: '5 MIN READ',
       category: 'CORPORATE',
       image: 'https://kotharigroupindia.com/img/images/Building_pipe.webp',
-      href: '/news',
+      href: '/press-release',
       cta: 'READ NEWS',
     },
     {
@@ -73,7 +73,7 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
       readTime: '7 MIN READ',
       category: 'AGRI TECH',
       image: 'https://kotharigroupindia.com/img/images/Agri_Pipes.webp',
-      href: '/news',
+      href: '/press-release',
       cta: 'READ NEWS',
     },
     {
@@ -84,7 +84,7 @@ const FALLBACK_BLOGS: HomeNewsCard[] = [
       readTime: '4 MIN READ',
       category: 'QUALITY',
       image: 'https://kotharigroupindia.com/img/images/Irrigation_products.webp',
-      href: '/news',
+      href: '/press-release',
       cta: 'READ NEWS',
     },
   ];

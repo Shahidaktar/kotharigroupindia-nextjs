@@ -1,5 +1,6 @@
 // src/lib/wp-product.ts
 import { cache } from 'react';
+import { normalizeSlug as cleanSlug } from './slug';
 
 const WP_API = process.env.NEXT_PUBLIC_WP_API_URL;
 const WOO_ADMIN = `${WP_API}/wc/v3/products`;
@@ -76,12 +77,6 @@ function getMetaArray(meta: { key: string; value: unknown }[] | undefined, key: 
   return [];
 }
 
-// Helper: remove leading slash from slugs if entered in WP admin
-function cleanSlug(slug: string): string {
-  if (!slug) return '';
-  return slug.replace(/^\//, '').trim();
-}
-
 // Helper: Convert YouTube Watch URL to Embed URL
 function getYouTubeEmbedUrl(url: string): string {
   if (!url) return '';
@@ -100,6 +95,7 @@ export interface WpProductData {
   name: string;
   slug: string;
   category: string;
+  categorySlug: string;
   
   // New Organization Fields
   divisionName: string;
@@ -144,6 +140,7 @@ export interface WpProductData {
     slug: string;
     image: string;
     shortDescription: string;
+    tagline: string;
     category: string;
     categorySlug: string;
   }[];
@@ -229,6 +226,7 @@ export const fetchWpProductBySlug = cache(async (slug: string): Promise<WpProduc
       }));
 
     const category = raw.categories?.[0]?.name || '';
+    const categorySlug = cleanSlug(raw.categories?.[0]?.slug || '');
     const descriptionHtml = raw.description || '';
 
 
@@ -277,6 +275,7 @@ export const fetchWpProductBySlug = cache(async (slug: string): Promise<WpProduc
       name: raw.name,
       slug: raw.slug,
       category,
+      categorySlug,
       divisionName,
       divisionSlug,
       segmentName,
@@ -337,6 +336,7 @@ async function fetchRelatedProductsBySegment(
           slug: p.slug,
           image: p.images?.[0]?.src || '',
           shortDescription: p.short_description?.replace(/<[^>]*>/g, '').slice(0, 120) || '',
+          tagline: getMetaString(pMeta, 'tagline'),
           category: p.categories?.[0]?.name || '',
           categorySlug: p.categories?.[0]?.slug || '',
         });
@@ -379,12 +379,14 @@ async function fetchRelatedProductsByIds(
       images: { src: string }[];
       short_description: string;
       categories: { name: string; slug: string }[];
+      meta_data?: { key: string; value: unknown }[];
     }) => ({
       id: p.id,
       name: p.name,
       slug: p.slug,
       image: p.images?.[0]?.src || '',
       shortDescription: p.short_description?.replace(/<[^>]*>/g, '').slice(0, 120) || '',
+      tagline: getMetaString(p.meta_data, 'tagline'),
       category: p.categories?.[0]?.name || '',
       categorySlug: p.categories?.[0]?.slug || '',
     }));

@@ -28,6 +28,19 @@ export function findProductBySlugs(catSlug: string, prodSlug: string, products: 
   );
 }
 
+// Normalize raw WordPress slugs which may carry leading slashes,
+// spaces or "&" (e.g. "/plumbing-pipes-&-fittings" → "plumbing-pipes-and-fittings").
+export function normalizeSlug(slug?: string | null): string {
+  return (slug || '')
+    .trim()
+    .replace(/^\/+|\/+$/g, '')
+    .replace(/&/g, 'and')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .toLowerCase();
+}
+
 // Category slugs served under the Pipe Division chrome (blue theme).
 // Any other category slug falls under the Irrigation Division (green theme).
 // Keep in sync with the division menus in src/data/products.ts.
@@ -48,9 +61,22 @@ export const PIPE_CATEGORY_SLUGS = [
   'plumbing-pipes-and-fittings',
   'agri-pipes-and-fittings',
   'plumbing-pipes-fittings',
+  // WordPress segment slugs (normalized) belonging to Pipe Division.
+  'sewerage-drainage-pipes-and-fittings',
+  'flexible-hose-pipes',
+  'borewell-solution',
+  'agriculture-pipes-and-fittings',
 ];
 
 export function isPipeCategorySlug(catSlug?: string | null): boolean {
   if (!catSlug) return true;
-  return PIPE_CATEGORY_SLUGS.includes(catSlug);
+  return PIPE_CATEGORY_SLUGS.includes(normalizeSlug(catSlug));
+}
+
+// Authoritative division check from a WP division slug
+// (e.g. "/pipe-division" or "pipe-division"). Unknown/empty → pipe,
+// preserving the current default chrome.
+export function isPipeDivisionSlug(divisionSlug?: string | null): boolean {
+  if (!divisionSlug) return true;
+  return normalizeSlug(divisionSlug) !== 'irrigation-division';
 }

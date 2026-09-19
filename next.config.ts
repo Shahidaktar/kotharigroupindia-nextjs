@@ -19,6 +19,56 @@ const nextConfig: NextConfig = {
         destination: '/irrigation-division/:path*',
         permanent: true,
       },
+      {
+        source: '/news',
+        destination: '/press-release',
+        permanent: true,
+      },
+      {
+        source: '/news/:path*',
+        destination: '/press-release/:path*',
+        permanent: true,
+      },
+      {
+        source: '/our-board',
+        destination: '/our-management',
+        permanent: true,
+      },
+      {
+        source: '/our-board/:path*',
+        destination: '/our-management/:path*',
+        permanent: true,
+      },
+      {
+        source: '/videos',
+        destination: '/KothariTV',
+        permanent: true,
+      },
+      {
+        source: '/videos/:path*',
+        destination: '/KothariTV/:path*',
+        permanent: true,
+      },
+      {
+        source: '/success-stories',
+        destination: '/successstories',
+        permanent: true,
+      },
+      {
+        source: '/success-stories/:path*',
+        destination: '/successstories/:path*',
+        permanent: true,
+      },
+      {
+        source: '/downloads',
+        destination: '/Download',
+        permanent: true,
+      },
+      {
+        source: '/downloads/:path*',
+        destination: '/Download/:path*',
+        permanent: true,
+      },
     ];
   },
 };
