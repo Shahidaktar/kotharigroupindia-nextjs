@@ -42,6 +42,24 @@ const DEFAULT_SOCIAL_GROUPS = [
   },
 ];
 
+ const pipepProductSegments = [
+   {label:'Agriculture Pipes & Fittings',target:"/products?segment=agriculture-pipes-and-fittings"},
+{label:'Flexible Hose Pipes',target:"/products?segment=flexible-hose-pipes"},
+{label:'Sewerage Drainage Pipes and Fittings',target:"/products?segment=sewerage-drainage-pipes-and-fittings"},
+{label:'Borewell Solution',target:"/products?segment=borewell-solution"},
+{label:'Plumbing Pipes & Fittings',target:"/products?segment=plumbing-pipes-and-fittings"},
+{label:'Cable Protection',target:"/products?segment=cable-protection"}
+    
+    ]
+ const irrigationProductSegments = [
+{label:'Drip Irrigation System',target:"/products?segment=drip-irrigation-system"},
+{label:'Automation System',target:"/products?segment=automation-system"},
+{label:'Sprinkler Irrigration system',target:"/products?segment=sprinkler-irrigration-system"},
+{label:'Filters & Injectors',target:"/products?segment=filters-and-injectors"},
+{label:'Micro & Mini Sprinklers',target:"/products?segment=micro-and-mini-sprinklers"},
+{label:'Turnkey Projects',target:"/products?segment=turnkey-projects"}
+    ]
+
 export const Footer: React.FC<FooterProps> = ({
   onOpenQuoteModal,
   onSelectSection,
@@ -108,6 +126,8 @@ export const Footer: React.FC<FooterProps> = ({
     </div>
   );
 
+  const productSegments = isIrrigation? irrigationProductSegments: pipepProductSegments;
+
   return (
     <footer className={`${isIrrigation ? 'bg-[#1E8E3E]' : 'bg-[#1575B3]'} pt-16 pb-8 text-left text-white`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
@@ -157,11 +177,11 @@ export const Footer: React.FC<FooterProps> = ({
               Core Segments
             </h4>
             <ul className="space-y-2 font-light text-white/80">
-              {footerData?.productSegments?.map((segment: any, index: number) => (
+              {productSegments?.map((segment: any, index: number) => (
                 <li key={index}>
-                  <button onClick={() => onSelectSection?.('categories')} className="hover:text-white hover:underline transition text-left">
-                    {segment}
-                  </button>
+                  <Link href={segment.target} className="hover:text-white hover:underline transition text-left">
+                    {segment.label}
+                  </Link>
                 </li>
               ))}
             </ul>
