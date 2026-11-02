@@ -46,8 +46,8 @@ export interface ProductsDivisionMenu {
 const SEGMENT_PRODUCT_PRIORITY: Record<string, string[]> = {
   'sprinkler-irrigation-system': [
     'sprinklers-pipes-qcpe',
-    'raingun-and-accessories',
     'metal-sprinkler',
+    'raingun-and-accessories',
     'hdpe-pipe-sprinkler-set',
     'pop-up-spray-heads-and-rotors',
     'quick-coupling-valve-qcv',
