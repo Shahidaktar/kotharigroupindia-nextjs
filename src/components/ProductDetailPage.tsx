@@ -493,7 +493,7 @@ export const ProductDetailPage: React.FC<{
                 </h2>
               </div>
               <p className="text-xs sm:text-base text-slate-600 max-w-md font-normal leading-relaxed">
-                Watch Kothari CPVC in action — manufacturing precision to on-site installation.
+                Watch Kothari product in action — manufacturing precision to on-site installation.
               </p>
             </div>
             <div className="relative aspect-video w-full max-w-4xl mx-auto bg-slate-950 overflow-hidden border border-slate-200 shadow-lg">

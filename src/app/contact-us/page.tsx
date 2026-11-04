@@ -54,10 +54,10 @@ const contactCards: {
     icon: Phone,
     title: 'Call us',
     rows: [
-      { value: '+91-9307309581' },
-      { value: '+91-9307309582' },
-      { value: '+91-9307309583' },
-    ],
+  { value: `For General Enquiry :\u00A0\u00A0 +91-9307309581` },
+  { value: `For Irrigation Enquiry :\u00A0\u00A0 +91-9307309582` },
+  { value: `For Pipe Enquiry :\u00A0\u00A0 +91-9307309583` },
+],
   },
 ];
 

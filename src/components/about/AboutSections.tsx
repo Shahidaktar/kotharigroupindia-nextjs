@@ -103,9 +103,9 @@ export const AboutHero2: React.FC = () => {
       {/* Background Image Container */}
       <div className="absolute inset-0 z-0">
         <picture className="absolute inset-0">
-          <source media="(max-width: 639px)" srcSet={'/banners/capability/Capabilities-&-Infrastructure_banner-mobile.jpg'} />
+          <source media="(max-width: 639px)" srcSet={'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Capabilities_banner-Verticle.webp'} />
           <img
-            src={'https://admin.kotharigroupindia.com/wp-content/uploads/2026/10/Capabilities_banner.jpg'}
+            src={'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Capabilities_banner.webp'}
             alt="About Kothari Group"
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover object-center"
@@ -244,7 +244,7 @@ export const AboutVisionMission: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-10">
         <SectionHeader
           title="Vision & Mission"
-          description="To create a world where water management is effective, practical, and economical."
+          description=""
         />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
           {aboutVisionMission.map((item, idx) => {

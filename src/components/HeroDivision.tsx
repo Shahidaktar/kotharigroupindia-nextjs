@@ -92,7 +92,7 @@ export const HeroDivision = ({heroData}: {heroData: any}) => {
       <div className="absolute inset-0 z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full pt-14 sm:pt-20 pb-4 sm:pb-6 lg:pb-8 grid grid-rows-[auto_1fr_auto] gap-3.5 sm:gap-6">
 
         {/* Row 1: Breadcrumb */}
-        <nav
+        {/* <nav
           aria-label="Breadcrumb"
           className="pt-4 sm:pt-10 w-full flex items-center gap-1.5 text-[11px] font-mono tracking-widest uppercase text-white/60 overflow-x-auto whitespace-nowrap shrink-0"
         >
@@ -103,7 +103,7 @@ export const HeroDivision = ({heroData}: {heroData: any}) => {
           <span className="text-white">
             {isIrrigationDivision ? 'Irrigation Division' : 'Pipe Division'}
           </span>
-        </nav>
+        </nav> */}
 
         {/* TOP/MIDDLE SECTION: Row 2 takes 1fr (all remaining space) & centers content */}
         <div className="w-full flex items-center justify-center">

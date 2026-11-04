@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowRight, X } from 'lucide-react';
+import { ArrowRight, ChevronRight, X } from 'lucide-react';
 
 interface DivisionOverviewProps {
   eyebrow?: string;
@@ -21,6 +22,7 @@ export const DivisionOverview: React.FC<DivisionOverviewProps> = ({
   const headingColor = accent === 'green' ? 'text-[#1E8E3E]' : 'text-[#1575B3]';
   const buttonColor = accent === 'green' ? '#1E8E3E' : '#1575B3';
   const [isOpen, setIsOpen] = useState(false);
+  const isirrigation = heading.includes('Irrigation');
 
   const handleKeyDown = useCallback((event: KeyboardEvent) => {
     if (event.key === 'Escape') setIsOpen(false);
@@ -45,6 +47,20 @@ export const DivisionOverview: React.FC<DivisionOverviewProps> = ({
   return (
     <section className="w-full bg-white py-14 sm:py-20 border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Breadcrumb */}
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1.5 text-[11px] font-mono tracking-widest uppercase text-slate-500 overflow-x-auto whitespace-nowrap pb-6"
+        >
+          <Link href="/" className="hover:text-[#1575B3] transition-colors">
+            Home
+          </Link>
+          <ChevronRight className="w-3 h-3 text-slate-400 shrink-0" />
+          <span className="text-slate-900 font-semibold">
+            {isirrigation ? 'Irrigation Division' : 'Pipe Division'}
+          </span>
+        </nav>
+
         {/* Heading */}
         <div className="pb-8 border-b border-slate-300/80 mb-10">
           <h2 className={`text-3xl sm:text-4xl lg:text-[42px] font-light tracking-tight font-serif ${headingColor} leading-tight max-w-7xl`}>

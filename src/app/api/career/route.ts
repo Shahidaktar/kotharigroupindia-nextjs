@@ -58,8 +58,7 @@ export async function POST(req: Request) {
     !noticePeriod ||
     !position ||
     !location ||
-    !qualification ||
-    !linkdin
+    !qualification
   ) {
     return NextResponse.json(
       { ok: false, error: 'All fields are required.' },
@@ -147,7 +146,7 @@ export async function POST(req: Request) {
     ['Application For', position],
     ['Location', location],
     ['Qualification', qualification],
-    ['LinkedIn', linkdin],
+    ...(linkdin ? ([['LinkedIn', linkdin]] as [string, string][]) : []),
   ];
   const text = [
     ...rows.map(([k, v]) => `${k}: ${v}`),

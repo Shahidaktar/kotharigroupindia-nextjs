@@ -65,7 +65,7 @@ export const irrigationKnowledgeItems: KnowledgeItem[] = [
     title: 'Sugarcane Guides',
     description:
       'Expert Sugarcane cultivation guidance on spacing, irrigation, fertigation, and pest management for better yield and cane quality.',
-    image: '/knowledge/Suger-cane.png',
+    image: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Sugarcane.jpg',
     lang: [
       {
         English: `https://admin.kotharigroupindia.com/wp-content/uploads/2026/09/KCD_5309_K-I-CROP-SUGARCANE-ENGLISH-1-compressed.pdf`,
@@ -78,7 +78,7 @@ export const irrigationKnowledgeItems: KnowledgeItem[] = [
     title: 'Papaya Guide',
     description:
       'Expert Papaya cultivation guidance on spacing, irrigation, fertigation, and pest management for better yield and fruit quality.',
-    image: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/09/pexels-robin-ramos-3194014-6419249.jpg',
+    image: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Papaya.jpg',
     lang: [
       {
         English: `https://admin.kotharigroupindia.com/wp-content/uploads/2026/09/KCD_5311_K-I-CROP-PAPAYA-ENGLISH.pdf`,

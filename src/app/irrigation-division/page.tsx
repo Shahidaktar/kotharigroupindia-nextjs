@@ -128,7 +128,7 @@ function AgricultureDivisionContent() {
     {
       title: 'Banana Guides',
       description: 'Get familiar with the information on growing banana plants, spacing, irrigation process, fertigation, and combating pests. ',
-      image: 'https://images.pexels.com/photos/4399936/pexels-photo-4399936.jpeg',
+      image: '/knowledge/Banana.png',
       link: '#banana'
     },
     {

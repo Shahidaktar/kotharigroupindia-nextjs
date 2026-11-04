@@ -372,11 +372,10 @@ export const ApplyModal: React.FC<ApplyModalProps> = ({
               </div>
 
               <div className={fieldWrap}>
-                <label className={labelClass}>LinkedIn Profile URL *</label>
+                <label className={labelClass}>LinkedIn Profile URL (Optional)</label>
                 <input
                   type="url"
                   name="linkdin"
-                  required
                   placeholder="https://www.linkedin.com/in/your-profile"
                   value={form.linkdin}
                   onChange={handleChange}
