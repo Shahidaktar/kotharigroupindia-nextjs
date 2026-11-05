@@ -161,7 +161,8 @@ export const Footer: React.FC<FooterProps> = ({
               </a>
               <div className="flex items-center gap-2">
                 <PhoneCall className="w-4 h-4 text-white shrink-0" />
-                <span>Toll-Free Helpline: {footerData?.contact?.phone}</span>
+                {/* <span>Toll-Free Helpline: {footerData?.contact?.phone}</span> */}
+          <span>{isIrrigation?  `For Irrigation Enquiry: +91-9307309582` : `For Pipe Enquiry: +91-9307309583`}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-white shrink-0" />

@@ -53,7 +53,7 @@ export const youngLeadership = {
       linkedin: true,
       linkedinUrl: 'https://www.linkedin.com/in/amol-paliya-7a47a7188',
       readMoreContent: `Mr. Amol Paliya has been a part of Kothari Group since 1997 and has a big amount of expertise in the field of commerce. He possesses an amazing talent to implement operational efficiency and strategic planning of business. `,
-      imageUrl: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/10/Amol-Sir.jpg',
+      imageUrl: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/amol.png',
     }, 
     {
       name: 'Mr. Ashish Kothari',
@@ -61,7 +61,7 @@ export const youngLeadership = {
       linkedin: true,
       linkedinUrl: 'https://www.linkedin.com/in/ashish-kothari-42940616',
       readMoreContent: `Mr. Ashish Kothari has technical knowledge. He is an engineer and MBA from Symbiosis College, Pune. He has worked with Kothari Group since 2009 and has contributed to the irrigation operations and procurement department of the company.`,
-      imageUrl: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/10/Ashish-Sir.jpg',
+      imageUrl: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Ashish-kothari.png',
     },
     {
       name: 'Mr. Pushkaraj Kothari',
@@ -93,7 +93,7 @@ export const youngLeadership = {
       linkedin: true,
       linkedinUrl: 'https://www.linkedin.com/in/sourabh-kothari-0112561b5',
       readMoreContent: `Mr. Sourabh Kothari has been working with Kothari Group for 5 years, using his expertise gained during his previous experience in Singapore. His contribution to finance and project execution is highly important in making the company effective and satisfying its customers. `,
-      imageUrl: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/10/Sourabh-Sir.jpg',
+      imageUrl: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Sourabh-sir.png',
     },
   ] as BoardMember[],
 };
