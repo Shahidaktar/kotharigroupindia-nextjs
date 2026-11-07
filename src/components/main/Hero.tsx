@@ -38,8 +38,8 @@ const slides = [
     cardDescription: 'Quality-engineered pipes Manufactured for every water management.',
   },
   {
-    bgImage:'https://admin.kotharigroupindia.com/wp-content/uploads/2026/10/Home-banner-3.jpg',
-    mobileBg: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/10/Home-banner-3_Mobile.jpg',
+    bgImage:'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Capabilities_banner.webp',
+    mobileBg: 'https://admin.kotharigroupindia.com/wp-content/uploads/2026/11/Capabilities_banner-Verticle.webp',
     cardImage:'/banners/home/Home-banner-3.jpg',
    headline: <>Strong infrastructure. Reliable water management.</>, 
     subtext: 'Empowering millions of farmers with intelligent micro-irrigation systems designed for peak crop vitality and water conservation.',
