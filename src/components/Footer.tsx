@@ -134,7 +134,7 @@ export const Footer: React.FC<FooterProps> = ({
       <div className="max-w-7xl mx-auto px-4 sm:px-8 space-y-12">
 
         {/* Main Footer Sitemap Columns */}
-        <div className={`grid grid-cols-1 md:grid-cols-2 ${isMultipleSocialGroups ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} gap-8`}>
+        <div className={`grid grid-cols-1 md:grid-cols-2 ${(isMultipleSocialGroups || isIrrigation) ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} gap-8`}>
 
           {/* Brand Info Column: ALWAYS expanded to lg:col-span-2 */}
           <div className="lg:col-span-2 space-y-4">
@@ -219,18 +219,71 @@ export const Footer: React.FC<FooterProps> = ({
               </ul>
             </div>
 
-            {/* SINGLE GROUP CONDITION: Rendered below Certifications */}
-            {!isMultipleSocialGroups && (
+            {/* Download our app — shown below Certifications for Pipe division */}
+            {!isIrrigation && (
+              <div className="space-y-3 text-xs pt-2 border-t border-white/20">
+                <h4 className="font-medium text-white text-sm">Download our app</h4>
+                <a
+                  href="https://play.google.com/store/apps/details?id=in.kotharione.sma"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Get Kothari One on Google Play"
+                  className="inline-flex w-fit items-center gap-2 rounded-md border border-white/10 bg-[#0B1523] px-2.5 py-2 transition-colors hover:bg-[#14233A]"
+                >
+                  <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden="true">
+                    <path d="M3.61 1.81 13.79 12 3.61 22.19A1.5 1.5 0 0 1 3 21V3a1.5 1.5 0 0 1 .61-1.19Z" fill="#00D7FE" />
+                    <path d="M13.79 12 3.61 1.81A1.5 1.5 0 0 1 5.6.91l12.19 7.09-4 4Z" fill="#00E676" />
+                    <path d="M13.79 12l4 4-12.19 7.09a1.5 1.5 0 0 1-1.99-.9L13.79 12Z" fill="#FF3A44" />
+                    <path d="M17.79 8l5.57 3.22a1.03 1.03 0 0 1 0 1.78L17.79 16l-4-4 4-4Z" fill="#FFCE00" />
+                  </svg>
+                  <span className="flex flex-col text-left leading-none">
+                    <span className="whitespace-nowrap text-[10px] font-light text-white/70">Download on the</span>
+                    <span className="mt-1 whitespace-nowrap text-[15px] font-medium text-white">Google Play</span>
+                  </span>
+                </a>
+              </div>
+            )}
+
+            {/* SINGLE GROUP CONDITION: Rendered below Certifications (Pipe division only) */}
+            {!isIrrigation && !isMultipleSocialGroups && (
               <div className="pt-2 border-t border-white/20">
                 {renderSocialGroups()}
               </div>
             )}
           </div>
 
-          {/* MULTIPLE GROUPS CONDITION: Placed in its own column */}
-          {isMultipleSocialGroups && (
+          {/* MULTIPLE GROUPS CONDITION: Placed in its own column (Pipe division only) */}
+          {!isIrrigation && isMultipleSocialGroups && (
             <div>
               {renderSocialGroups()}
+            </div>
+          )}
+
+          {/* IRRIGATION: Separate last column — Connect with us + Download our app */}
+          {isIrrigation && (
+            <div className="space-y-6">
+              {renderSocialGroups()}
+              <div className="space-y-3 text-xs pt-2 border-t border-white/20">
+                <h4 className="font-medium text-white text-sm">Download our app</h4>
+                <a
+                  href="https://play.google.com/store/apps/details?id=in.kotharione.sma"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Get Kothari One on Google Play"
+                  className="inline-flex w-fit items-center gap-2 rounded-md border border-white/10 bg-[#0B1523] px-2.5 py-2 transition-colors hover:bg-[#14233A]"
+                >
+                  <svg viewBox="0 0 24 24" className="h-6 w-6 shrink-0" aria-hidden="true">
+                    <path d="M3.61 1.81 13.79 12 3.61 22.19A1.5 1.5 0 0 1 3 21V3a1.5 1.5 0 0 1 .61-1.19Z" fill="#00D7FE" />
+                    <path d="M13.79 12 3.61 1.81A1.5 1.5 0 0 1 5.6.91l12.19 7.09-4 4Z" fill="#00E676" />
+                    <path d="M13.79 12l4 4-12.19 7.09a1.5 1.5 0 0 1-1.99-.9L13.79 12Z" fill="#FF3A44" />
+                    <path d="M17.79 8l5.57 3.22a1.03 1.03 0 0 1 0 1.78L17.79 16l-4-4 4-4Z" fill="#FFCE00" />
+                  </svg>
+                  <span className="flex flex-col text-left leading-none">
+                    <span className="whitespace-nowrap text-[10px] font-light text-white/70">Download on the</span>
+                    <span className="mt-1 whitespace-nowrap text-[15px] font-medium text-white">Google Play</span>
+                  </span>
+                </a>
+              </div>
             </div>
           )}
 

@@ -24,7 +24,7 @@ export const Impact: React.FC = () => {
     },
     {
       num: '03',
-      value: 5000,
+      value: 7500,
       suffix: '+',
       label: 'Channel Partners',
       description: 'Pan-India network of high-caliber distributors and engineers.',
