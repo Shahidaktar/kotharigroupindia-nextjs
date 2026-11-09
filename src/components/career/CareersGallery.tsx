@@ -223,13 +223,57 @@ export const CareersGallery: React.FC<CareersGalleryProps> = ({ jobs, locations 
                         <MapPin className="w-3 h-3 text-[#1575B3]" />
                         {job.place}
                       </span>
-                      <span>{job.department}</span>
+                      {job.department && <span>{job.department}</span>}
+                      {job.jobType && <span>{job.jobType}</span>}
+                      {job.experience && <span>{job.experience}</span>}
                       {job.date && <span>{job.date}</span>}
                     </div>
                     {job.description && (
                       <p className="text-sm sm:text-[16px] text-slate-600 font-normal leading-relaxed mt-3">
                         {job.description}
                       </p>
+                    )}
+                    {((job.responsibilities?.length ?? 0) > 0 ||
+                      (job.requirements?.length ?? 0) > 0 ||
+                      job.salaryRange ||
+                      job.openings) && (
+                      <details className="mt-3">
+                        <summary className="cursor-pointer select-none text-[11px] font-mono font-semibold tracking-widest uppercase text-[#1575B3] hover:text-[#0E588A] transition-colors">
+                          View job details
+                        </summary>
+                        <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                          {(job.responsibilities?.length ?? 0) > 0 && (
+                            <div>
+                              <h4 className="text-[11px] font-mono font-semibold tracking-widest uppercase text-slate-500 mb-1.5">
+                                Responsibilities
+                              </h4>
+                              <ul className="list-disc pl-4 space-y-1 text-sm text-slate-600 leading-relaxed">
+                                {job.responsibilities!.map((item, idx) => (
+                                  <li key={idx}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {(job.requirements?.length ?? 0) > 0 && (
+                            <div>
+                              <h4 className="text-[11px] font-mono font-semibold tracking-widest uppercase text-slate-500 mb-1.5">
+                                Requirements
+                              </h4>
+                              <ul className="list-disc pl-4 space-y-1 text-sm text-slate-600 leading-relaxed">
+                                {job.requirements!.map((item, idx) => (
+                                  <li key={idx}>{item}</li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                        {(job.salaryRange || job.openings) && (
+                          <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-mono uppercase tracking-widest text-slate-500">
+                            {job.salaryRange && <span>Salary: {job.salaryRange}</span>}
+                            {job.openings ? <span>Openings: {job.openings}</span> : null}
+                          </div>
+                        )}
+                      </details>
                     )}
                   </div>
                   <button
@@ -246,8 +290,12 @@ export const CareersGallery: React.FC<CareersGalleryProps> = ({ jobs, locations 
           </div>
         ) : (
           <div className="py-24 text-center">
-            <p className="text-sm text-slate-500">No jobs match your filters.</p>
-            {hasFilters && (
+            <p className="text-sm text-slate-500">
+              {jobs.length === 0
+                ? 'There are no open positions right now. Please check back soon.'
+                : 'No jobs match your filters.'}
+            </p>
+            {hasFilters && jobs.length > 0 && (
               <button
                 type="button"
                 onClick={resetFilters}

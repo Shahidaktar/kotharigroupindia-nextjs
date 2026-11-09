@@ -4,6 +4,7 @@ import { Home2Header } from '@/components/Home2Header';
 import { Home2Footer } from '@/components/Home2Footer';
 import { CareersGallery } from '@/components/career/CareersGallery';
 import { careerData } from '@/lib/career';
+import { fetchWpJobs } from '@/lib/career-wp';
 import { wpPageMetadataFor, resolveSeoText } from '@/lib/wp-seo';
 import { JsonLd } from '@/components/JsonLd';
 import { ORG_ID, standardPageGraph } from '@/lib/schema';
@@ -18,8 +19,17 @@ const SEO_FALLBACK = {
 
 export const generateMetadata = wpPageMetadataFor('career', SEO_FALLBACK);
 
+// Jobs are managed in WordPress (Careers > Job Posts) and revalidated every
+// 10 minutes. If the WP API is unavailable, the static careerData list is used.
+export const revalidate = 600;
+
 export default async function CareersPage() {
-  const { jobs, locations } = careerData;
+  const liveJobs = await fetchWpJobs();
+  const jobs = liveJobs ?? careerData.jobs;
+  const locations = [
+    'All',
+    ...Array.from(new Set(jobs.map((job) => job.location).filter(Boolean))),
+  ];
   const seo = await resolveSeoText('career', SEO_FALLBACK);
 
   return (

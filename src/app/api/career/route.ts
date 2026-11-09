@@ -6,6 +6,7 @@ import {
   verifyRecaptchaToken,
   NOT_CONFIGURED,
 } from '@/lib/mailer';
+import { CAREER_INGEST_SECRET } from '@/lib/career-secret';
 
 export const runtime = 'nodejs';
 
@@ -116,10 +117,32 @@ export async function POST(req: Request) {
     contentType: file.type || 'application/octet-stream',
   });
 
+  // Persist the application in WordPress first so it survives even if email
+  // delivery fails. This is fail-soft: email still goes out if WP is down.
+  const stored = await storeApplicationInWordPress(
+    {
+      name,
+      email,
+      phone,
+      totalExperience,
+      relevantExperience,
+      currentCTC,
+      expectedCTC,
+      noticePeriod,
+      position,
+      location,
+      qualification,
+      linkdin,
+    },
+    attachments[0]
+  );
+
   const transporter = createTransporter();
   if (!transporter) {
-    console.error('[career] Email is not configured (GMAIL_USER + GMAIL_APP_PASSWORD missing).');
-    return NextResponse.json(NOT_CONFIGURED, { status: 500 });
+    console.error('[career] Email is not configured (GMAIL_USER + GMAIL_APP_PASSWORD missing). Stored in WP:', stored);
+    return stored
+      ? NextResponse.json({ ok: true, stored: true, emailed: false })
+      : NextResponse.json(NOT_CONFIGURED, { status: 500 });
   }
 
   const to =
@@ -128,8 +151,10 @@ export async function POST(req: Request) {
     process.env.GMAIL_USER ||
     '';
   if (!to) {
-    console.error('[career] No recipient configured.');
-    return NextResponse.json(NOT_CONFIGURED, { status: 500 });
+    console.error('[career] No recipient configured. Stored in WP:', stored);
+    return stored
+      ? NextResponse.json({ ok: true, stored: true, emailed: false })
+      : NextResponse.json(NOT_CONFIGURED, { status: 500 });
   }
 
   const from = process.env.GMAIL_USER as string;
@@ -175,12 +200,57 @@ export async function POST(req: Request) {
       html,
       attachments,
     });
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, stored, emailed: true });
   } catch (error) {
     console.error('[career] sendMail failed:', error);
+    if (stored) {
+      return NextResponse.json({ ok: true, stored: true, emailed: false });
+    }
     return NextResponse.json(
       { ok: false, error: 'Could not send your application. Please try again later.' },
       { status: 502 }
     );
+  }
+}
+
+// Forward the application to the Kothari Careers WordPress plugin, which
+// stores it as a private record and keeps the resume in a protected folder.
+async function storeApplicationInWordPress(
+  fields: Record<string, string>,
+  resume: { filename: string; content: Buffer; contentType: string }
+): Promise<boolean> {
+  const secret = CAREER_INGEST_SECRET;
+  const base =
+    process.env.NEXT_PUBLIC_WP_API_URL ||
+    'https://admin.kotharigroupindia.com/wp-json';
+
+  try {
+    const form = new FormData();
+    for (const [key, value] of Object.entries(fields)) {
+      form.append(key, value ?? '');
+    }
+    form.append(
+      'resume',
+      new Blob([new Uint8Array(resume.content)], { type: resume.contentType }),
+      resume.filename
+    );
+
+    const res = await fetch(`${base}/kothari/v1/apply`, {
+      method: 'POST',
+      headers: { 'X-Kothari-Secret': secret },
+      body: form,
+      cache: 'no-store',
+    });
+
+    if (!res.ok) {
+      const text = await res.text().catch(() => '');
+      console.error('[career] WP store failed:', res.status, text.slice(0, 300));
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    console.error('[career] WP store error:', error);
+    return false;
   }
 }

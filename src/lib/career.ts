@@ -11,6 +11,13 @@ export interface JobPosting {
   link: string;
   date: string;
   place: string;
+  /** Rich content from the WP career plugin (optional — static fallback omits it). */
+  responsibilities?: string[];
+  requirements?: string[];
+  salaryRange?: string;
+  experience?: string;
+  openings?: number;
+  status?: string;
 }
 
 export interface CareerData {
