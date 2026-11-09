@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Kothari Careers
  * Description:       Job posts and application submissions for the Kothari Group website. Adds a Careers admin area, a public jobs REST endpoint, a secure application intake endpoint, private resume storage and CSV export.
- * Version:           1.1.0
+ * Version:           1.2.0
  * Author:            IndoAge
  * Requires at least: 5.8
  * Requires PHP:      7.4
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KOTHARI_CAREERS_VERSION', '1.1.0' );
+define( 'KOTHARI_CAREERS_VERSION', '1.2.0' );
 define( 'KOTHARI_CAREERS_JOB_CPT', 'kothari_job' );
 define( 'KOTHARI_CAREERS_APP_CPT', 'kothari_application' );
 define( 'KOTHARI_CAREERS_OPTION_SECRET', 'kothari_careers_ingest_secret' );
@@ -406,6 +406,51 @@ function kothari_careers_save_job_meta( $post_id ) {
 	}
 }
 add_action( 'save_post_' . KOTHARI_CAREERS_JOB_CPT, 'kothari_careers_save_job_meta' );
+
+/**
+ * Purge the website's ISR cache so job changes appear on /career immediately
+ * instead of waiting for the 10-minute revalidation window.
+ */
+function kothari_careers_revalidate_frontend( $post_id = 0 ) {
+	if ( $post_id ) {
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || wp_is_post_autosave( $post_id ) || wp_is_post_revision( $post_id ) ) {
+			return;
+		}
+		if ( KOTHARI_CAREERS_JOB_CPT !== get_post_type( $post_id ) ) {
+			return;
+		}
+	}
+
+	$secret = get_option( KOTHARI_CAREERS_OPTION_SECRET, KOTHARI_CAREERS_DEFAULT_SECRET );
+	if ( defined( 'KOTHARI_CAREERS_INGEST_SECRET' ) ) {
+		$secret = KOTHARI_CAREERS_INGEST_SECRET;
+	}
+
+	$site_url = apply_filters( 'kothari_careers_site_url', KOTHARI_CAREERS_SITE_URL );
+
+	wp_remote_post(
+		trailingslashit( $site_url ) . 'api/revalidate/career',
+		array(
+			'timeout'  => 5,
+			'blocking' => false,
+			'headers'  => array(
+				'Content-Type'     => 'application/json',
+				'X-Kothari-Secret' => $secret,
+			),
+			'body'     => wp_json_encode( array( 'path' => '/career' ) ),
+		)
+	);
+}
+add_action( 'save_post_' . KOTHARI_CAREERS_JOB_CPT, 'kothari_careers_revalidate_frontend', 20 );
+
+function kothari_careers_revalidate_on_delete( $post_id ) {
+	if ( KOTHARI_CAREERS_JOB_CPT === get_post_type( $post_id ) ) {
+		kothari_careers_revalidate_frontend();
+	}
+}
+add_action( 'trashed_post', 'kothari_careers_revalidate_on_delete' );
+add_action( 'untrashed_post', 'kothari_careers_revalidate_on_delete' );
+add_action( 'before_delete_post', 'kothari_careers_revalidate_on_delete' );
 
 /* -------------------------------------------------------------------------
  * Application meta box

@@ -97,7 +97,7 @@ export const fetchWpJobs = cache(async (): Promise<JobPosting[] | null> => {
   try {
     const res = await fetch(`${WP_API}/kothari/v1/jobs`, {
       headers: { 'User-Agent': 'Mozilla/5.0' },
-      next: { revalidate: 600 },
+      next: { revalidate: 600, tags: ['career-jobs'] },
     });
     if (!res.ok) return null;
 

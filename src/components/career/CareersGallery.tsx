@@ -224,9 +224,9 @@ export const CareersGallery: React.FC<CareersGalleryProps> = ({ jobs, locations 
                         {job.place}
                       </span>
                       {job.department && <span>{job.department}</span>}
-                      {job.jobType && <span>{job.jobType}</span>}
+                      {/* {job.jobType && <span>{job.jobType}</span>}
                       {job.experience && <span>{job.experience}</span>}
-                      {job.date && <span>{job.date}</span>}
+                      {job.date && <span>{job.date}</span>} */}
                     </div>
                     {job.description && (
                       <p className="text-sm sm:text-[16px] text-slate-600 font-normal leading-relaxed mt-3">
@@ -236,7 +236,7 @@ export const CareersGallery: React.FC<CareersGalleryProps> = ({ jobs, locations 
                     {((job.responsibilities?.length ?? 0) > 0 ||
                       (job.requirements?.length ?? 0) > 0 ||
                       job.salaryRange ||
-                      job.openings) && (
+                      Number(job.openings) > 0) && (
                       <details className="mt-3">
                         <summary className="cursor-pointer select-none text-[11px] font-mono font-semibold tracking-widest uppercase text-[#1575B3] hover:text-[#0E588A] transition-colors">
                           View job details
@@ -267,10 +267,10 @@ export const CareersGallery: React.FC<CareersGalleryProps> = ({ jobs, locations 
                             </div>
                           )}
                         </div>
-                        {(job.salaryRange || job.openings) && (
+                        {(job.salaryRange || Number(job.openings) > 0) && (
                           <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-[11px] font-mono uppercase tracking-widest text-slate-500">
                             {job.salaryRange && <span>Salary: {job.salaryRange}</span>}
-                            {job.openings ? <span>Openings: {job.openings}</span> : null}
+                            {Number(job.openings) > 0 ? <span>Openings: {job.openings}</span> : null}
                           </div>
                         )}
                       </details>

@@ -4,7 +4,7 @@ Tags: careers, jobs, applications, recruitment
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 
 Job posts and application submissions for the Kothari Group website.
 
@@ -43,6 +43,9 @@ To make the `wp_mail` fallback reliable, optionally define Gmail credentials in 
 4. Add job posts under Careers > Job Posts.
 
 == Changelog ==
+
+= 1.2.0 =
+* Added on-demand revalidation: creating, editing, trashing, restoring or deleting a job now refreshes /career immediately.
 
 = 1.1.0 =
 * Emails the applicant when an application status changes.
