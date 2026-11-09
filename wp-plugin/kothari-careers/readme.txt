@@ -4,7 +4,7 @@ Tags: careers, jobs, applications, recruitment
 Requires at least: 5.8
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.2
 
 Job posts and application submissions for the Kothari Group website.
 
@@ -35,6 +35,10 @@ To make the `wp_mail` fallback reliable, optionally define Gmail credentials in 
     define( 'KOTHARI_CAREERS_SMTP_USER', 'hr@kotharigroupindia.com' );
     define( 'KOTHARI_CAREERS_SMTP_PASS', 'gmail-app-password' );
 
+== HR role ==
+
+After activating the plugin, an **HR** role is created automatically. Go to Users > Add New and assign the role **HR**. HR users only see Careers > Job Posts and Applications; other admin screens redirect back to Careers, and Settings stays administrator-only.
+
 == Installation ==
 
 1. Upload the kothari-careers folder (or the ZIP) to Plugins > Add New.
@@ -43,6 +47,15 @@ To make the `wp_mail` fallback reliable, optionally define Gmail credentials in 
 4. Add job posts under Careers > Job Posts.
 
 == Changelog ==
+
+= 1.3.2 =
+* HR can now use the Duplicate action (and similar tools) on job posts without being redirected.
+
+= 1.3.1 =
+* Fixed the HR access guard redirecting editor form submissions before changes were saved.
+
+= 1.3.0 =
+* Added an "HR" user role. HR users can only access Careers (Job Posts, Applications) and are redirected away from every other admin screen. Settings remains administrator-only.
 
 = 1.2.0 =
 * Added on-demand revalidation: creating, editing, trashing, restoring or deleting a job now refreshes /career immediately.

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Kothari Careers
  * Description:       Job posts and application submissions for the Kothari Group website. Adds a Careers admin area, a public jobs REST endpoint, a secure application intake endpoint, private resume storage and CSV export.
- * Version:           1.2.0
+ * Version:           1.3.2
  * Author:            IndoAge
  * Requires at least: 5.8
  * Requires PHP:      7.4
@@ -13,10 +13,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'KOTHARI_CAREERS_VERSION', '1.2.0' );
+define( 'KOTHARI_CAREERS_VERSION', '1.3.2' );
 define( 'KOTHARI_CAREERS_JOB_CPT', 'kothari_job' );
 define( 'KOTHARI_CAREERS_APP_CPT', 'kothari_application' );
 define( 'KOTHARI_CAREERS_OPTION_SECRET', 'kothari_careers_ingest_secret' );
+define( 'KOTHARI_CAREERS_OPTION_VERSION', 'kothari_careers_version' );
+
+/**
+ * Capability that unlocks the Careers admin area (Job Posts, Applications).
+ * Held by Administrators and the HR role. Settings stays behind manage_options.
+ */
+define( 'KOTHARI_CAREERS_CAP', 'manage_kothari_careers' );
 
 /**
  * Default ingest secret. The Next.js site sends this in the X-Kothari-Secret
@@ -45,6 +52,7 @@ function kothari_careers_activate() {
 		update_option( KOTHARI_CAREERS_OPTION_SECRET, KOTHARI_CAREERS_DEFAULT_SECRET );
 	}
 
+	kothari_careers_install_roles();
 	kothari_careers_private_dir();
 	flush_rewrite_rules();
 }
@@ -54,6 +62,189 @@ function kothari_careers_deactivate() {
 	flush_rewrite_rules();
 }
 register_deactivation_hook( __FILE__, 'kothari_careers_deactivate' );
+
+/* -------------------------------------------------------------------------
+ * HR role + careers-only admin access
+ * ---------------------------------------------------------------------- */
+
+function kothari_careers_install_roles() {
+	$caps = array(
+		'read'                   => true,
+		'edit_posts'             => true,
+		'edit_others_posts'      => true,
+		'edit_private_posts'     => true,
+		'edit_published_posts'   => true,
+		'publish_posts'          => true,
+		'read_private_posts'     => true,
+		'delete_posts'           => true,
+		'delete_others_posts'    => true,
+		'delete_private_posts'   => true,
+		'delete_published_posts' => true,
+		KOTHARI_CAREERS_CAP      => true,
+	);
+
+	$role = get_role( 'hr' );
+	if ( $role ) {
+		foreach ( $caps as $cap => $grant ) {
+			$role->add_cap( $cap, $grant );
+		}
+	} else {
+		add_role( 'hr', 'HR', $caps );
+	}
+
+	$admin = get_role( 'administrator' );
+	if ( $admin ) {
+		$admin->add_cap( KOTHARI_CAREERS_CAP );
+	}
+
+	update_option( KOTHARI_CAREERS_OPTION_VERSION, KOTHARI_CAREERS_VERSION );
+}
+
+function kothari_careers_maybe_install_roles() {
+	if ( get_option( KOTHARI_CAREERS_OPTION_VERSION ) === KOTHARI_CAREERS_VERSION ) {
+		return;
+	}
+	kothari_careers_install_roles();
+}
+add_action( 'init', 'kothari_careers_maybe_install_roles', 1 );
+
+/**
+ * True for a logged-in user who can use Careers but is not an administrator.
+ */
+function kothari_careers_is_hr_only() {
+	if ( ! is_user_logged_in() ) {
+		return false;
+	}
+	$user = wp_get_current_user();
+	return user_can( $user, KOTHARI_CAREERS_CAP ) && ! user_can( $user, 'manage_options' );
+}
+
+function kothari_careers_restrict_admin_menu() {
+	if ( ! kothari_careers_is_hr_only() ) {
+		return;
+	}
+
+	global $menu;
+
+	foreach ( (array) $menu as $item ) {
+		$slug = isset( $item[2] ) ? $item[2] : '';
+		if ( 'kothari-careers' !== $slug ) {
+			remove_menu_page( $slug );
+		}
+	}
+}
+add_action( 'admin_menu', 'kothari_careers_restrict_admin_menu', 999 );
+
+function kothari_careers_restrict_admin_bar( $bar ) {
+	if ( ! kothari_careers_is_hr_only() ) {
+		return;
+	}
+
+	foreach ( array( 'wp-logo', 'site-name', 'updates', 'comments', 'new-content', 'search', 'archive', 'view', 'edit' ) as $node ) {
+		$bar->remove_node( $node );
+	}
+}
+add_action( 'admin_bar_menu', 'kothari_careers_restrict_admin_bar', 999 );
+
+function kothari_careers_restrict_admin_pages() {
+	if ( ! kothari_careers_is_hr_only() || wp_doing_ajax() ) {
+		return;
+	}
+
+	global $pagenow;
+
+	$page      = isset( $_GET['page'] ) ? sanitize_key( wp_unslash( $_GET['page'] ) ) : '';
+	$post_type = isset( $_GET['post_type'] ) ? sanitize_key( wp_unslash( $_GET['post_type'] ) ) : '';
+	if ( '' === $post_type && isset( $_POST['post_type'] ) ) {
+		$post_type = sanitize_key( wp_unslash( $_POST['post_type'] ) );
+	}
+
+	// The editor form posts to post.php with post_ID in the body (not ?post=),
+	// so read both before deciding whether the request is a Careers screen.
+	$post_id = 0;
+	if ( isset( $_GET['post'] ) && is_scalar( $_GET['post'] ) ) {
+		$post_id = absint( wp_unslash( $_GET['post'] ) );
+	}
+	if ( ! $post_id && isset( $_POST['post_ID'] ) ) {
+		$post_id = absint( wp_unslash( $_POST['post_ID'] ) );
+	}
+
+	$action = isset( $_GET['action'] ) ? sanitize_key( wp_unslash( $_GET['action'] ) ) : '';
+	if ( '' === $action && isset( $_POST['action'] ) ) {
+		$action = sanitize_key( wp_unslash( $_POST['action'] ) );
+	}
+
+	$careers_types   = array( KOTHARI_CAREERS_JOB_CPT, KOTHARI_CAREERS_APP_CPT );
+	$is_careers_post = $post_id && in_array( get_post_type( $post_id ), $careers_types, true );
+	$allowed         = false;
+
+	switch ( $pagenow ) {
+		case 'admin.php':
+			// Also allow tools that act on a careers post (e.g. Duplicate Post,
+			// which uses admin.php?action=duplicate_post_...&post=ID).
+			$allowed = ( 'kothari-careers' === $page ) || $is_careers_post;
+			break;
+		case 'edit.php':
+		case 'post-new.php':
+			$allowed = in_array( $post_type, $careers_types, true );
+			break;
+		case 'post.php':
+			$allowed = $is_careers_post;
+			break;
+		case 'admin-post.php':
+			$allowed = ( 0 === strpos( $action, 'kothari_' ) ) || $is_careers_post;
+			break;
+		case 'profile.php':
+		case 'async-upload.php':
+		case 'media-upload.php':
+			$allowed = true;
+			break;
+	}
+
+	if ( ! $allowed ) {
+		wp_safe_redirect( admin_url( 'admin.php?page=kothari-careers' ) );
+		exit;
+	}
+}
+add_action( 'admin_init', 'kothari_careers_restrict_admin_pages', 99 );
+
+function kothari_careers_restrict_rest_api( $result, $server, $request ) {
+	if ( ! kothari_careers_is_hr_only() ) {
+		return $result;
+	}
+
+	$route  = $request->get_route();
+	$method = strtoupper( $request->get_method() );
+
+	// Read requests are allowed so the public website keeps working for a
+	// logged-in HR user; only block writes outside their own profile.
+	if ( in_array( $method, array( 'GET', 'HEAD' ), true ) ) {
+		return $result;
+	}
+	if ( 0 === strpos( $route, '/wp/v2/users/me' ) ) {
+		return $result;
+	}
+
+	return new WP_Error(
+		'rest_forbidden',
+		__( 'You are not allowed to access this endpoint.', 'kothari-careers' ),
+		array( 'status' => 403 )
+	);
+}
+add_filter( 'rest_pre_dispatch', 'kothari_careers_restrict_rest_api', 10, 3 );
+
+function kothari_careers_login_redirect( $redirect_to, $requested_redirect_to, $user ) {
+	if ( $user instanceof WP_User && user_can( $user, KOTHARI_CAREERS_CAP ) && ! user_can( $user, 'manage_options' ) ) {
+		return admin_url( 'admin.php?page=kothari-careers' );
+	}
+	return $redirect_to;
+}
+add_filter( 'login_redirect', 'kothari_careers_login_redirect', 10, 3 );
+
+function kothari_careers_hide_front_admin_bar( $show ) {
+	return kothari_careers_is_hr_only() ? false : $show;
+}
+add_filter( 'show_admin_bar', 'kothari_careers_hide_front_admin_bar' );
 
 /* -------------------------------------------------------------------------
  * Custom post types
@@ -122,7 +313,7 @@ function kothari_careers_register_menu() {
 	add_menu_page(
 		'Careers',
 		'Careers',
-		'manage_options',
+		KOTHARI_CAREERS_CAP,
 		'kothari-careers',
 		'kothari_careers_render_dashboard',
 		'dashicons-businessman',
@@ -141,7 +332,7 @@ function kothari_careers_register_menu() {
 add_action( 'admin_menu', 'kothari_careers_register_menu' );
 
 function kothari_careers_render_dashboard() {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( KOTHARI_CAREERS_CAP ) ) {
 		return;
 	}
 
@@ -154,7 +345,7 @@ function kothari_careers_render_dashboard() {
 	?>
 	<div class="wrap">
 		<h1>Kothari Careers</h1>
-		<p>Manage job posts and candidate applications. Published jobs appear on the website within about 10 minutes.</p>
+		<p>Manage job posts and candidate applications. Changes appear on the website immediately.</p>
 
 		<p>
 			<strong><?php echo esc_html( (int) $jobs_count ); ?></strong> published job posts &middot;
@@ -164,7 +355,9 @@ function kothari_careers_render_dashboard() {
 		<p>
 			<a class="button button-primary" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . KOTHARI_CAREERS_JOB_CPT ) ); ?>">Manage Job Posts</a>
 			<a class="button" href="<?php echo esc_url( admin_url( 'edit.php?post_type=' . KOTHARI_CAREERS_APP_CPT ) ); ?>">View Applications</a>
-			<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=kothari-careers-settings' ) ); ?>">Settings</a>
+			<?php if ( current_user_can( 'manage_options' ) ) : ?>
+				<a class="button" href="<?php echo esc_url( admin_url( 'admin.php?page=kothari-careers-settings' ) ); ?>">Settings</a>
+			<?php endif; ?>
 		</p>
 	</div>
 	<?php
@@ -537,7 +730,7 @@ function kothari_careers_save_application_meta( $post_id ) {
 	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 		return;
 	}
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( KOTHARI_CAREERS_CAP ) ) {
 		return;
 	}
 	if ( KOTHARI_CAREERS_APP_CPT !== get_post_type( $post_id ) ) {
@@ -659,7 +852,7 @@ function kothari_careers_configure_smtp( $phpmailer ) {
 add_action( 'phpmailer_init', 'kothari_careers_configure_smtp' );
 
 function kothari_careers_resend_status_email() {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( KOTHARI_CAREERS_CAP ) ) {
 		wp_die( esc_html__( 'You are not allowed to do that.', 'kothari-careers' ) );
 	}
 
@@ -843,7 +1036,7 @@ function kothari_careers_export_button( $which ) {
 add_action( 'manage_posts_extra_tablenav', 'kothari_careers_export_button' );
 
 function kothari_careers_export_applications() {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( KOTHARI_CAREERS_CAP ) ) {
 		wp_die( 'Not allowed.' );
 	}
 	check_admin_referer( 'kothari_export_applications' );
@@ -940,7 +1133,7 @@ function kothari_careers_private_dir() {
 }
 
 function kothari_careers_download_resume() {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( KOTHARI_CAREERS_CAP ) ) {
 		wp_die( 'Not allowed.' );
 	}
 
